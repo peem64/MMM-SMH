@@ -12,11 +12,15 @@ declare global {
   }
 }
 
+// Keep track of initialized containers to prevent double mounting
+const initializedContainers = new Set<string>();
+
 // Standard React app initialization
 function initStandardApp() {
   const rootElement = document.getElementById('root');
-  if (rootElement) {
+  if (rootElement && !initializedContainers.has('root')) {
     console.log('MMM-SMH: Initializing standalone React app');
+    initializedContainers.add('root');
     createRoot(rootElement).render(
       <StrictMode>
         <App />
@@ -28,14 +32,34 @@ function initStandardApp() {
 // MagicMirror module initialization
 function initMagicMirrorApp(containerId: string) {
   console.log('MMM-SMH: Initializing MagicMirror React app in container:', containerId);
+  
+  // Prevent double initialization
+  if (initializedContainers.has(containerId)) {
+    console.log('MMM-SMH: Container already initialized:', containerId);
+    return;
+  }
+  
   const container = document.getElementById(containerId);
   if (container) {
-    createRoot(container).render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    );
-    console.log('MMM-SMH: React app mounted successfully');
+    try {
+      initializedContainers.add(containerId);
+      
+      // Clear any existing content
+      container.innerHTML = '';
+      
+      // Create root and render
+      const root = createRoot(container);
+      root.render(
+        <StrictMode>
+          <App />
+        </StrictMode>
+      );
+      
+      console.log('MMM-SMH: React app mounted successfully in container:', containerId);
+    } catch (error) {
+      console.error('MMM-SMH: Error mounting React app:', error);
+      initializedContainers.delete(containerId);
+    }
   } else {
     console.error('MMM-SMH: Container not found:', containerId);
   }
@@ -49,11 +73,13 @@ function autoInitialize() {
   }
   
   // If there's already a MagicMirror container, initialize it
-  const mmContainer = document.getElementById('mmm-smh-root');
-  if (mmContainer) {
-    console.log('MMM-SMH: Auto-initializing MagicMirror app');
-    initMagicMirrorApp('mmm-smh-root');
-  }
+  const mmContainers = document.querySelectorAll('[id^="mmm-smh-root-"]');
+  mmContainers.forEach((container) => {
+    if (container.id && !initializedContainers.has(container.id)) {
+      console.log('MMM-SMH: Auto-initializing MagicMirror app for:', container.id);
+      initMagicMirrorApp(container.id);
+    }
+  });
 }
 
 // Check if we're running in browser environment
@@ -67,8 +93,34 @@ if (typeof window !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', autoInitialize);
   } else {
-    autoInitialize();
+    // DOM is already ready, initialize immediately
+    setTimeout(autoInitialize, 100);
   }
+  
+  // Also listen for dynamic content changes (useful for MagicMirror)
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const element = node as Element;
+          // Check if new MMM-SMH containers were added
+          const newContainers = element.querySelectorAll('[id^="mmm-smh-root-"]');
+          newContainers.forEach((container) => {
+            if (container.id && !initializedContainers.has(container.id)) {
+              console.log('MMM-SMH: New container detected:', container.id);
+              setTimeout(() => initMagicMirrorApp(container.id), 100);
+            }
+          });
+        }
+      });
+    });
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
   
   console.log('MMM-SMH: Module loaded and ready');
 }

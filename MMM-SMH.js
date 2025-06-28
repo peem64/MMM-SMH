@@ -38,6 +38,8 @@ Module.register("MMM-SMH", {
         this.loaded = false;
         this.error = null;
         this.reactAppLoaded = false;
+        this.reactAppInitialized = false;
+        this.domCreated = false;
         
         // Validate configuration
         if (!this.config.supabaseUrl || !this.config.supabaseAnonKey) {
@@ -46,31 +48,8 @@ Module.register("MMM-SMH", {
             return;
         }
         
-        // Validate that built files exist
-        this.validateBuildFiles();
-        
         // Set up update timer
         this.scheduleUpdate();
-    },
-
-    // Validate that the built files exist
-    validateBuildFiles: function() {
-        var self = this;
-        
-        // Check if CSS file exists
-        var cssPath = this.file("dist/assets/index.css");
-        var jsPath = this.file("dist/assets/index.js");
-        
-        // Create test elements to check if files exist
-        var cssTest = document.createElement("link");
-        cssTest.rel = "stylesheet";
-        cssTest.href = cssPath;
-        cssTest.onerror = function() {
-            self.error = "Built CSS file not found. Please run 'npm run build' in the module directory.";
-            self.updateDom();
-        };
-        
-        // Don't actually add the test elements to DOM
     },
 
     // Schedule the next update
@@ -78,7 +57,7 @@ Module.register("MMM-SMH", {
         var self = this;
         
         setInterval(function() {
-            if (self.loaded) {
+            if (self.loaded && self.domCreated) {
                 // Only update DOM if we're not still loading
                 self.updateDom(self.config.animationSpeed);
             }
@@ -87,8 +66,10 @@ Module.register("MMM-SMH", {
 
     // Override dom creation
     getDom: function() {
+        var self = this;
         var wrapper = document.createElement("div");
         wrapper.className = "mmm-smh-wrapper";
+        wrapper.id = "mmm-smh-module-" + this.identifier;
         
         // Set dimensions based on position
         var position = this.data.position;
@@ -105,9 +86,10 @@ Module.register("MMM-SMH", {
             wrapper.style.position = "relative";
         }
         
-        // Ensure proper isolation
+        // Ensure proper isolation and prevent conflicts
         wrapper.style.isolation = "isolate";
         wrapper.style.contain = "layout style";
+        wrapper.style.boxSizing = "border-box";
         
         if (this.error) {
             wrapper.innerHTML = `
@@ -181,15 +163,24 @@ Module.register("MMM-SMH", {
             if (!this.reactAppLoaded) {
                 this.reactAppLoaded = true;
                 setTimeout(() => {
-                    this.loadReactApp(wrapper);
+                    this.loadReactApp();
                 }, 1000);
             }
             
+            this.domCreated = true;
             return wrapper;
         }
 
-        // React app container
-        wrapper.innerHTML = '<div id="mmm-smh-root" style="width: 100%; height: 100%; min-height: 400px; box-sizing: border-box;"></div>';
+        // React app container - create persistent container
+        var reactContainer = document.createElement("div");
+        reactContainer.id = "mmm-smh-root-" + this.identifier;
+        reactContainer.style.width = "100%";
+        reactContainer.style.height = "100%";
+        reactContainer.style.minHeight = "400px";
+        reactContainer.style.boxSizing = "border-box";
+        reactContainer.style.position = "relative";
+        
+        wrapper.appendChild(reactContainer);
         
         // Initialize React app if not already done
         if (!this.reactAppInitialized) {
@@ -199,11 +190,12 @@ Module.register("MMM-SMH", {
             }, 100);
         }
         
+        this.domCreated = true;
         return wrapper;
     },
 
     // Load the React application
-    loadReactApp: function(container) {
+    loadReactApp: function() {
         var self = this;
         
         Log.info("MMM-SMH: Loading React application...");
@@ -214,10 +206,20 @@ Module.register("MMM-SMH", {
             window.VITE_SUPABASE_ANON_KEY = this.config.supabaseAnonKey;
         }
         
+        // Check if script is already loaded
+        var existingScript = document.querySelector('script[src*="mmm-smh"]');
+        if (existingScript) {
+            Log.info("MMM-SMH: React script already loaded, initializing...");
+            self.loaded = true;
+            self.updateDom(self.config.animationSpeed);
+            return;
+        }
+        
         // Create a script element to load the built React app
         var script = document.createElement("script");
         script.type = "module";
         script.src = this.file("dist/assets/index.js"); // Built JS from Vite
+        script.setAttribute("data-module", "mmm-smh");
         
         script.onload = function() {
             Log.info("MMM-SMH: React app script loaded successfully");
@@ -240,25 +242,36 @@ Module.register("MMM-SMH", {
     // Initialize the React app in the container
     initializeReactApp: function() {
         var self = this;
+        var containerId = "mmm-smh-root-" + this.identifier;
         
         try {
-            Log.info("MMM-SMH: Initializing React app...");
+            Log.info("MMM-SMH: Initializing React app in container:", containerId);
             
             // Check if React app is available
             if (typeof window !== 'undefined' && window.MMMSMHApp && window.MMMSMHApp.init) {
-                window.MMMSMHApp.init('mmm-smh-root');
+                window.MMMSMHApp.init(containerId);
                 Log.info("MMM-SMH: React app initialized successfully");
             } else {
                 // If not available yet, try again after a delay
-                setTimeout(function() {
+                var retryCount = 0;
+                var maxRetries = 10;
+                
+                var retryInit = function() {
+                    retryCount++;
                     if (window.MMMSMHApp && window.MMMSMHApp.init) {
-                        window.MMMSMHApp.init('mmm-smh-root');
-                        Log.info("MMM-SMH: React app initialized successfully (delayed)");
+                        window.MMMSMHApp.init(containerId);
+                        Log.info("MMM-SMH: React app initialized successfully (retry " + retryCount + ")");
+                    } else if (retryCount < maxRetries) {
+                        Log.warn("MMM-SMH: React app not available, retrying... (" + retryCount + "/" + maxRetries + ")");
+                        setTimeout(retryInit, 1000);
                     } else {
-                        Log.warn("MMM-SMH: React app not available, will retry...");
-                        // The app should still work as it will auto-initialize
+                        Log.error("MMM-SMH: Failed to initialize React app after " + maxRetries + " retries");
+                        self.error = "Failed to initialize React app after multiple attempts";
+                        self.updateDom();
                     }
-                }, 2000);
+                };
+                
+                setTimeout(retryInit, 1000);
             }
         } catch (error) {
             Log.error("MMM-SMH: Failed to initialize React app:", error);
@@ -277,5 +290,17 @@ Module.register("MMM-SMH", {
     // Handle socket notifications
     socketNotificationReceived: function(notification, payload) {
         // Handle any socket notifications if needed
+    },
+
+    // Clean up when module is hidden or removed
+    suspend: function() {
+        Log.info("MMM-SMH: Module suspended");
+    },
+
+    resume: function() {
+        Log.info("MMM-SMH: Module resumed");
+        if (this.loaded && this.domCreated) {
+            this.updateDom(this.config.animationSpeed);
+        }
     }
 });

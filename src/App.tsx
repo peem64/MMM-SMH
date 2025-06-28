@@ -3,7 +3,7 @@ import MunroDisplay from './components/MunroDisplay';
 
 function App() {
   return (
-    <div className="min-h-screen">
+    <div className="mmm-smh-app">
       <MunroDisplay />
     </div>
   );
