@@ -13,8 +13,8 @@ Module.register("MMM-SMH", {
         animationSpeed: 1000,
         initialLoadDelay: 0,
         retryDelay: 2500,
-        maxWidth: "100%",
-        maxHeight: "400px",
+        maxWidth: "400px",
+        maxHeight: "auto",
         // Supabase configuration - users need to set these
         supabaseUrl: "",
         supabaseAnonKey: ""
@@ -77,7 +77,7 @@ Module.register("MMM-SMH", {
         wrapper.style.width = this.config.maxWidth;
         wrapper.style.maxHeight = this.config.maxHeight;
         wrapper.style.position = "relative";
-        wrapper.style.overflow = "hidden";
+        wrapper.style.overflow = "visible";
         wrapper.style.boxSizing = "border-box";
         
         // Store reference to container
@@ -88,18 +88,18 @@ Module.register("MMM-SMH", {
                 <div style="
                     color: #ff6b6b;
                     text-align: center;
-                    padding: 20px;
+                    padding: 15px;
                     font-family: 'Roboto Condensed', sans-serif;
                     background: rgba(0,0,0,0.3);
-                    border-radius: 10px;
+                    border-radius: 8px;
                     border: 1px solid #ff6b6b;
-                    max-width: 400px;
-                    font-size: 14px;
+                    max-width: 350px;
+                    font-size: 13px;
                     line-height: 1.4;
                 ">
-                    <div style="font-size: 20px; margin-bottom: 8px;">⚠️</div>
-                    <div style="font-weight: bold; margin-bottom: 8px;">MMM-SMH Error</div>
-                    <div style="font-size: 12px; opacity: 0.9;">
+                    <div style="font-size: 18px; margin-bottom: 6px;">⚠️</div>
+                    <div style="font-weight: bold; margin-bottom: 6px;">MMM-SMH Error</div>
+                    <div style="font-size: 11px; opacity: 0.9;">
                         ${this.error}
                     </div>
                 </div>
@@ -112,25 +112,23 @@ Module.register("MMM-SMH", {
                 <div style="
                     display: flex;
                     align-items: center;
-                    justify-content: center;
-                    min-height: 200px;
                     color: #ffffff;
                     font-family: 'Roboto Condensed', sans-serif;
-                    text-align: center;
-                    padding: 20px;
+                    text-align: left;
+                    padding: 10px 0;
                 ">
+                    <div style="font-size: 24px; margin-right: 12px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
                     <div>
-                        <div style="font-size: 32px; margin-bottom: 15px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
-                        <div style="font-size: 16px; margin-bottom: 8px; font-weight: 300;">Loading Scottish Munros</div>
-                        <div style="font-size: 12px; opacity: 0.7;">
-                            Initializing module...
+                        <div style="font-size: 18px; margin-bottom: 4px; font-weight: 300;">Scottish Munros</div>
+                        <div style="font-size: 12px; opacity: 0.7; color: #9ca3af;">
+                            Loading...
                         </div>
                     </div>
                 </div>
                 <style>
                     @keyframes mmm-smh-pulse {
                         0%, 100% { opacity: 1; transform: scale(1); }
-                        50% { opacity: 0.6; transform: scale(1.1); }
+                        50% { opacity: 0.6; transform: scale(1.05); }
                     }
                 </style>
             `;
@@ -141,9 +139,9 @@ Module.register("MMM-SMH", {
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
         reactContainer.style.width = "100%";
-        reactContainer.style.height = "100%";
+        reactContainer.style.height = "auto";
         reactContainer.style.position = "relative";
-        reactContainer.style.overflow = "hidden";
+        reactContainer.style.overflow = "visible";
         
         wrapper.appendChild(reactContainer);
         
