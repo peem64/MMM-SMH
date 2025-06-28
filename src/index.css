@@ -2,16 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for the MagicMirror module */
+/* MagicMirror CSS Isolation and Compatibility */
 @layer base {
-  html {
+  /* Only apply base styles within our module container */
+  .mmm-smh-wrapper html,
+  .mmm-smh-wrapper body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: transparent !important;
+    color: inherit;
+    margin: 0;
+    padding: 0;
   }
+}
+
+/* Isolate our module styles to prevent conflicts */
+.mmm-smh-wrapper {
+  /* Reset any inherited styles that might conflict */
+  all: initial;
   
-  body {
-    background: #0f172a;
-    color: #f8fafc;
-  }
+  /* Set our own font stack */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Ensure proper box model */
+  box-sizing: border-box;
+  
+  /* Prevent layout shifts */
+  position: relative;
+  display: block;
+  
+  /* Ensure we don't break out of container */
+  overflow: hidden;
+  
+  /* Prevent text selection issues */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Apply box-sizing to all children */
+.mmm-smh-wrapper *,
+.mmm-smh-wrapper *::before,
+.mmm-smh-wrapper *::after {
+  box-sizing: border-box;
+}
+
+/* Ensure Tailwind styles only apply within our wrapper */
+.mmm-smh-wrapper .min-h-screen {
+  min-height: 100vh;
+}
+
+/* Override min-h-screen for MagicMirror context */
+.mmm-smh-wrapper .mmm-content {
+  min-height: auto !important;
+  height: auto !important;
 }
 
 @layer components {
@@ -36,15 +79,15 @@
   }
 }
 
-/* Smooth transitions for better UX */
-* {
+/* Smooth transitions for better UX - only within our module */
+.mmm-smh-wrapper * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
 
-/* Loading animation */
-@keyframes pulse {
+/* Loading animation - scoped to our module */
+@keyframes mmm-smh-pulse {
   0%, 100% {
     opacity: 1;
   }
@@ -53,6 +96,67 @@
   }
 }
 
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.mmm-smh-wrapper .animate-pulse {
+  animation: mmm-smh-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ensure our module doesn't interfere with MagicMirror's layout */
+.mmm-smh-wrapper {
+  /* Prevent margin collapse */
+  margin: 0;
+  padding: 0;
+  
+  /* Ensure we don't affect other modules */
+  isolation: isolate;
+  
+  /* Contain layout changes */
+  contain: layout style;
+}
+
+/* MagicMirror specific adjustments */
+.module.MMM-SMH {
+  /* Ensure proper positioning */
+  position: relative;
+  
+  /* Prevent overflow issues */
+  overflow: visible;
+  
+  /* Ensure proper z-index */
+  z-index: 1;
+}
+
+/* Responsive adjustments for different MagicMirror positions */
+.region.fullscreen_below .mmm-smh-wrapper,
+.region.fullscreen_above .mmm-smh-wrapper {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.region.middle_center .mmm-smh-wrapper,
+.region.lower_third .mmm-smh-wrapper {
+  max-width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Ensure text is readable in MagicMirror context */
+.mmm-smh-wrapper {
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Prevent any global style leakage */
+.mmm-smh-wrapper img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.mmm-smh-wrapper button,
+.mmm-smh-wrapper input {
+  font-family: inherit;
 }

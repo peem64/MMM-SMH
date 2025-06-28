@@ -89,9 +89,25 @@ Module.register("MMM-SMH", {
     getDom: function() {
         var wrapper = document.createElement("div");
         wrapper.className = "mmm-smh-wrapper";
-        wrapper.style.width = this.config.maxWidth;
-        wrapper.style.height = this.config.maxHeight;
-        wrapper.style.position = "relative";
+        
+        // Set dimensions based on position
+        var position = this.data.position;
+        if (position.includes("fullscreen")) {
+            wrapper.style.width = "100vw";
+            wrapper.style.height = "100vh";
+            wrapper.style.position = "fixed";
+            wrapper.style.top = "0";
+            wrapper.style.left = "0";
+            wrapper.style.zIndex = "0";
+        } else {
+            wrapper.style.width = this.config.maxWidth;
+            wrapper.style.maxHeight = this.config.maxHeight;
+            wrapper.style.position = "relative";
+        }
+        
+        // Ensure proper isolation
+        wrapper.style.isolation = "isolate";
+        wrapper.style.contain = "layout style";
         
         if (this.error) {
             wrapper.innerHTML = `
@@ -99,11 +115,13 @@ Module.register("MMM-SMH", {
                     color: #ff6b6b;
                     text-align: center;
                     padding: 20px;
-                    font-family: 'Roboto', sans-serif;
+                    font-family: 'Inter', 'Roboto', sans-serif;
                     background: rgba(0,0,0,0.8);
                     border-radius: 10px;
                     margin: 20px;
                     border: 2px solid #ff6b6b;
+                    max-width: 500px;
+                    box-sizing: border-box;
                 ">
                     <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
                     <div style="font-size: 16px; margin-bottom: 10px; font-weight: bold;">MMM-SMH Error</div>
@@ -126,31 +144,33 @@ Module.register("MMM-SMH", {
                     justify-content: center;
                     min-height: 300px;
                     color: white;
-                    font-family: 'Roboto', sans-serif;
+                    font-family: 'Inter', 'Roboto', sans-serif;
                     background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(30,58,138,0.8));
                     border-radius: 15px;
                     margin: 20px;
                     border: 1px solid rgba(255,255,255,0.1);
+                    box-sizing: border-box;
+                    max-width: 600px;
                 ">
                     <div style="text-align: center;">
-                        <div style="font-size: 48px; margin-bottom: 20px; animation: pulse 2s infinite;">⛰️</div>
+                        <div style="font-size: 48px; margin-bottom: 20px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
                         <div style="font-size: 18px; margin-bottom: 10px;">Loading Scottish Munros...</div>
                         <div style="font-size: 12px; margin-top: 10px; opacity: 0.7;">
                             Initializing React application...
                         </div>
                         <div style="margin-top: 20px;">
-                            <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden;">
-                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: loading 2s infinite;"></div>
+                            <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; margin: 0 auto;">
+                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: mmm-smh-loading 2s infinite;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <style>
-                    @keyframes pulse {
+                    @keyframes mmm-smh-pulse {
                         0%, 100% { opacity: 1; transform: scale(1); }
                         50% { opacity: 0.7; transform: scale(1.05); }
                     }
-                    @keyframes loading {
+                    @keyframes mmm-smh-loading {
                         0% { transform: translateX(-100%); }
                         100% { transform: translateX(100%); }
                     }
@@ -169,7 +189,7 @@ Module.register("MMM-SMH", {
         }
 
         // React app container
-        wrapper.innerHTML = '<div id="mmm-smh-root" style="width: 100%; height: 100%; min-height: 400px;"></div>';
+        wrapper.innerHTML = '<div id="mmm-smh-root" style="width: 100%; height: 100%; min-height: 400px; box-sizing: border-box;"></div>';
         
         // Initialize React app if not already done
         if (!this.reactAppInitialized) {
