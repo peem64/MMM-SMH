@@ -13,6 +13,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [imageError, setImageError] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string>('');
 
   // Update time every minute
   useEffect(() => {
@@ -26,8 +27,15 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   // Initialize munro count
   useEffect(() => {
     const initializeCount = async () => {
-      const count = await getMunroCount();
-      setMunroCount(count);
+      try {
+        const count = await getMunroCount();
+        console.log('MMM-SMH: Total Munros in database:', count);
+        setMunroCount(count);
+        setDebugInfo(`DB Count: ${count}`);
+      } catch (error) {
+        console.error('MMM-SMH: Error getting munro count:', error);
+        setDebugInfo('Error loading count');
+      }
     };
 
     initializeCount();
@@ -37,32 +45,56 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const loadMunro = async (index: number) => {
     if (munroCount === 0) return;
     
-    setIsTransitioning(true);
-    setImageError(false);
-    const munro = await getMunroByIndex(index);
-    
-    setTimeout(() => {
-      setCurrentMunro(munro);
+    try {
+      console.log(`MMM-SMH: Loading Munro at index ${index} of ${munroCount}`);
+      setIsTransitioning(true);
+      setImageError(false);
+      
+      const munro = await getMunroByIndex(index);
+      
+      if (munro) {
+        console.log(`MMM-SMH: Loaded Munro: ${munro.name} (${index + 1}/${munroCount})`);
+        setTimeout(() => {
+          setCurrentMunro(munro);
+          setIsTransitioning(false);
+        }, 300);
+      } else {
+        console.error(`MMM-SMH: No Munro found at index ${index}`);
+        setDebugInfo(`No Munro at index ${index}`);
+      }
+    } catch (error) {
+      console.error('MMM-SMH: Error loading munro:', error);
+      setDebugInfo(`Error loading index ${index}`);
       setIsTransitioning(false);
-    }, 300);
+    }
   };
 
-  // Initialize with first munro
+  // Initialize with calculated current munro based on time
   useEffect(() => {
     if (munroCount > 0) {
-      loadMunro(0);
+      // Calculate which Munro should be showing right now
+      const hoursSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60));
+      const calculatedIndex = hoursSinceEpoch % munroCount;
+      
+      console.log(`MMM-SMH: Initializing with calculated index ${calculatedIndex} (hours: ${hoursSinceEpoch}, count: ${munroCount})`);
+      setCurrentIndex(calculatedIndex);
+      loadMunro(calculatedIndex);
     }
   }, [munroCount]);
 
-  // Change munro every hour
+  // Change munro every hour - with more robust checking
   useEffect(() => {
     if (munroCount === 0) return;
 
     const updateMunro = () => {
-      const hoursSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60));
+      const now = Date.now();
+      const hoursSinceEpoch = Math.floor(now / (1000 * 60 * 60));
       const newIndex = hoursSinceEpoch % munroCount;
       
+      console.log(`MMM-SMH: Update check - Hours: ${hoursSinceEpoch}, Current Index: ${currentIndex}, New Index: ${newIndex}, Count: ${munroCount}`);
+      
       if (newIndex !== currentIndex) {
+        console.log(`MMM-SMH: Changing from Munro ${currentIndex} to ${newIndex}`);
         setCurrentIndex(newIndex);
         loadMunro(newIndex);
       }
@@ -76,6 +108,26 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
     return () => clearInterval(interval);
   }, [munroCount, currentIndex]);
+
+  // Manual cycling for testing (remove in production)
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight' && munroCount > 0) {
+        const nextIndex = (currentIndex + 1) % munroCount;
+        console.log(`MMM-SMH: Manual advance to index ${nextIndex}`);
+        setCurrentIndex(nextIndex);
+        loadMunro(nextIndex);
+      } else if (event.key === 'ArrowLeft' && munroCount > 0) {
+        const prevIndex = currentIndex === 0 ? munroCount - 1 : currentIndex - 1;
+        console.log(`MMM-SMH: Manual back to index ${prevIndex}`);
+        setCurrentIndex(prevIndex);
+        loadMunro(prevIndex);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [currentIndex, munroCount]);
 
   const getDifficultyColor = (rating: number) => {
     const colors = {
@@ -149,7 +201,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           <Mountain className="w-6 h-6 text-blue-400 animate-pulse" />
           <div>
             <div className="text-lg font-light">Scottish Munros</div>
-            <div className="text-sm text-gray-400">Loading...</div>
+            <div className="text-sm text-gray-400">
+              {munroCount > 0 ? `Loading... (${debugInfo})` : 'Connecting to database...'}
+            </div>
           </div>
         </div>
       </div>
@@ -157,6 +211,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   }
 
   const nextChangeTime = new Date(Math.ceil(Date.now() / (1000 * 60 * 60)) * (1000 * 60 * 60));
+  const hoursUntilNext = Math.ceil((nextChangeTime.getTime() - Date.now()) / (1000 * 60));
 
   return (
     <div className={`text-white ${className}`}>
@@ -168,7 +223,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             <div>
               <div className="text-lg font-light">Scottish Munros</div>
               <div className="text-xs text-gray-400">
-                {currentIndex + 1} of {munroCount} • Next: {nextChangeTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {currentIndex + 1} of {munroCount} • Next in {hoursUntilNext}min
               </div>
             </div>
           </div>
@@ -247,6 +302,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
                   {season}
                 </span>
               ))}
+            </div>
+          )}
+
+          {/* Debug info - remove in production */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="text-xs text-gray-500 mt-2">
+              Debug: Index {currentIndex}, Hours: {Math.floor(Date.now() / (1000 * 60 * 60))}, 
+              Calc: {Math.floor(Date.now() / (1000 * 60 * 60)) % munroCount}
             </div>
           )}
         </div>

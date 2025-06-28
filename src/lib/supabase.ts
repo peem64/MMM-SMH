@@ -97,10 +97,13 @@ export async function getRandomMunro(): Promise<Munro | null> {
 
 export async function getMunroByIndex(index: number): Promise<Munro | null> {
   try {
+    console.log(`Fetching Munro at index ${index}`);
+    
+    // Use consistent ordering to ensure same Munro for same index
     const { data, error } = await supabase
       .from('munros')
       .select('*')
-      .order('name')
+      .order('name', { ascending: true }) // Consistent alphabetical ordering
       .limit(1)
       .range(index, index);
 
@@ -109,7 +112,13 @@ export async function getMunroByIndex(index: number): Promise<Munro | null> {
       return null;
     }
 
-    return data?.[0] || null;
+    if (!data || data.length === 0) {
+      console.error(`No Munro found at index ${index}`);
+      return null;
+    }
+
+    console.log(`Successfully fetched Munro: ${data[0].name} at index ${index}`);
+    return data[0];
   } catch (error) {
     console.error('Network error fetching munro by index:', error);
     return null;
@@ -118,6 +127,8 @@ export async function getMunroByIndex(index: number): Promise<Munro | null> {
 
 export async function getMunroCount(): Promise<number> {
   try {
+    console.log('Fetching total Munro count...');
+    
     const { count, error } = await supabase
       .from('munros')
       .select('*', { count: 'exact', head: true });
@@ -127,9 +138,40 @@ export async function getMunroCount(): Promise<number> {
       return 0;
     }
 
+    console.log(`Total Munros in database: ${count}`);
     return count || 0;
   } catch (error) {
     console.error('Network error getting munro count:', error);
     return 0;
+  }
+}
+
+// Helper function to verify database connectivity and data
+export async function verifyDatabase(): Promise<{ success: boolean; count: number; sampleMunros: string[] }> {
+  try {
+    const count = await getMunroCount();
+    
+    // Get first 5 Munros to verify data
+    const { data, error } = await supabase
+      .from('munros')
+      .select('name')
+      .order('name', { ascending: true })
+      .limit(5);
+
+    if (error) {
+      console.error('Error verifying database:', error);
+      return { success: false, count: 0, sampleMunros: [] };
+    }
+
+    const sampleNames = data?.map(m => m.name) || [];
+    
+    return {
+      success: true,
+      count,
+      sampleMunros: sampleNames
+    };
+  } catch (error) {
+    console.error('Network error verifying database:', error);
+    return { success: false, count: 0, sampleMunros: [] };
   }
 }
