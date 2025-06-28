@@ -174,38 +174,36 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Main content - compact layout */}
+        {/* Main content */}
         <div className="space-y-4">
-          {/* Mountain image - small thumbnail */}
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              {!imageError ? (
-                <img 
-                  src={getImagePath(currentMunro.image_filename)}
-                  alt={currentMunro.name}
-                  className="w-16 h-12 object-cover rounded-lg bg-gray-800"
-                  onError={handleImageError}
-                  style={{ minWidth: '64px', minHeight: '48px' }}
-                />
-              ) : (
-                <div className="w-16 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
-                  <Mountain className="w-6 h-6 text-gray-400" />
-                </div>
-              )}
-            </div>
-            
-            {/* Mountain name and basic info */}
-            <div className="flex-1 min-w-0">
-              <h2 className="text-2xl font-light mb-2 truncate">{currentMunro.name}</h2>
-              <div className="grid grid-cols-1 gap-2 text-sm">
-                <div className="flex items-center space-x-2">
-                  <TrendingUp className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                  <span>{currentMunro.height_m}m ({currentMunro.height_ft}ft)</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
-                  <span className="truncate">{currentMunro.area}, {currentMunro.region}</span>
-                </div>
+          {/* Full-width mountain image */}
+          <div className="w-full">
+            {!imageError ? (
+              <img 
+                src={getImagePath(currentMunro.image_filename)}
+                alt={currentMunro.name}
+                className="w-full h-24 object-cover rounded-lg bg-gray-800"
+                onError={handleImageError}
+                style={{ width: '100%', height: '96px' }}
+              />
+            ) : (
+              <div className="w-full h-24 bg-gray-800 rounded-lg flex items-center justify-center">
+                <Mountain className="w-8 h-8 text-gray-400" />
+              </div>
+            )}
+          </div>
+          
+          {/* Mountain name and basic info */}
+          <div>
+            <h2 className="text-2xl font-light mb-3">{currentMunro.name}</h2>
+            <div className="grid grid-cols-1 gap-2 text-sm mb-4">
+              <div className="flex items-center space-x-2">
+                <TrendingUp className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <span>{currentMunro.height_m}m ({currentMunro.height_ft}ft)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
+                <span>{currentMunro.area}, {currentMunro.region}</span>
               </div>
             </div>
           </div>
