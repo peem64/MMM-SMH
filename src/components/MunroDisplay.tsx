@@ -12,6 +12,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [imageError, setImageError] = useState(false);
 
   // Update time every minute
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     if (munroCount === 0) return;
     
     setIsTransitioning(true);
+    setImageError(false);
     const munro = await getMunroByIndex(index);
     
     setTimeout(() => {
@@ -97,6 +99,49 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     return texts[rating as keyof typeof texts] || 'Unknown';
   };
 
+  // Get the correct image path for MagicMirror
+  const getImagePath = (filename: string) => {
+    // Try multiple possible paths for MagicMirror
+    const basePaths = [
+      'modules/MMM-SMH/dist/images/munros/',
+      'modules/MMM-SMH/public/images/munros/',
+      'modules/MMM-SMH/images/munros/',
+      '/modules/MMM-SMH/dist/images/munros/',
+      '/modules/MMM-SMH/public/images/munros/',
+      '/modules/MMM-SMH/images/munros/'
+    ];
+    
+    // Return the first path (we'll handle fallbacks in onError)
+    return basePaths[0] + filename;
+  };
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.target as HTMLImageElement;
+    const filename = currentMunro?.image_filename;
+    
+    if (!filename) return;
+    
+    // Try alternative paths
+    const altPaths = [
+      'modules/MMM-SMH/public/images/munros/' + filename,
+      'modules/MMM-SMH/images/munros/' + filename,
+      '/modules/MMM-SMH/dist/images/munros/' + filename,
+      '/modules/MMM-SMH/public/images/munros/' + filename,
+      '/modules/MMM-SMH/images/munros/' + filename
+    ];
+    
+    const currentSrc = img.src;
+    const currentPathIndex = altPaths.findIndex(path => currentSrc.includes(path));
+    
+    if (currentPathIndex < altPaths.length - 1) {
+      // Try next path
+      img.src = altPaths[currentPathIndex + 1];
+    } else {
+      // All paths failed, show placeholder
+      setImageError(true);
+    }
+  };
+
   if (!currentMunro) {
     return (
       <div className={`text-white ${className}`}>
@@ -131,17 +176,36 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Main content - compact layout */}
         <div className="space-y-4">
-          {/* Mountain name and basic info */}
-          <div>
-            <h2 className="text-2xl font-light mb-2">{currentMunro.name}</h2>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-blue-400" />
-                <span>{currentMunro.height_m}m ({currentMunro.height_ft}ft)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <MapPin className="w-4 h-4 text-green-400" />
-                <span>{currentMunro.area}</span>
+          {/* Mountain image - small thumbnail */}
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              {!imageError ? (
+                <img 
+                  src={getImagePath(currentMunro.image_filename)}
+                  alt={currentMunro.name}
+                  className="w-16 h-12 object-cover rounded-lg bg-gray-800"
+                  onError={handleImageError}
+                  style={{ minWidth: '64px', minHeight: '48px' }}
+                />
+              ) : (
+                <div className="w-16 h-12 bg-gray-800 rounded-lg flex items-center justify-center">
+                  <Mountain className="w-6 h-6 text-gray-400" />
+                </div>
+              )}
+            </div>
+            
+            {/* Mountain name and basic info */}
+            <div className="flex-1 min-w-0">
+              <h2 className="text-2xl font-light mb-2 truncate">{currentMunro.name}</h2>
+              <div className="grid grid-cols-1 gap-2 text-sm">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                  <span>{currentMunro.height_m}m ({currentMunro.height_ft}ft)</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  <span className="truncate">{currentMunro.area}, {currentMunro.region}</span>
+                </div>
               </div>
             </div>
           </div>
