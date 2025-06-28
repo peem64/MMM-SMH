@@ -49,15 +49,18 @@ npm install
    - Copy and paste the contents of `supabase/migrations/20250628092129_silent_credit.sql`
    - Run the migration to create the munros table and populate it with data
 
-3. **Configure Environment Variables**
-   - Copy `.env.example` to `.env`
-   - Update with your Supabase credentials:
-   ```env
-   VITE_SUPABASE_URL=https://your-project.supabase.co
-   VITE_SUPABASE_ANON_KEY=your-anon-key-here
-   ```
+### Step 3: Build the Module
 
-### Step 3: Image Setup
+**IMPORTANT**: You must build the module before using it in MagicMirror:
+
+```bash
+cd ~/MagicMirror/modules/MMM-SMH
+npm run build
+```
+
+This creates the `dist/` folder with the compiled React application that MagicMirror will load.
+
+### Step 4: Image Setup
 
 1. **Prepare Munro Images**
    - Place all 282 Munro images in `public/images/munros/`
@@ -79,7 +82,7 @@ npm install
    └── ... (all 282 munros)
    ```
 
-### Step 4: MagicMirror Configuration
+### Step 5: MagicMirror Configuration
 
 Add the module to your MagicMirror config file (`~/MagicMirror/config/config.js`):
 
@@ -88,25 +91,29 @@ Add the module to your MagicMirror config file (`~/MagicMirror/config/config.js`
     module: "MMM-SMH",
     position: "fullscreen_below", // or your preferred position
     config: {
-        // Module is self-contained and requires no additional config
-        // All settings are handled via environment variables
+        // REQUIRED: Your Supabase credentials
+        supabaseUrl: "https://your-project.supabase.co",
+        supabaseAnonKey: "your-anon-key-here",
+        
+        // Optional settings
+        updateInterval: 60000,      // Check for updates every minute
+        animationSpeed: 1000,       // Animation speed in ms
+        maxWidth: "100%",           // Maximum width
+        maxHeight: "100%"           // Maximum height
     }
 }
 ```
 
-### Step 5: Build and Start
+**CRITICAL**: You must set your Supabase credentials in the config. Get these from your Supabase project dashboard:
+- **supabaseUrl**: Found in Project Settings > API > Project URL
+- **supabaseAnonKey**: Found in Project Settings > API > Project API keys > anon public
 
-1. **Build the Module**
-   ```bash
-   cd ~/MagicMirror/modules/MMM-SMH
-   npm run build
-   ```
+### Step 6: Start MagicMirror
 
-2. **Restart MagicMirror**
-   ```bash
-   cd ~/MagicMirror
-   npm start
-   ```
+```bash
+cd ~/MagicMirror
+npm start
+```
 
 ## Module Positions
 
@@ -117,60 +124,69 @@ The module works best in these MagicMirror positions:
 
 ## Configuration Options
 
-The module is designed to work out-of-the-box with minimal configuration. All settings are handled through environment variables:
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL | Yes |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous key | Yes |
-
-## Customization
-
-### Styling for MagicMirror
-
-The module uses a dark theme optimized for mirror displays. To customize:
-
-1. **Colors**: Edit `src/index.css` to modify the color scheme
-2. **Layout**: Adjust `src/components/MunroDisplay.tsx` for different layouts
-3. **Timing**: Modify the hourly rotation in the component logic
-
-### Adding Custom Munros
-
-To add additional peaks or modify existing data:
-
-1. Update the database directly through Supabase dashboard
-2. Or modify the migration file and re-run it
-3. Ensure corresponding images are added to the images directory
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `supabaseUrl` | String | **Required** | Your Supabase project URL |
+| `supabaseAnonKey` | String | **Required** | Your Supabase anonymous key |
+| `updateInterval` | Number | 60000 | Update interval in milliseconds |
+| `animationSpeed` | Number | 1000 | Animation speed in milliseconds |
+| `maxWidth` | String | "100%" | Maximum width of the module |
+| `maxHeight` | String | "100%" | Maximum height of the module |
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Module not displaying**
+1. **"Loading Scottish Munros" stuck**
+   - Check that you've set `supabaseUrl` and `supabaseAnonKey` in your config
+   - Verify your Supabase credentials are correct
    - Check MagicMirror logs: `pm2 logs MagicMirror`
-   - Verify environment variables are set correctly
-   - Ensure database migration completed successfully
+   - Ensure you've run `npm run build` in the module directory
 
-2. **Images not loading**
+2. **"no MMM-SMH/MMM-SMH.js found"**
+   - Make sure the module is in `~/MagicMirror/modules/MMM-SMH/`
+   - Verify `MMM-SMH.js` exists in the module root directory
+   - Check file permissions
+
+3. **Module not displaying**
+   - Ensure you've built the module: `npm run build`
+   - Check that `dist/` folder exists with `assets/index.js` and `assets/index.css`
+   - Verify Supabase configuration in MagicMirror config
+   - Check browser console for errors (F12)
+
+4. **Images not loading**
    - Verify image files exist in `public/images/munros/`
    - Check image naming matches database `image_filename` field
    - Ensure proper file permissions
 
-3. **Database connection issues**
+5. **Database connection issues**
    - Verify Supabase URL and key are correct
    - Check Supabase project is active
    - Ensure RLS policies allow public read access
+   - Test connection in Supabase dashboard
 
 ### Development Mode
 
-For development and testing:
+For development and testing outside of MagicMirror:
 
 ```bash
 cd ~/MagicMirror/modules/MMM-SMH
+cp .env.example .env
+# Edit .env with your Supabase credentials
 npm run dev
 ```
 
 This starts a development server at `http://localhost:5173`
+
+### Rebuilding After Changes
+
+If you make changes to the source code:
+
+```bash
+cd ~/MagicMirror/modules/MMM-SMH
+npm run build
+# Restart MagicMirror
+```
 
 ## Technical Details
 
@@ -190,6 +206,7 @@ This starts a development server at `http://localhost:5173`
 ### File Structure
 ```
 MMM-SMH/
+├── MMM-SMH.js                    # MagicMirror module file
 ├── src/
 │   ├── components/
 │   │   └── MunroDisplay.tsx      # Main display component
@@ -199,9 +216,12 @@ MMM-SMH/
 ├── public/
 │   └── images/
 │       └── munros/               # Local Munro images
+├── dist/                         # Built files (after npm run build)
+│   └── assets/
+│       ├── index.js              # Built JavaScript
+│       └── index.css             # Built CSS
 ├── supabase/
 │   └── migrations/               # Database schema
-├── dist/                         # Built files (after npm run build)
 └── package.json
 ```
 
@@ -221,9 +241,10 @@ Private use only - not intended for public distribution.
 This module is designed for personal use. To modify:
 
 1. Fork the repository
-2. Make your changes
-3. Test thoroughly with MagicMirror
-4. Update documentation as needed
+2. Make your changes in the `src/` directory
+3. Run `npm run build` to compile
+4. Test thoroughly with MagicMirror
+5. Update documentation as needed
 
 ## Support
 
@@ -231,6 +252,7 @@ For issues specific to this module:
 1. Check the troubleshooting section above
 2. Verify your MagicMirror installation is working
 3. Test the module in development mode first
+4. Check browser console and MagicMirror logs for errors
 
 ## Version History
 

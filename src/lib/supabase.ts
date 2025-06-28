@@ -1,7 +1,34 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Get environment variables from different sources
+function getEnvVar(name: string): string {
+  // Try Vite environment variables first (for development)
+  if (typeof import.meta !== 'undefined' && import.meta.env) {
+    const viteVar = import.meta.env[name];
+    if (viteVar) return viteVar;
+  }
+  
+  // Try window object (for MagicMirror)
+  if (typeof window !== 'undefined') {
+    const windowVar = (window as any)[name];
+    if (windowVar) return windowVar;
+  }
+  
+  // Try process.env (for Node.js environments)
+  if (typeof process !== 'undefined' && process.env) {
+    const processVar = process.env[name];
+    if (processVar) return processVar;
+  }
+  
+  return '';
+}
+
+const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
+const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase configuration. Please check your environment variables or MagicMirror config.');
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -30,59 +57,79 @@ export interface Munro {
 }
 
 export async function getMunros(): Promise<Munro[]> {
-  const { data, error } = await supabase
-    .from('munros')
-    .select('*')
-    .order('name');
+  try {
+    const { data, error } = await supabase
+      .from('munros')
+      .select('*')
+      .order('name');
 
-  if (error) {
-    console.error('Error fetching munros:', error);
+    if (error) {
+      console.error('Error fetching munros:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Network error fetching munros:', error);
     return [];
   }
-
-  return data || [];
 }
 
 export async function getRandomMunro(): Promise<Munro | null> {
-  const { data, error } = await supabase
-    .from('munros')
-    .select('*')
-    .limit(1)
-    .order('id', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('munros')
+      .select('*')
+      .limit(1)
+      .order('id', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching random munro:', error);
+    if (error) {
+      console.error('Error fetching random munro:', error);
+      return null;
+    }
+
+    return data?.[0] || null;
+  } catch (error) {
+    console.error('Network error fetching random munro:', error);
     return null;
   }
-
-  return data?.[0] || null;
 }
 
 export async function getMunroByIndex(index: number): Promise<Munro | null> {
-  const { data, error } = await supabase
-    .from('munros')
-    .select('*')
-    .order('name')
-    .limit(1)
-    .range(index, index);
+  try {
+    const { data, error } = await supabase
+      .from('munros')
+      .select('*')
+      .order('name')
+      .limit(1)
+      .range(index, index);
 
-  if (error) {
-    console.error('Error fetching munro by index:', error);
+    if (error) {
+      console.error('Error fetching munro by index:', error);
+      return null;
+    }
+
+    return data?.[0] || null;
+  } catch (error) {
+    console.error('Network error fetching munro by index:', error);
     return null;
   }
-
-  return data?.[0] || null;
 }
 
 export async function getMunroCount(): Promise<number> {
-  const { count, error } = await supabase
-    .from('munros')
-    .select('*', { count: 'exact', head: true });
+  try {
+    const { count, error } = await supabase
+      .from('munros')
+      .select('*', { count: 'exact', head: true });
 
-  if (error) {
-    console.error('Error getting munro count:', error);
+    if (error) {
+      console.error('Error getting munro count:', error);
+      return 0;
+    }
+
+    return count || 0;
+  } catch (error) {
+    console.error('Network error getting munro count:', error);
     return 0;
   }
-
-  return count || 0;
 }
