@@ -196,12 +196,12 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
   if (!currentMunro) {
     return (
-      <div className={`text-white ${className}`}>
-        <div className="flex items-center space-x-3 mb-3">
-          <Mountain className="w-6 h-6 text-blue-400 animate-pulse" />
+      <div className={`text-white max-w-xs ${className}`}>
+        <div className="flex items-center space-x-2 mb-2">
+          <Mountain className="w-4 h-4 text-blue-400 animate-pulse" />
           <div>
-            <div className="text-lg font-light">Scottish Munros</div>
-            <div className="text-sm text-gray-400">
+            <div className="text-sm font-light">Scottish Munros</div>
+            <div className="text-xs text-gray-400">
               {munroCount > 0 ? `Loading... (${debugInfo})` : 'Connecting to database...'}
             </div>
           </div>
@@ -214,14 +214,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const hoursUntilNext = Math.ceil((nextChangeTime.getTime() - Date.now()) / (1000 * 60));
 
   return (
-    <div className={`text-white ${className}`}>
+    <div className={`text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <Mountain className="w-6 h-6 text-blue-400" />
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center space-x-2">
+            <Mountain className="w-4 h-4 text-blue-400" />
             <div>
-              <div className="text-lg font-light">Scottish Munros</div>
+              <div className="text-sm font-light">Scottish Munros</div>
               <div className="text-xs text-gray-400">
                 {currentIndex + 1} of {munroCount} • Next in {hoursUntilNext}min
               </div>
@@ -230,19 +230,19 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Main content */}
-        <div className="space-y-4">
-          {/* Full-width mountain image */}
+        <div className="space-y-3">
+          {/* Taller mountain image */}
           <div className="w-full">
             {!imageError ? (
               <img 
                 src={getImagePath(currentMunro.image_filename)}
                 alt={currentMunro.name}
-                className="w-full h-24 object-cover rounded-lg bg-gray-800"
+                className="w-full h-32 object-cover rounded-lg bg-gray-800"
                 onError={handleImageError}
-                style={{ width: '100%', height: '96px' }}
+                style={{ width: '100%', height: '128px' }}
               />
             ) : (
-              <div className="w-full h-24 bg-gray-800 rounded-lg flex items-center justify-center">
+              <div className="w-full h-32 bg-gray-800 rounded-lg flex items-center justify-center">
                 <Mountain className="w-8 h-8 text-gray-400" />
               </div>
             )}
@@ -250,42 +250,42 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           
           {/* Mountain name and basic info */}
           <div>
-            <h2 className="text-2xl font-light mb-3">{currentMunro.name}</h2>
-            <div className="grid grid-cols-1 gap-2 text-sm mb-4">
+            <h2 className="text-lg font-light mb-2">{currentMunro.name}</h2>
+            <div className="grid grid-cols-1 gap-1 text-xs mb-3">
               <div className="flex items-center space-x-2">
-                <TrendingUp className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                <TrendingUp className="w-3 h-3 text-blue-400 flex-shrink-0" />
                 <span>{currentMunro.height_m}m ({currentMunro.height_ft}ft)</span>
               </div>
               <div className="flex items-center space-x-2">
-                <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
+                <MapPin className="w-3 h-3 text-green-400 flex-shrink-0" />
                 <span>{currentMunro.area}, {currentMunro.region}</span>
               </div>
             </div>
           </div>
 
           {/* Key stats in compact format */}
-          <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-3">
-              <div className="text-lg font-light text-blue-400">{currentMunro.prominence_m}m</div>
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-2">
+              <div className="text-sm font-light text-blue-400">{currentMunro.prominence_m}m</div>
               <div className="text-xs text-gray-400">Prominence</div>
             </div>
-            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-3">
-              <div className={`text-lg font-light ${getDifficultyColor(currentMunro.difficulty_rating)}`}>
+            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-2">
+              <div className={`text-sm font-light ${getDifficultyColor(currentMunro.difficulty_rating)}`}>
                 {currentMunro.difficulty_rating}/5
               </div>
               <div className="text-xs text-gray-400">{getDifficultyText(currentMunro.difficulty_rating)}</div>
             </div>
-            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-3">
-              <div className="text-lg font-light text-yellow-400">{currentMunro.estimated_time_hours}h</div>
+            <div className="bg-gray-800 bg-opacity-50 rounded-lg p-2">
+              <div className="text-sm font-light text-yellow-400">{currentMunro.estimated_time_hours}h</div>
               <div className="text-xs text-gray-400">Est. Time</div>
             </div>
           </div>
 
           {/* Description - truncated for space */}
-          <div className="bg-gray-800 bg-opacity-30 rounded-lg p-3">
-            <p className="text-sm text-gray-300 leading-relaxed line-clamp-3">
-              {currentMunro.description.length > 150 
-                ? currentMunro.description.substring(0, 150) + '...'
+          <div className="bg-gray-800 bg-opacity-30 rounded-lg p-2">
+            <p className="text-xs text-gray-300 leading-relaxed line-clamp-3">
+              {currentMunro.description.length > 120 
+                ? currentMunro.description.substring(0, 120) + '...'
                 : currentMunro.description
               }
             </p>
@@ -293,7 +293,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
           {/* Best seasons - compact pills */}
           {currentMunro.best_seasons.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1">
               {currentMunro.best_seasons.slice(0, 3).map((season, index) => (
                 <span 
                   key={index}
