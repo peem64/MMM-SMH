@@ -8,13 +8,25 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
         // Ensure consistent file names for MagicMirror
         entryFileNames: 'assets/index.js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]'
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'assets/index.css';
+          }
+          return 'assets/[name]-[hash].[ext]';
+        }
       }
-    }
-  }
+    },
+    // Ensure the build works in different environments
+    target: 'es2015',
+    minify: 'terser'
+  },
+  // Copy public assets to dist
+  publicDir: 'public'
 });

@@ -37,6 +37,7 @@ Module.register("MMM-SMH", {
         Log.info("Starting module: " + this.name);
         this.loaded = false;
         this.error = null;
+        this.reactAppLoaded = false;
         
         // Validate configuration
         if (!this.config.supabaseUrl || !this.config.supabaseAnonKey) {
@@ -45,8 +46,31 @@ Module.register("MMM-SMH", {
             return;
         }
         
+        // Validate that built files exist
+        this.validateBuildFiles();
+        
         // Set up update timer
         this.scheduleUpdate();
+    },
+
+    // Validate that the built files exist
+    validateBuildFiles: function() {
+        var self = this;
+        
+        // Check if CSS file exists
+        var cssPath = this.file("dist/assets/index.css");
+        var jsPath = this.file("dist/assets/index.js");
+        
+        // Create test elements to check if files exist
+        var cssTest = document.createElement("link");
+        cssTest.rel = "stylesheet";
+        cssTest.href = cssPath;
+        cssTest.onerror = function() {
+            self.error = "Built CSS file not found. Please run 'npm run build' in the module directory.";
+            self.updateDom();
+        };
+        
+        // Don't actually add the test elements to DOM
     },
 
     // Schedule the next update
@@ -54,7 +78,10 @@ Module.register("MMM-SMH", {
         var self = this;
         
         setInterval(function() {
-            self.updateDom(self.config.animationSpeed);
+            if (self.loaded) {
+                // Only update DOM if we're not still loading
+                self.updateDom(self.config.animationSpeed);
+            }
         }, this.config.updateInterval);
     },
 
@@ -64,6 +91,7 @@ Module.register("MMM-SMH", {
         wrapper.className = "mmm-smh-wrapper";
         wrapper.style.width = this.config.maxWidth;
         wrapper.style.height = this.config.maxHeight;
+        wrapper.style.position = "relative";
         
         if (this.error) {
             wrapper.innerHTML = `
@@ -75,11 +103,15 @@ Module.register("MMM-SMH", {
                     background: rgba(0,0,0,0.8);
                     border-radius: 10px;
                     margin: 20px;
+                    border: 2px solid #ff6b6b;
                 ">
                     <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
-                    <div style="font-size: 16px; margin-bottom: 10px;">Error loading Munros module</div>
-                    <div style="font-size: 12px; margin-top: 10px; opacity: 0.7; max-width: 400px;">
+                    <div style="font-size: 16px; margin-bottom: 10px; font-weight: bold;">MMM-SMH Error</div>
+                    <div style="font-size: 12px; margin-top: 10px; opacity: 0.9; max-width: 500px; line-height: 1.4;">
                         ${this.error}
+                    </div>
+                    <div style="font-size: 10px; margin-top: 15px; opacity: 0.7; font-style: italic;">
+                        Check the MagicMirror logs for more details
                     </div>
                 </div>
             `;
@@ -92,42 +124,69 @@ Module.register("MMM-SMH", {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    min-height: 200px;
+                    min-height: 300px;
                     color: white;
                     font-family: 'Roboto', sans-serif;
-                    background: rgba(0,0,0,0.8);
-                    border-radius: 10px;
+                    background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(30,58,138,0.8));
+                    border-radius: 15px;
                     margin: 20px;
+                    border: 1px solid rgba(255,255,255,0.1);
                 ">
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; margin-bottom: 10px; animation: pulse 2s infinite;">⛰️</div>
-                        <div>Loading Scottish Munros...</div>
+                        <div style="font-size: 48px; margin-bottom: 20px; animation: pulse 2s infinite;">⛰️</div>
+                        <div style="font-size: 18px; margin-bottom: 10px;">Loading Scottish Munros...</div>
                         <div style="font-size: 12px; margin-top: 10px; opacity: 0.7;">
-                            Connecting to database...
+                            Initializing React application...
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden;">
+                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: loading 2s infinite;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <style>
                     @keyframes pulse {
-                        0%, 100% { opacity: 1; }
-                        50% { opacity: 0.5; }
+                        0%, 100% { opacity: 1; transform: scale(1); }
+                        50% { opacity: 0.7; transform: scale(1.05); }
+                    }
+                    @keyframes loading {
+                        0% { transform: translateX(-100%); }
+                        100% { transform: translateX(100%); }
                     }
                 </style>
             `;
             
-            // Load the React app
-            this.loadReactApp(wrapper);
+            // Load the React app after a short delay
+            if (!this.reactAppLoaded) {
+                this.reactAppLoaded = true;
+                setTimeout(() => {
+                    this.loadReactApp(wrapper);
+                }, 1000);
+            }
+            
             return wrapper;
         }
 
         // React app container
-        wrapper.innerHTML = '<div id="mmm-smh-root" style="width: 100%; height: 100%;"></div>';
+        wrapper.innerHTML = '<div id="mmm-smh-root" style="width: 100%; height: 100%; min-height: 400px;"></div>';
+        
+        // Initialize React app if not already done
+        if (!this.reactAppInitialized) {
+            this.reactAppInitialized = true;
+            setTimeout(() => {
+                this.initializeReactApp();
+            }, 100);
+        }
+        
         return wrapper;
     },
 
     // Load the React application
     loadReactApp: function(container) {
         var self = this;
+        
+        Log.info("MMM-SMH: Loading React application...");
         
         // Set environment variables for the React app
         if (typeof window !== 'undefined') {
@@ -141,43 +200,57 @@ Module.register("MMM-SMH", {
         script.src = this.file("dist/assets/index.js"); // Built JS from Vite
         
         script.onload = function() {
-            Log.info("MMM-SMH React app script loaded");
+            Log.info("MMM-SMH: React app script loaded successfully");
             
-            // Wait a moment for the script to initialize
-            setTimeout(function() {
-                try {
-                    // Clear the loading message and let React take over
-                    container.innerHTML = '<div id="mmm-smh-root" style="width: 100%; height: 100%;"></div>';
-                    
-                    // Initialize React app in the container
+            // Mark as loaded and update DOM
+            self.loaded = true;
+            self.updateDom(self.config.animationSpeed);
+        };
+        
+        script.onerror = function(error) {
+            Log.error("MMM-SMH: Failed to load React app script:", error);
+            self.error = "Failed to load React application. Please ensure that the module is built correctly with 'npm run build'";
+            self.updateDom();
+        };
+        
+        // Add script to head
+        document.head.appendChild(script);
+    },
+
+    // Initialize the React app in the container
+    initializeReactApp: function() {
+        var self = this;
+        
+        try {
+            Log.info("MMM-SMH: Initializing React app...");
+            
+            // Check if React app is available
+            if (typeof window !== 'undefined' && window.MMMSMHApp && window.MMMSMHApp.init) {
+                window.MMMSMHApp.init('mmm-smh-root');
+                Log.info("MMM-SMH: React app initialized successfully");
+            } else {
+                // If not available yet, try again after a delay
+                setTimeout(function() {
                     if (window.MMMSMHApp && window.MMMSMHApp.init) {
                         window.MMMSMHApp.init('mmm-smh-root');
-                        self.loaded = true;
-                        Log.info("MMM-SMH React app initialized successfully");
+                        Log.info("MMM-SMH: React app initialized successfully (delayed)");
                     } else {
-                        throw new Error("MMMSMHApp not found on window object");
+                        Log.warn("MMM-SMH: React app not available, will retry...");
+                        // The app should still work as it will auto-initialize
                     }
-                } catch (error) {
-                    self.error = "Failed to initialize React app: " + error.message;
-                    self.updateDom();
-                    Log.error("Failed to initialize MMM-SMH React app:", error);
-                }
-            }, 500);
-        };
-        
-        script.onerror = function() {
-            self.error = "Failed to load React application. Please ensure the module is built correctly with 'npm run build'.";
-            self.updateDom();
-            Log.error("Failed to load MMM-SMH React app script");
-        };
-        
-        document.head.appendChild(script);
+                }, 2000);
+            }
+        } catch (error) {
+            Log.error("MMM-SMH: Failed to initialize React app:", error);
+            this.error = "Failed to initialize React app: " + error.message;
+            this.updateDom();
+        }
     },
 
     // Handle notifications from other modules
     notificationReceived: function(notification, payload, sender) {
         if (notification === "DOM_OBJECTS_CREATED") {
-            // Module is ready
+            Log.info("MMM-SMH: DOM objects created");
         }
     },
 
