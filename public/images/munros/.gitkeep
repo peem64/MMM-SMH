@@ -1,0 +1,32 @@
+# Munro Images Directory
+
+This directory should contain all 282 Scottish Munro images.
+
+Expected naming convention:
+- ben_nevis.jpg
+- cairn_gorm.jpg
+- aonach_beag.jpg
+- braeriach.jpg
+- schiehallion.jpg
+- etc.
+
+Images should be:
+- High quality (minimum 800x600 pixels)
+- Landscape orientation preferred
+- JPEG format for optimal file size
+- Named using lowercase with underscores replacing spaces
+
+Example structure:
+```
+public/images/munros/
+├── ben_nevis.jpg
+├── cairn_gorm.jpg
+├── aonach_beag.jpg
+├── braeriach.jpg
+├── schiehallion.jpg
+├── ben_macdui.jpg
+├── ...
+└── all_282_munros.jpg
+```
+
+Note: Images are loaded locally from this directory and will fallback to a placeholder mountain silhouette if the specific image is not found.
