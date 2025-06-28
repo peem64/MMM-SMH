@@ -14,6 +14,7 @@ declare global {
 
 // Keep track of initialized containers to prevent double mounting
 const initializedContainers = new Set<string>();
+const rootInstances = new Map<string, any>();
 
 // Standard React app initialization
 function initStandardApp() {
@@ -21,7 +22,9 @@ function initStandardApp() {
   if (rootElement && !initializedContainers.has('root')) {
     console.log('MMM-SMH: Initializing standalone React app');
     initializedContainers.add('root');
-    createRoot(rootElement).render(
+    const root = createRoot(rootElement);
+    rootInstances.set('root', root);
+    root.render(
       <StrictMode>
         <App />
       </StrictMode>
@@ -31,7 +34,7 @@ function initStandardApp() {
 
 // MagicMirror module initialization
 function initMagicMirrorApp(containerId: string) {
-  console.log('MMM-SMH: Initializing MagicMirror React app in container:', containerId);
+  console.log('MMM-SMH: Attempting to initialize React app in container:', containerId);
   
   // Prevent double initialization
   if (initializedContainers.has(containerId)) {
@@ -39,30 +42,46 @@ function initMagicMirrorApp(containerId: string) {
     return;
   }
   
-  const container = document.getElementById(containerId);
-  if (container) {
-    try {
-      initializedContainers.add(containerId);
-      
-      // Clear any existing content
-      container.innerHTML = '';
-      
-      // Create root and render
-      const root = createRoot(container);
-      root.render(
-        <StrictMode>
-          <App />
-        </StrictMode>
-      );
-      
-      console.log('MMM-SMH: React app mounted successfully in container:', containerId);
-    } catch (error) {
-      console.error('MMM-SMH: Error mounting React app:', error);
-      initializedContainers.delete(containerId);
+  // Wait for container to be available
+  let attempts = 0;
+  const maxAttempts = 50;
+  
+  const tryInit = () => {
+    attempts++;
+    const container = document.getElementById(containerId);
+    
+    if (container) {
+      try {
+        console.log('MMM-SMH: Found container, initializing React app:', containerId);
+        initializedContainers.add(containerId);
+        
+        // Clear any existing content
+        container.innerHTML = '';
+        
+        // Create root and render
+        const root = createRoot(container);
+        rootInstances.set(containerId, root);
+        
+        root.render(
+          <StrictMode>
+            <App />
+          </StrictMode>
+        );
+        
+        console.log('MMM-SMH: React app mounted successfully in container:', containerId);
+      } catch (error) {
+        console.error('MMM-SMH: Error mounting React app:', error);
+        initializedContainers.delete(containerId);
+      }
+    } else if (attempts < maxAttempts) {
+      console.log(`MMM-SMH: Container not found, retrying... (${attempts}/${maxAttempts})`);
+      setTimeout(tryInit, 200);
+    } else {
+      console.error('MMM-SMH: Container not found after maximum attempts:', containerId);
     }
-  } else {
-    console.error('MMM-SMH: Container not found:', containerId);
-  }
+  };
+  
+  tryInit();
 }
 
 // Auto-initialize for standalone mode
@@ -73,11 +92,11 @@ function autoInitialize() {
   }
   
   // If there's already a MagicMirror container, initialize it
-  const mmContainers = document.querySelectorAll('[id^="mmm-smh-root-"]');
+  const mmContainers = document.querySelectorAll('[id^="mmm-smh-react-"]');
   mmContainers.forEach((container) => {
     if (container.id && !initializedContainers.has(container.id)) {
       console.log('MMM-SMH: Auto-initializing MagicMirror app for:', container.id);
-      initMagicMirrorApp(container.id);
+      setTimeout(() => initMagicMirrorApp(container.id), 100);
     }
   });
 }
@@ -96,31 +115,6 @@ if (typeof window !== 'undefined') {
     // DOM is already ready, initialize immediately
     setTimeout(autoInitialize, 100);
   }
-  
-  // Also listen for dynamic content changes (useful for MagicMirror)
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as Element;
-          // Check if new MMM-SMH containers were added
-          const newContainers = element.querySelectorAll('[id^="mmm-smh-root-"]');
-          newContainers.forEach((container) => {
-            if (container.id && !initializedContainers.has(container.id)) {
-              console.log('MMM-SMH: New container detected:', container.id);
-              setTimeout(() => initMagicMirrorApp(container.id), 100);
-            }
-          });
-        }
-      });
-    });
-  });
-  
-  // Start observing
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
   
   console.log('MMM-SMH: Module loaded and ready');
 }

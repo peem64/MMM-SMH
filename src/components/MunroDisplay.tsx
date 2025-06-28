@@ -99,7 +99,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
   if (!currentMunro) {
     return (
-      <div className={`mmm-content flex items-center justify-center bg-gray-900 text-white p-8 ${className}`}>
+      <div className={`flex items-center justify-center bg-gray-900 text-white p-8 ${className}`} style={{ minHeight: '300px' }}>
         <div className="text-center">
           <Mountain className="w-16 h-16 mx-auto mb-4 text-blue-400 animate-pulse" />
           <p className="text-xl">Loading Scottish Munros...</p>
@@ -109,7 +109,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   }
 
   return (
-    <div className={`mmm-content bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 text-white p-6 ${className}`}>
+    <div className={`bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 text-white p-6 ${className}`} style={{ minHeight: '400px' }}>
       {/* Header with time */}
       <div className="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
         <div className="flex items-center space-x-3">

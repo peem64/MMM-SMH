@@ -14,7 +14,7 @@ Module.register("MMM-SMH", {
         initialLoadDelay: 0,
         retryDelay: 2500,
         maxWidth: "100%",
-        maxHeight: "100%",
+        maxHeight: "400px",
         // Supabase configuration - users need to set these
         supabaseUrl: "",
         supabaseAnonKey: ""
@@ -39,7 +39,7 @@ Module.register("MMM-SMH", {
         this.error = null;
         this.reactAppLoaded = false;
         this.reactAppInitialized = false;
-        this.domCreated = false;
+        this.moduleContainer = null;
         
         // Validate configuration
         if (!this.config.supabaseUrl || !this.config.supabaseAnonKey) {
@@ -47,6 +47,9 @@ Module.register("MMM-SMH", {
             this.updateDom();
             return;
         }
+        
+        // Load React app immediately
+        this.loadReactApp();
         
         // Set up update timer
         this.scheduleUpdate();
@@ -57,9 +60,9 @@ Module.register("MMM-SMH", {
         var self = this;
         
         setInterval(function() {
-            if (self.loaded && self.domCreated) {
-                // Only update DOM if we're not still loading
-                self.updateDom(self.config.animationSpeed);
+            // Don't update DOM unnecessarily once loaded
+            if (!self.loaded) {
+                self.updateDom(0); // No animation during loading
             }
         }, this.config.updateInterval);
     },
@@ -67,51 +70,37 @@ Module.register("MMM-SMH", {
     // Override dom creation
     getDom: function() {
         var self = this;
+        
+        // Create main wrapper with proper MagicMirror styling
         var wrapper = document.createElement("div");
-        wrapper.className = "mmm-smh-wrapper";
-        wrapper.id = "mmm-smh-module-" + this.identifier;
-        
-        // Set dimensions based on position
-        var position = this.data.position;
-        if (position.includes("fullscreen")) {
-            wrapper.style.width = "100vw";
-            wrapper.style.height = "100vh";
-            wrapper.style.position = "fixed";
-            wrapper.style.top = "0";
-            wrapper.style.left = "0";
-            wrapper.style.zIndex = "0";
-        } else {
-            wrapper.style.width = this.config.maxWidth;
-            wrapper.style.maxHeight = this.config.maxHeight;
-            wrapper.style.position = "relative";
-        }
-        
-        // Ensure proper isolation and prevent conflicts
-        wrapper.style.isolation = "isolate";
-        wrapper.style.contain = "layout style";
+        wrapper.className = "mmm-smh-module";
+        wrapper.style.width = this.config.maxWidth;
+        wrapper.style.maxHeight = this.config.maxHeight;
+        wrapper.style.position = "relative";
+        wrapper.style.overflow = "hidden";
         wrapper.style.boxSizing = "border-box";
+        
+        // Store reference to container
+        this.moduleContainer = wrapper;
         
         if (this.error) {
             wrapper.innerHTML = `
-                <div class="error-container" style="
+                <div style="
                     color: #ff6b6b;
                     text-align: center;
                     padding: 20px;
-                    font-family: 'Inter', 'Roboto', sans-serif;
-                    background: rgba(0,0,0,0.8);
+                    font-family: 'Roboto Condensed', sans-serif;
+                    background: rgba(0,0,0,0.3);
                     border-radius: 10px;
-                    margin: 20px;
-                    border: 2px solid #ff6b6b;
-                    max-width: 500px;
-                    box-sizing: border-box;
+                    border: 1px solid #ff6b6b;
+                    max-width: 400px;
+                    font-size: 14px;
+                    line-height: 1.4;
                 ">
-                    <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
-                    <div style="font-size: 16px; margin-bottom: 10px; font-weight: bold;">MMM-SMH Error</div>
-                    <div style="font-size: 12px; margin-top: 10px; opacity: 0.9; max-width: 500px; line-height: 1.4;">
+                    <div style="font-size: 20px; margin-bottom: 8px;">⚠️</div>
+                    <div style="font-weight: bold; margin-bottom: 8px;">MMM-SMH Error</div>
+                    <div style="font-size: 12px; opacity: 0.9;">
                         ${this.error}
-                    </div>
-                    <div style="font-size: 10px; margin-top: 15px; opacity: 0.7; font-style: italic;">
-                        Check the MagicMirror logs for more details
                     </div>
                 </div>
             `;
@@ -120,77 +109,49 @@ Module.register("MMM-SMH", {
         
         if (!this.loaded) {
             wrapper.innerHTML = `
-                <div class="loading-container" style="
+                <div style="
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    min-height: 300px;
-                    color: white;
-                    font-family: 'Inter', 'Roboto', sans-serif;
-                    background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(30,58,138,0.8));
-                    border-radius: 15px;
-                    margin: 20px;
-                    border: 1px solid rgba(255,255,255,0.1);
-                    box-sizing: border-box;
-                    max-width: 600px;
+                    min-height: 200px;
+                    color: #ffffff;
+                    font-family: 'Roboto Condensed', sans-serif;
+                    text-align: center;
+                    padding: 20px;
                 ">
-                    <div style="text-align: center;">
-                        <div style="font-size: 48px; margin-bottom: 20px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
-                        <div style="font-size: 18px; margin-bottom: 10px;">Loading Scottish Munros...</div>
-                        <div style="font-size: 12px; margin-top: 10px; opacity: 0.7;">
-                            Initializing React application...
-                        </div>
-                        <div style="margin-top: 20px;">
-                            <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; margin: 0 auto;">
-                                <div style="width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent); animation: mmm-smh-loading 2s infinite;"></div>
-                            </div>
+                    <div>
+                        <div style="font-size: 32px; margin-bottom: 15px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
+                        <div style="font-size: 16px; margin-bottom: 8px; font-weight: 300;">Loading Scottish Munros</div>
+                        <div style="font-size: 12px; opacity: 0.7;">
+                            Initializing module...
                         </div>
                     </div>
                 </div>
                 <style>
                     @keyframes mmm-smh-pulse {
                         0%, 100% { opacity: 1; transform: scale(1); }
-                        50% { opacity: 0.7; transform: scale(1.05); }
-                    }
-                    @keyframes mmm-smh-loading {
-                        0% { transform: translateX(-100%); }
-                        100% { transform: translateX(100%); }
+                        50% { opacity: 0.6; transform: scale(1.1); }
                     }
                 </style>
             `;
-            
-            // Load the React app after a short delay
-            if (!this.reactAppLoaded) {
-                this.reactAppLoaded = true;
-                setTimeout(() => {
-                    this.loadReactApp();
-                }, 1000);
-            }
-            
-            this.domCreated = true;
             return wrapper;
         }
 
-        // React app container - create persistent container
+        // Create React container
         var reactContainer = document.createElement("div");
-        reactContainer.id = "mmm-smh-root-" + this.identifier;
+        reactContainer.id = "mmm-smh-react-" + this.identifier;
         reactContainer.style.width = "100%";
         reactContainer.style.height = "100%";
-        reactContainer.style.minHeight = "400px";
-        reactContainer.style.boxSizing = "border-box";
         reactContainer.style.position = "relative";
+        reactContainer.style.overflow = "hidden";
         
         wrapper.appendChild(reactContainer);
         
-        // Initialize React app if not already done
-        if (!this.reactAppInitialized) {
-            this.reactAppInitialized = true;
-            setTimeout(() => {
-                this.initializeReactApp();
-            }, 100);
-        }
+        // Initialize React app
+        setTimeout(function() {
+            self.initializeReactApp(reactContainer.id);
+        }, 100);
         
-        this.domCreated = true;
         return wrapper;
     },
 
@@ -207,31 +168,29 @@ Module.register("MMM-SMH", {
         }
         
         // Check if script is already loaded
-        var existingScript = document.querySelector('script[src*="mmm-smh"]');
+        var existingScript = document.querySelector('script[data-mmm-smh="true"]');
         if (existingScript) {
-            Log.info("MMM-SMH: React script already loaded, initializing...");
-            self.loaded = true;
-            self.updateDom(self.config.animationSpeed);
+            Log.info("MMM-SMH: React script already loaded");
+            this.loaded = true;
+            this.updateDom(this.config.animationSpeed);
             return;
         }
         
         // Create a script element to load the built React app
         var script = document.createElement("script");
         script.type = "module";
-        script.src = this.file("dist/assets/index.js"); // Built JS from Vite
-        script.setAttribute("data-module", "mmm-smh");
+        script.src = this.file("dist/assets/index.js");
+        script.setAttribute("data-mmm-smh", "true");
         
         script.onload = function() {
             Log.info("MMM-SMH: React app script loaded successfully");
-            
-            // Mark as loaded and update DOM
             self.loaded = true;
             self.updateDom(self.config.animationSpeed);
         };
         
         script.onerror = function(error) {
             Log.error("MMM-SMH: Failed to load React app script:", error);
-            self.error = "Failed to load React application. Please ensure that the module is built correctly with 'npm run build'";
+            self.error = "Failed to load React application. Run 'npm run build' in module directory.";
             self.updateDom();
         };
         
@@ -240,42 +199,42 @@ Module.register("MMM-SMH", {
     },
 
     // Initialize the React app in the container
-    initializeReactApp: function() {
+    initializeReactApp: function(containerId) {
         var self = this;
-        var containerId = "mmm-smh-root-" + this.identifier;
         
         try {
-            Log.info("MMM-SMH: Initializing React app in container:", containerId);
+            Log.info("MMM-SMH: Initializing React app in:", containerId);
             
-            // Check if React app is available
-            if (typeof window !== 'undefined' && window.MMMSMHApp && window.MMMSMHApp.init) {
-                window.MMMSMHApp.init(containerId);
-                Log.info("MMM-SMH: React app initialized successfully");
-            } else {
-                // If not available yet, try again after a delay
-                var retryCount = 0;
-                var maxRetries = 10;
+            var initAttempts = 0;
+            var maxAttempts = 20;
+            
+            var tryInit = function() {
+                initAttempts++;
                 
-                var retryInit = function() {
-                    retryCount++;
-                    if (window.MMMSMHApp && window.MMMSMHApp.init) {
+                if (typeof window !== 'undefined' && window.MMMSMHApp && window.MMMSMHApp.init) {
+                    try {
                         window.MMMSMHApp.init(containerId);
-                        Log.info("MMM-SMH: React app initialized successfully (retry " + retryCount + ")");
-                    } else if (retryCount < maxRetries) {
-                        Log.warn("MMM-SMH: React app not available, retrying... (" + retryCount + "/" + maxRetries + ")");
-                        setTimeout(retryInit, 1000);
-                    } else {
-                        Log.error("MMM-SMH: Failed to initialize React app after " + maxRetries + " retries");
-                        self.error = "Failed to initialize React app after multiple attempts";
-                        self.updateDom();
+                        Log.info("MMM-SMH: React app initialized successfully");
+                        return;
+                    } catch (error) {
+                        Log.error("MMM-SMH: Error initializing React app:", error);
                     }
-                };
+                }
                 
-                setTimeout(retryInit, 1000);
-            }
+                if (initAttempts < maxAttempts) {
+                    setTimeout(tryInit, 500);
+                } else {
+                    Log.error("MMM-SMH: Failed to initialize React app after " + maxAttempts + " attempts");
+                    self.error = "React app initialization failed";
+                    self.updateDom();
+                }
+            };
+            
+            tryInit();
+            
         } catch (error) {
-            Log.error("MMM-SMH: Failed to initialize React app:", error);
-            this.error = "Failed to initialize React app: " + error.message;
+            Log.error("MMM-SMH: Exception in initializeReactApp:", error);
+            this.error = "React app initialization error: " + error.message;
             this.updateDom();
         }
     },
@@ -287,20 +246,13 @@ Module.register("MMM-SMH", {
         }
     },
 
-    // Handle socket notifications
-    socketNotificationReceived: function(notification, payload) {
-        // Handle any socket notifications if needed
-    },
-
-    // Clean up when module is hidden or removed
+    // Clean up when module is suspended
     suspend: function() {
         Log.info("MMM-SMH: Module suspended");
     },
 
+    // Resume when module is shown again
     resume: function() {
         Log.info("MMM-SMH: Module resumed");
-        if (this.loaded && this.domCreated) {
-            this.updateDom(this.config.animationSpeed);
-        }
     }
 });
