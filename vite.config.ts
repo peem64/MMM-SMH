@@ -10,6 +10,8 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    // Clean the output directory before building
+    emptyOutDir: true,
     rollupOptions: {
       output: {
         // Ensure consistent file names for MagicMirror
