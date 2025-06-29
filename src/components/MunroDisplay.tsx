@@ -151,16 +151,24 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     return texts[rating as keyof typeof texts] || 'Unknown';
   };
 
-  // Get the correct image path for MagicMirror
+  // Get the correct image path for MagicMirror and development
   const getImagePath = (filename: string) => {
-    // Try multiple possible paths for MagicMirror
+    // For development mode, use the public folder directly
+    if (import.meta.env.DEV) {
+      return `/images/munros/${filename}`;
+    }
+    
+    // For production/MagicMirror, try multiple possible paths
     const basePaths = [
       'modules/MMM-SMH/dist/images/munros/',
       'modules/MMM-SMH/public/images/munros/',
       'modules/MMM-SMH/images/munros/',
       '/modules/MMM-SMH/dist/images/munros/',
       '/modules/MMM-SMH/public/images/munros/',
-      '/modules/MMM-SMH/images/munros/'
+      '/modules/MMM-SMH/images/munros/',
+      // Also try relative paths from dist
+      'images/munros/',
+      './images/munros/'
     ];
     
     // Return the first path (we'll handle fallbacks in onError)
@@ -179,17 +187,24 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
       'modules/MMM-SMH/images/munros/' + filename,
       '/modules/MMM-SMH/dist/images/munros/' + filename,
       '/modules/MMM-SMH/public/images/munros/' + filename,
-      '/modules/MMM-SMH/images/munros/' + filename
+      '/modules/MMM-SMH/images/munros/' + filename,
+      'images/munros/' + filename,
+      './images/munros/' + filename,
+      // Fallback to development path
+      '/images/munros/' + filename
     ];
     
     const currentSrc = img.src;
-    const currentPathIndex = altPaths.findIndex(path => currentSrc.includes(path));
+    const currentPathIndex = altPaths.findIndex(path => currentSrc.includes(path.split('/').pop() || ''));
     
     if (currentPathIndex < altPaths.length - 1) {
       // Try next path
-      img.src = altPaths[currentPathIndex + 1];
+      const nextPath = altPaths[currentPathIndex + 1];
+      console.log(`MMM-SMH: Image failed, trying: ${nextPath}`);
+      img.src = nextPath;
     } else {
       // All paths failed, show placeholder
+      console.log(`MMM-SMH: All image paths failed for: ${filename}`);
       setImageError(true);
     }
   };
@@ -310,6 +325,8 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             <div className="text-xs text-gray-500 mt-2">
               Debug: Index {currentIndex}, Hours: {Math.floor(Date.now() / (1000 * 60 * 60))}, 
               Calc: {Math.floor(Date.now() / (1000 * 60 * 60)) % munroCount}
+              <br />
+              Image: {getImagePath(currentMunro.image_filename)}
             </div>
           )}
         </div>
