@@ -69,48 +69,54 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     }
   };
 
+  // Calculate current Munro index based on UTC hour
+  const getCurrentMunroIndex = () => {
+    if (munroCount === 0) return 0;
+    
+    const now = new Date();
+    const hoursSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 60));
+    const calculatedIndex = hoursSinceEpoch % munroCount;
+    
+    console.log(`MMM-SMH: Time calculation - UTC: ${now.toISOString()}, Hours since epoch: ${hoursSinceEpoch}, Index: ${calculatedIndex}`);
+    
+    return calculatedIndex;
+  };
+
   // Initialize with calculated current munro based on time
   useEffect(() => {
     if (munroCount > 0) {
-      // Calculate which Munro should be showing right now
-      const hoursSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60));
-      const calculatedIndex = hoursSinceEpoch % munroCount;
-      
-      console.log(`MMM-SMH: Initializing with calculated index ${calculatedIndex} (hours: ${hoursSinceEpoch}, count: ${munroCount})`);
+      const calculatedIndex = getCurrentMunroIndex();
+      console.log(`MMM-SMH: Initializing with calculated index ${calculatedIndex}`);
       setCurrentIndex(calculatedIndex);
       loadMunro(calculatedIndex);
     }
   }, [munroCount]);
 
-  // Change munro every hour - with more robust checking
+  // Check for hour changes and update munro accordingly
   useEffect(() => {
     if (munroCount === 0) return;
 
-    const updateMunro = () => {
-      const now = Date.now();
-      const hoursSinceEpoch = Math.floor(now / (1000 * 60 * 60));
-      const newIndex = hoursSinceEpoch % munroCount;
-      
-      console.log(`MMM-SMH: Update check - Hours: ${hoursSinceEpoch}, Current Index: ${currentIndex}, New Index: ${newIndex}, Count: ${munroCount}`);
+    const checkForHourChange = () => {
+      const newIndex = getCurrentMunroIndex();
       
       if (newIndex !== currentIndex) {
-        console.log(`MMM-SMH: Changing from Munro ${currentIndex} to ${newIndex}`);
+        console.log(`MMM-SMH: Hour changed! Switching from Munro ${currentIndex} to ${newIndex}`);
         setCurrentIndex(newIndex);
         loadMunro(newIndex);
       }
     };
 
-    // Check immediately
-    updateMunro();
-
-    // Check every minute (to catch hour changes)
-    const interval = setInterval(updateMunro, 60000);
+    // Check every minute for hour changes
+    const interval = setInterval(checkForHourChange, 60000);
 
     return () => clearInterval(interval);
   }, [munroCount, currentIndex]);
 
-  // Manual cycling for testing (remove in production)
+  // REMOVE IN PRODUCTION: Manual cycling for testing
   useEffect(() => {
+    // Only enable manual controls in development mode
+    if (process.env.NODE_ENV !== 'development') return;
+
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'ArrowRight' && munroCount > 0) {
         const nextIndex = (currentIndex + 1) % munroCount;
@@ -209,6 +215,15 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     }
   };
 
+  // Calculate time until next Munro change
+  const getTimeUntilNextChange = () => {
+    const now = new Date();
+    const nextHour = new Date(now);
+    nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+    const minutesUntilNext = Math.ceil((nextHour.getTime() - now.getTime()) / (1000 * 60));
+    return minutesUntilNext;
+  };
+
   if (!currentMunro) {
     return (
       <div className={`text-white max-w-md ${className}`}>
@@ -225,8 +240,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     );
   }
 
-  const nextChangeTime = new Date(Math.ceil(Date.now() / (1000 * 60 * 60)) * (1000 * 60 * 60));
-  const hoursUntilNext = Math.ceil((nextChangeTime.getTime() - Date.now()) / (1000 * 60));
+  const minutesUntilNext = getTimeUntilNextChange();
 
   return (
     <div className={`text-white max-w-md ${className}`}>
@@ -238,9 +252,16 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             <div>
               <div className="text-base font-light">Scottish Munros</div>
               <div className="text-sm text-gray-400">
-                {currentIndex + 1} of {munroCount} • Next in {hoursUntilNext}min
+                {currentIndex + 1} of {munroCount} • Next in {minutesUntilNext}min
               </div>
             </div>
+          </div>
+          <div className="text-xs text-gray-500">
+            {currentTime.toLocaleTimeString('en-GB', { 
+              hour: '2-digit', 
+              minute: '2-digit',
+              timeZone: 'UTC'
+            })} UTC
           </div>
         </div>
 
@@ -320,13 +341,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             </div>
           )}
 
-          {/* Debug info - remove in production */}
+          {/* Debug info - only in development */}
           {process.env.NODE_ENV === 'development' && (
-            <div className="text-xs text-gray-500 mt-2">
-              Debug: Index {currentIndex}, Hours: {Math.floor(Date.now() / (1000 * 60 * 60))}, 
-              Calc: {Math.floor(Date.now() / (1000 * 60 * 60)) % munroCount}
-              <br />
-              Image: {getImagePath(currentMunro.image_filename)}
+            <div className="text-xs text-gray-500 mt-2 p-2 bg-gray-900 bg-opacity-50 rounded">
+              <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
+              <div>Hours since epoch: {Math.floor(Date.now() / (1000 * 60 * 60))}</div>
+              <div>Calc: {Math.floor(Date.now() / (1000 * 60 * 60)) % munroCount}</div>
+              <div>Next change: {minutesUntilNext} minutes</div>
+              <div className="text-yellow-400 mt-1">Use ← → arrow keys to manually cycle</div>
             </div>
           )}
         </div>
