@@ -2,45 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-/* MagicMirror Module Styling */
+/* MagicMirror Module Styling - Ultra Clean Approach */
 .mmm-smh-module {
-  /* Essential properties - no aggressive resets */
+  /* CRITICAL: Absolutely no properties that could affect parent layout */
+  
+  /* Essential styling only */
   font-family: 'Roboto Condensed', 'Roboto', sans-serif;
   color: #ffffff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   
-  /* Proper sizing */
+  /* Size constraints */
   max-width: 300px;
   width: 100%;
-  
-  /* Ensure proper box model */
-  box-sizing: border-box;
   
   /* Prevent text selection */
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   
-  /* Ensure proper positioning without affecting parent */
-  position: relative;
-  display: block;
-  
-  /* Critical: No margins, padding, or borders that could affect layout */
-  margin: 0;
-  padding: 0;
-  border: none;
-  outline: none;
-  
-  /* Prevent overflow issues */
-  overflow: visible;
-  
-  /* Ensure proper text rendering */
+  /* Text rendering */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* CRITICAL: No margin, padding, border, outline, or positioning that could affect layout */
+  /* These are handled by MagicMirror itself */
 }
 
-/* Apply box-sizing to all children */
+/* Apply box-sizing to children only */
 .mmm-smh-module *,
 .mmm-smh-module *::before,
 .mmm-smh-module *::after {

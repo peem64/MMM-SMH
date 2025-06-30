@@ -71,14 +71,12 @@ Module.register("MMM-SMH", {
     getDom: function() {
         var self = this;
         
-        // Create main wrapper with proper MagicMirror styling
+        // Create main wrapper - ULTRA MINIMAL to prevent layout issues
         var wrapper = document.createElement("div");
         wrapper.className = "mmm-smh-module";
-        wrapper.style.width = this.config.maxWidth;
-        wrapper.style.maxHeight = this.config.maxHeight;
-        wrapper.style.position = "relative";
-        wrapper.style.overflow = "visible";
-        wrapper.style.boxSizing = "border-box";
+        
+        // CRITICAL: No inline styles that could affect global layout
+        // Let MagicMirror handle all positioning and sizing
         
         // Store reference to container
         this.moduleContainer = wrapper;
@@ -138,10 +136,8 @@ Module.register("MMM-SMH", {
         // Create React container
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
-        reactContainer.style.width = "100%";
-        reactContainer.style.height = "auto";
-        reactContainer.style.position = "relative";
-        reactContainer.style.overflow = "visible";
+        
+        // CRITICAL: No inline styles that could affect layout
         
         wrapper.appendChild(reactContainer);
         
