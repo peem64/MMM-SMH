@@ -7,7 +7,7 @@ import './index.css';
 declare global {
   interface Window {
     MMMSMHApp: {
-      init: (containerId: string) => void;
+      init: (containerId: string, shadowRoot?: ShadowRoot) => void;
     };
   }
 }
@@ -32,8 +32,8 @@ function initStandardApp() {
   }
 }
 
-// MagicMirror module initialization
-function initMagicMirrorApp(containerId: string) {
+// MagicMirror module initialization with shadow DOM support
+function initMagicMirrorApp(containerId: string, shadowRoot?: ShadowRoot) {
   console.log('MMM-SMH: Attempting to initialize React app in container:', containerId);
   
   // Prevent double initialization
@@ -48,7 +48,14 @@ function initMagicMirrorApp(containerId: string) {
   
   const tryInit = () => {
     attempts++;
-    const container = document.getElementById(containerId);
+    
+    // Look for container in shadow DOM first, then regular DOM
+    let container = null;
+    if (shadowRoot) {
+      container = shadowRoot.getElementById(containerId);
+    } else {
+      container = document.getElementById(containerId);
+    }
     
     if (container) {
       try {
@@ -103,7 +110,7 @@ function autoInitialize() {
 
 // Check if we're running in browser environment
 if (typeof window !== 'undefined') {
-  // Expose MagicMirror initialization function
+  // Expose MagicMirror initialization function with shadow DOM support
   window.MMMSMHApp = {
     init: initMagicMirrorApp
   };
