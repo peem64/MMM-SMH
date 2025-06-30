@@ -193,6 +193,10 @@
   flex-wrap: wrap;
 }
 
+.mmm-smh-module .flex-shrink-0 {
+  flex-shrink: 0;
+}
+
 /* Spacing utilities */
 .mmm-smh-module .mb-2 {
   margin-bottom: 0.5rem;
@@ -293,6 +297,10 @@
   width: 1.5rem;
 }
 
+.mmm-smh-module .w-8 {
+  width: 2rem;
+}
+
 .mmm-smh-module .w-12 {
   width: 3rem;
 }
@@ -317,6 +325,10 @@
   height: 1.5rem;
 }
 
+.mmm-smh-module .h-8 {
+  height: 2rem;
+}
+
 .mmm-smh-module .h-12 {
   height: 3rem;
 }
@@ -325,16 +337,16 @@
   height: 5rem;
 }
 
+.mmm-smh-module .h-30 {
+  height: 7.5rem;
+}
+
 .mmm-smh-module .max-w-xs {
   max-width: 20rem;
 }
 
 .mmm-smh-module .max-w-md {
   max-width: 28rem;
-}
-
-.mmm-smh-module .flex-shrink-0 {
-  flex-shrink: 0;
 }
 
 /* Object fit for images */
