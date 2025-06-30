@@ -2,414 +2,462 @@
 @tailwind components;
 @tailwind utilities;
 
-/* MagicMirror Module Styling */
+/* MagicMirror Module Styling - COMPLETELY ISOLATED */
 .mmm-smh-module {
-  /* Isolate this module from global styles */
-  isolation: isolate;
-  contain: layout style;
+  /* CRITICAL: Complete isolation from global styles */
+  all: initial;
   
-  /* Ensure proper font inheritance from MagicMirror */
-  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
-  
-  /* Reset any problematic inherited styles */
-  margin: 0;
-  padding: 0;
-  border: none;
-  outline: none;
-  
-  /* Ensure proper box model */
+  /* Re-establish essential properties after 'all: initial' */
+  display: block;
+  position: relative;
   box-sizing: border-box;
   
-  /* Prevent text selection */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
+  /* Prevent any layout interference */
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  outline: none !important;
   
-  /* Ensure proper positioning */
-  position: relative;
-  display: block;
+  /* Ensure proper containment */
+  contain: layout style paint;
+  isolation: isolate;
   
-  /* Prevent layout issues */
-  overflow: hidden;
-  
-  /* Ensure proper z-index */
-  z-index: 1;
+  /* Prevent overflow issues */
+  overflow: visible;
   
   /* MagicMirror standard styling */
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
   color: #ffffff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   
   /* Compact sizing for regular module */
   max-width: 300px;
   width: 100%;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  
+  /* Ensure proper z-index without affecting parent */
+  z-index: auto;
+  
+  /* Prevent any transform or positioning issues */
+  transform: none;
+  
+  /* Ensure proper text rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apply box-sizing to all children */
+/* CRITICAL: Ensure all children inherit proper box-sizing and don't leak styles */
 .mmm-smh-module *,
 .mmm-smh-module *::before,
 .mmm-smh-module *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
 }
 
-/* Tailwind utility overrides for MagicMirror context */
+/* Prevent any global CSS interference */
+.mmm-smh-module * {
+  /* Reset any inherited properties that might cause layout issues */
+  position: static;
+  float: none;
+  clear: none;
+  vertical-align: baseline;
+  text-decoration: none;
+  list-style: none;
+  background: transparent;
+  border-collapse: separate;
+  border-spacing: 0;
+  caption-side: top;
+  cursor: inherit;
+  direction: ltr;
+  empty-cells: show;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  font-stretch: normal;
+  line-height: normal;
+  orphans: 2;
+  quotes: none;
+  speak: normal;
+  table-layout: auto;
+  text-align: left;
+  text-indent: 0;
+  text-transform: none;
+  unicode-bidi: normal;
+  white-space: normal;
+  widows: 2;
+  word-spacing: normal;
+  word-wrap: normal;
+}
+
+/* Color utilities - scoped to module */
 .mmm-smh-module .text-white {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .mmm-smh-module .text-gray-300 {
-  color: #d1d5db;
+  color: #d1d5db !important;
 }
 
 .mmm-smh-module .text-gray-400 {
-  color: #9ca3af;
+  color: #9ca3af !important;
 }
 
 .mmm-smh-module .text-gray-500 {
-  color: #6b7280;
+  color: #6b7280 !important;
 }
 
 .mmm-smh-module .text-blue-400 {
-  color: #60a5fa;
+  color: #60a5fa !important;
 }
 
 .mmm-smh-module .text-green-400 {
-  color: #4ade80;
+  color: #4ade80 !important;
 }
 
 .mmm-smh-module .text-yellow-400 {
-  color: #facc15;
+  color: #facc15 !important;
 }
 
 .mmm-smh-module .text-orange-400 {
-  color: #fb923c;
+  color: #fb923c !important;
 }
 
 .mmm-smh-module .text-red-400 {
-  color: #f87171;
+  color: #f87171 !important;
 }
 
 .mmm-smh-module .text-red-500 {
-  color: #ef4444;
+  color: #ef4444 !important;
 }
 
 .mmm-smh-module .text-blue-200 {
-  color: #bfdbfe;
+  color: #bfdbfe !important;
 }
 
+/* Background utilities - scoped to module */
 .mmm-smh-module .bg-gray-800 {
-  background-color: rgba(31, 41, 55, 0.8);
+  background-color: rgba(31, 41, 55, 0.8) !important;
 }
 
 .mmm-smh-module .bg-gray-900 {
-  background-color: rgba(17, 24, 39, 0.9);
+  background-color: rgba(17, 24, 39, 0.9) !important;
 }
 
 .mmm-smh-module .bg-blue-900 {
-  background-color: rgba(30, 58, 138, 0.6);
+  background-color: rgba(30, 58, 138, 0.6) !important;
 }
 
 .mmm-smh-module .bg-opacity-50 {
-  background-color: rgba(31, 41, 55, 0.5);
+  background-color: rgba(31, 41, 55, 0.5) !important;
 }
 
 .mmm-smh-module .bg-opacity-30 {
-  background-color: rgba(31, 41, 55, 0.3);
+  background-color: rgba(31, 41, 55, 0.3) !important;
 }
 
 .mmm-smh-module .bg-opacity-40 {
-  background-color: rgba(30, 58, 138, 0.4);
+  background-color: rgba(30, 58, 138, 0.4) !important;
 }
 
+/* Border utilities - scoped to module */
 .mmm-smh-module .border-blue-700 {
-  border-color: #1d4ed8;
+  border-color: #1d4ed8 !important;
 }
 
 .mmm-smh-module .border-opacity-30 {
-  border-color: rgba(29, 78, 216, 0.3);
+  border-color: rgba(29, 78, 216, 0.3) !important;
 }
 
-/* Layout utilities */
+/* Layout utilities - scoped to module */
 .mmm-smh-module .flex {
-  display: flex;
+  display: flex !important;
 }
 
 .mmm-smh-module .grid {
-  display: grid;
+  display: grid !important;
 }
 
 .mmm-smh-module .items-center {
-  align-items: center;
+  align-items: center !important;
 }
 
 .mmm-smh-module .justify-between {
-  justify-content: space-between;
+  justify-content: space-between !important;
 }
 
 .mmm-smh-module .space-x-2 > :not([hidden]) ~ :not([hidden]) {
-  margin-left: 0.5rem;
+  margin-left: 0.5rem !important;
 }
 
 .mmm-smh-module .space-x-3 > :not([hidden]) ~ :not([hidden]) {
-  margin-left: 0.75rem;
+  margin-left: 0.75rem !important;
 }
 
 .mmm-smh-module .space-y-2 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 0.5rem;
+  margin-top: 0.5rem !important;
 }
 
 .mmm-smh-module .space-y-3 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 0.75rem;
+  margin-top: 0.75rem !important;
 }
 
 .mmm-smh-module .space-y-4 > :not([hidden]) ~ :not([hidden]) {
-  margin-top: 1rem;
+  margin-top: 1rem !important;
 }
 
 .mmm-smh-module .gap-1 {
-  gap: 0.25rem;
+  gap: 0.25rem !important;
 }
 
 .mmm-smh-module .gap-2 {
-  gap: 0.5rem;
+  gap: 0.5rem !important;
 }
 
 .mmm-smh-module .gap-3 {
-  gap: 0.75rem;
+  gap: 0.75rem !important;
 }
 
 .mmm-smh-module .gap-4 {
-  gap: 1rem;
+  gap: 1rem !important;
 }
 
 .mmm-smh-module .grid-cols-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 
 .mmm-smh-module .grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
 }
 
 .mmm-smh-module .flex-wrap {
-  flex-wrap: wrap;
+  flex-wrap: wrap !important;
 }
 
 .mmm-smh-module .flex-shrink-0 {
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
 }
 
-/* Spacing utilities */
+/* Spacing utilities - scoped to module */
 .mmm-smh-module .mb-2 {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem !important;
 }
 
 .mmm-smh-module .mb-3 {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.75rem !important;
 }
 
 .mmm-smh-module .mb-4 {
-  margin-bottom: 1rem;
+  margin-bottom: 1rem !important;
 }
 
 .mmm-smh-module .p-1 {
-  padding: 0.25rem;
+  padding: 0.25rem !important;
 }
 
 .mmm-smh-module .p-2 {
-  padding: 0.5rem;
+  padding: 0.5rem !important;
 }
 
 .mmm-smh-module .p-3 {
-  padding: 0.75rem;
+  padding: 0.75rem !important;
 }
 
 .mmm-smh-module .px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
 }
 
 .mmm-smh-module .px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding-left: 0.75rem !important;
+  padding-right: 0.75rem !important;
 }
 
 .mmm-smh-module .py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
 }
 
 /* Typography - compact fonts for regular module */
 .mmm-smh-module .text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
+  font-size: 0.75rem !important;
+  line-height: 1rem !important;
 }
 
 .mmm-smh-module .text-sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
 }
 
 .mmm-smh-module .text-base {
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
 }
 
 .mmm-smh-module .text-lg {
-  font-size: 1.125rem;
-  line-height: 1.5rem;
+  font-size: 1.125rem !important;
+  line-height: 1.5rem !important;
 }
 
 .mmm-smh-module .text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+  font-size: 1.25rem !important;
+  line-height: 1.75rem !important;
 }
 
 .mmm-smh-module .text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 1.5rem !important;
+  line-height: 2rem !important;
 }
 
 .mmm-smh-module .font-light {
-  font-weight: 300;
+  font-weight: 300 !important;
 }
 
 .mmm-smh-module .leading-relaxed {
-  line-height: 1.625;
+  line-height: 1.625 !important;
 }
 
 .mmm-smh-module .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 
-/* Sizing */
+/* Sizing utilities - scoped to module */
 .mmm-smh-module .w-3 {
-  width: 0.75rem;
+  width: 0.75rem !important;
 }
 
 .mmm-smh-module .w-4 {
-  width: 1rem;
+  width: 1rem !important;
 }
 
 .mmm-smh-module .w-5 {
-  width: 1.25rem;
+  width: 1.25rem !important;
 }
 
 .mmm-smh-module .w-6 {
-  width: 1.5rem;
+  width: 1.5rem !important;
 }
 
 .mmm-smh-module .w-8 {
-  width: 2rem;
+  width: 2rem !important;
 }
 
 .mmm-smh-module .w-12 {
-  width: 3rem;
+  width: 3rem !important;
 }
 
 .mmm-smh-module .w-full {
-  width: 100%;
+  width: 100% !important;
 }
 
 .mmm-smh-module .h-3 {
-  height: 0.75rem;
+  height: 0.75rem !important;
 }
 
 .mmm-smh-module .h-4 {
-  height: 1rem;
+  height: 1rem !important;
 }
 
 .mmm-smh-module .h-5 {
-  height: 1.25rem;
+  height: 1.25rem !important;
 }
 
 .mmm-smh-module .h-6 {
-  height: 1.5rem;
+  height: 1.5rem !important;
 }
 
 .mmm-smh-module .h-8 {
-  height: 2rem;
+  height: 2rem !important;
 }
 
 .mmm-smh-module .h-12 {
-  height: 3rem;
+  height: 3rem !important;
 }
 
 .mmm-smh-module .h-20 {
-  height: 5rem;
+  height: 5rem !important;
 }
 
 .mmm-smh-module .h-30 {
-  height: 7.5rem;
+  height: 7.5rem !important;
 }
 
 .mmm-smh-module .h-35 {
-  height: 8.75rem;
+  height: 8.75rem !important;
 }
 
 .mmm-smh-module .max-w-xs {
-  max-width: 20rem;
+  max-width: 20rem !important;
 }
 
 .mmm-smh-module .max-w-md {
-  max-width: 28rem;
+  max-width: 28rem !important;
 }
 
 /* Object fit for images */
 .mmm-smh-module .object-cover {
-  object-fit: cover;
+  object-fit: cover !important;
 }
 
-/* Border and effects */
+/* Border and effects - scoped to module */
 .mmm-smh-module .rounded {
-  border-radius: 0.25rem;
+  border-radius: 0.25rem !important;
 }
 
 .mmm-smh-module .rounded-lg {
-  border-radius: 0.5rem;
+  border-radius: 0.5rem !important;
 }
 
 .mmm-smh-module .rounded-full {
-  border-radius: 9999px;
+  border-radius: 9999px !important;
 }
 
 .mmm-smh-module .border {
-  border-width: 1px;
+  border-width: 1px !important;
 }
 
-/* Transitions */
+/* Transitions - scoped to module */
 .mmm-smh-module .transition-opacity {
-  transition-property: opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-property: opacity !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 150ms !important;
 }
 
 .mmm-smh-module .duration-300 {
-  transition-duration: 300ms;
+  transition-duration: 300ms !important;
 }
 
 .mmm-smh-module .opacity-100 {
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .mmm-smh-module .opacity-50 {
-  opacity: 0.5;
+  opacity: 0.5 !important;
 }
 
-/* Text truncation */
+/* Text truncation - scoped to module */
 .mmm-smh-module .line-clamp-3 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
 }
 
 .mmm-smh-module .line-clamp-4 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  overflow: hidden !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 4 !important;
 }
 
-/* Loading animation */
+/* Loading animation - scoped to module */
 @keyframes mmm-smh-pulse {
   0%, 100% {
     opacity: 1;
@@ -420,29 +468,50 @@
 }
 
 .mmm-smh-module .animate-pulse {
-  animation: mmm-smh-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Ensure proper text rendering in MagicMirror */
-.mmm-smh-module {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  animation: mmm-smh-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
 }
 
 /* Responsive adjustments for smaller screens */
 @media (max-width: 480px) {
   .mmm-smh-module {
-    max-width: 280px;
+    max-width: 280px !important;
   }
   
   .mmm-smh-module .text-base {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
   }
   
   .mmm-smh-module .grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.25rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 0.25rem !important;
   }
+}
+
+/* CRITICAL: Prevent any CSS from leaking outside the module */
+.mmm-smh-module {
+  /* Ensure this module doesn't affect anything outside itself */
+  contain: layout style paint size !important;
+}
+
+/* Additional safeguards to prevent global interference */
+body:has(.mmm-smh-module) {
+  /* Prevent any unintended global changes */
+  margin: inherit !important;
+  padding: inherit !important;
+  border: inherit !important;
+  overflow: inherit !important;
+}
+
+/* Ensure MagicMirror's main container isn't affected */
+#module_0_MMM-SMH,
+.module.MMM-SMH,
+.module-content {
+  /* Reset any potential interference */
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  overflow: visible !important;
+  position: relative !important;
+  display: block !important;
 }
