@@ -71,14 +71,24 @@ Module.register("MMM-SMH", {
     getDom: function() {
         var self = this;
         
-        // Create main wrapper with proper MagicMirror styling
+        // Create main wrapper with STRICT isolation
         var wrapper = document.createElement("div");
         wrapper.className = "mmm-smh-module";
-        wrapper.style.width = this.config.maxWidth;
-        wrapper.style.maxHeight = this.config.maxHeight;
-        wrapper.style.position = "relative";
-        wrapper.style.overflow = "visible";
-        wrapper.style.boxSizing = "border-box";
+        
+        // CRITICAL: Ensure no borders or outlines
+        wrapper.style.cssText = `
+            width: ${this.config.maxWidth};
+            max-height: ${this.config.maxHeight};
+            position: relative;
+            overflow: visible;
+            box-sizing: border-box;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+        `;
         
         // Store reference to container
         this.moduleContainer = wrapper;
@@ -116,6 +126,9 @@ Module.register("MMM-SMH", {
                     font-family: 'Roboto Condensed', sans-serif;
                     text-align: left;
                     padding: 10px 0;
+                    border: none !important;
+                    outline: none !important;
+                    box-shadow: none !important;
                 ">
                     <div style="font-size: 24px; margin-right: 12px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
                     <div>
@@ -135,13 +148,21 @@ Module.register("MMM-SMH", {
             return wrapper;
         }
 
-        // Create React container
+        // Create React container with strict isolation
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
-        reactContainer.style.width = "100%";
-        reactContainer.style.height = "auto";
-        reactContainer.style.position = "relative";
-        reactContainer.style.overflow = "visible";
+        reactContainer.style.cssText = `
+            width: 100%;
+            height: auto;
+            position: relative;
+            overflow: visible;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+        `;
         
         wrapper.appendChild(reactContainer);
         
