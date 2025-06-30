@@ -267,18 +267,18 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Compact content */}
         <div className="space-y-2">
-          {/* Slightly bigger mountain image */}
+          {/* Slightly bigger mountain image - increased to 140px */}
           <div className="w-full">
             {!imageError ? (
               <img 
                 src={getImagePath(currentMunro.image_filename)}
                 alt={currentMunro.name}
-                className="w-full h-30 object-cover rounded bg-gray-800"
+                className="w-full h-35 object-cover rounded bg-gray-800"
                 onError={handleImageError}
-                style={{ width: '100%', height: '120px' }}
+                style={{ width: '100%', height: '140px' }}
               />
             ) : (
-              <div className="w-full h-30 bg-gray-800 rounded flex items-center justify-center">
+              <div className="w-full h-35 bg-gray-800 rounded flex items-center justify-center">
                 <Mountain className="w-8 h-8 text-gray-400" />
               </div>
             )}
