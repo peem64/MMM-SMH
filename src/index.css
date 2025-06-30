@@ -2,38 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* MagicMirror Module Styling - Ultra Clean Approach */
+/* CRITICAL: Complete CSS isolation to prevent any global layout interference */
 .mmm-smh-module {
-  /* CRITICAL: Absolutely no properties that could affect parent layout */
+  /* ABSOLUTE ISOLATION - prevent any inheritance or global effects */
+  all: unset;
   
-  /* Essential styling only */
+  /* Re-establish only essential properties */
+  display: block;
   font-family: 'Roboto Condensed', 'Roboto', sans-serif;
   color: #ffffff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   
-  /* Size constraints */
+  /* Size constraints only */
   max-width: 300px;
   width: 100%;
   
-  /* Prevent text selection */
+  /* Text properties */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   
-  /* Text rendering */
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  
-  /* CRITICAL: No margin, padding, border, outline, or positioning that could affect layout */
-  /* These are handled by MagicMirror itself */
+  /* CRITICAL: Absolutely no margin, padding, border, outline, position, transform, or any layout-affecting properties */
+  /* These could cause the border issue */
 }
 
-/* Apply box-sizing to children only */
+/* Ensure children don't inherit problematic properties */
+.mmm-smh-module * {
+  box-sizing: border-box;
+}
+
+/* Reset any potential global interference */
+.mmm-smh-module,
 .mmm-smh-module *,
 .mmm-smh-module *::before,
 .mmm-smh-module *::after {
-  box-sizing: border-box;
+  /* Prevent any margin/padding inheritance that could cause borders */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+/* Re-establish necessary styling after reset */
+.mmm-smh-module {
+  font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+  color: #ffffff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+  max-width: 300px;
+  width: 100%;
 }
 
 /* Color utilities */

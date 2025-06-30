@@ -71,12 +71,12 @@ Module.register("MMM-SMH", {
     getDom: function() {
         var self = this;
         
-        // Create main wrapper - ULTRA MINIMAL to prevent layout issues
+        // Create main wrapper - ABSOLUTELY MINIMAL to prevent any layout interference
         var wrapper = document.createElement("div");
         wrapper.className = "mmm-smh-module";
         
-        // CRITICAL: No inline styles that could affect global layout
-        // Let MagicMirror handle all positioning and sizing
+        // CRITICAL: Absolutely no inline styles or properties that could affect global layout
+        // The CSS isolation should handle everything
         
         // Store reference to container
         this.moduleContainer = wrapper;
@@ -133,11 +133,11 @@ Module.register("MMM-SMH", {
             return wrapper;
         }
 
-        // Create React container
+        // Create React container with absolutely no styling
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
         
-        // CRITICAL: No inline styles that could affect layout
+        // CRITICAL: No inline styles whatsoever
         
         wrapper.appendChild(reactContainer);
         
