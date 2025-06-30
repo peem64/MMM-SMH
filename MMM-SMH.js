@@ -67,27 +67,40 @@ Module.register("MMM-SMH", {
         }, this.config.updateInterval);
     },
 
-    // Override dom creation
+    // Override dom creation with ZERO borders
     getDom: function() {
         var self = this;
         
-        // Create main wrapper with STRICT isolation
+        // Create completely borderless wrapper
         var wrapper = document.createElement("div");
-        wrapper.className = "mmm-smh-module";
+        wrapper.className = "mmm-smh-borderless-wrapper";
         
-        // CRITICAL: Ensure no borders or outlines
+        // NUCLEAR OPTION: Remove ALL possible border sources
         wrapper.style.cssText = `
-            width: ${this.config.maxWidth};
-            max-height: ${this.config.maxHeight};
-            position: relative;
-            overflow: visible;
-            box-sizing: border-box;
-            border: none !important;
-            outline: none !important;
+            all: unset !important;
+            display: block !important;
+            width: ${this.config.maxWidth} !important;
+            max-height: ${this.config.maxHeight} !important;
+            position: relative !important;
+            overflow: visible !important;
+            box-sizing: border-box !important;
+            border: 0 !important;
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
+            outline: 0 !important;
+            outline-width: 0 !important;
+            outline-style: none !important;
+            outline-color: transparent !important;
             box-shadow: none !important;
             margin: 0 !important;
             padding: 0 !important;
             background: transparent !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            font-family: 'Roboto Condensed', 'Roboto', sans-serif !important;
+            color: #ffffff !important;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3) !important;
         `;
         
         // Store reference to container
@@ -96,20 +109,21 @@ Module.register("MMM-SMH", {
         if (this.error) {
             wrapper.innerHTML = `
                 <div style="
-                    color: #ff6b6b;
-                    text-align: center;
-                    padding: 15px;
-                    font-family: 'Roboto Condensed', sans-serif;
-                    background: rgba(0,0,0,0.3);
-                    border-radius: 8px;
-                    border: 1px solid #ff6b6b;
-                    max-width: 350px;
-                    font-size: 13px;
-                    line-height: 1.4;
+                    color: #ff6b6b !important;
+                    text-align: center !important;
+                    padding: 15px !important;
+                    font-family: 'Roboto Condensed', sans-serif !important;
+                    background: rgba(0,0,0,0.3) !important;
+                    border-radius: 8px !important;
+                    border: 1px solid #ff6b6b !important;
+                    max-width: 350px !important;
+                    font-size: 13px !important;
+                    line-height: 1.4 !important;
+                    box-sizing: border-box !important;
                 ">
-                    <div style="font-size: 18px; margin-bottom: 6px;">⚠️</div>
-                    <div style="font-weight: bold; margin-bottom: 6px;">MMM-SMH Error</div>
-                    <div style="font-size: 11px; opacity: 0.9;">
+                    <div style="font-size: 18px !important; margin-bottom: 6px !important;">⚠️</div>
+                    <div style="font-weight: bold !important; margin-bottom: 6px !important;">MMM-SMH Error</div>
+                    <div style="font-size: 11px !important; opacity: 0.9 !important;">
                         ${this.error}
                     </div>
                 </div>
@@ -120,20 +134,22 @@ Module.register("MMM-SMH", {
         if (!this.loaded) {
             wrapper.innerHTML = `
                 <div style="
-                    display: flex;
-                    align-items: center;
-                    color: #ffffff;
-                    font-family: 'Roboto Condensed', sans-serif;
-                    text-align: left;
-                    padding: 10px 0;
+                    display: flex !important;
+                    align-items: center !important;
+                    color: #ffffff !important;
+                    font-family: 'Roboto Condensed', sans-serif !important;
+                    text-align: left !important;
+                    padding: 10px 0 !important;
                     border: none !important;
                     outline: none !important;
                     box-shadow: none !important;
+                    margin: 0 !important;
+                    background: transparent !important;
                 ">
-                    <div style="font-size: 24px; margin-right: 12px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
-                    <div>
-                        <div style="font-size: 18px; margin-bottom: 4px; font-weight: 300;">Scottish Munros</div>
-                        <div style="font-size: 12px; opacity: 0.7; color: #9ca3af;">
+                    <div style="font-size: 24px !important; margin-right: 12px !important; animation: mmm-smh-pulse 2s infinite !important;">⛰️</div>
+                    <div style="border: none !important; outline: none !important;">
+                        <div style="font-size: 18px !important; margin-bottom: 4px !important; font-weight: 300 !important;">Scottish Munros</div>
+                        <div style="font-size: 12px !important; opacity: 0.7 !important; color: #9ca3af !important;">
                             Loading...
                         </div>
                     </div>
@@ -148,20 +164,31 @@ Module.register("MMM-SMH", {
             return wrapper;
         }
 
-        // Create React container with strict isolation
+        // Create React container with absolute border elimination
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
+        reactContainer.className = "mmm-smh-react-container";
         reactContainer.style.cssText = `
-            width: 100%;
-            height: auto;
-            position: relative;
-            overflow: visible;
-            border: none !important;
-            outline: none !important;
+            all: unset !important;
+            display: block !important;
+            width: 100% !important;
+            height: auto !important;
+            position: relative !important;
+            overflow: visible !important;
+            border: 0 !important;
+            border-width: 0 !important;
+            border-style: none !important;
+            border-color: transparent !important;
+            outline: 0 !important;
+            outline-width: 0 !important;
+            outline-style: none !important;
+            outline-color: transparent !important;
             box-shadow: none !important;
             margin: 0 !important;
             padding: 0 !important;
             background: transparent !important;
+            background-color: transparent !important;
+            background-image: none !important;
         `;
         
         wrapper.appendChild(reactContainer);
