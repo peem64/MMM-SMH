@@ -12,10 +12,10 @@
   font-family: 'Roboto Condensed', 'Roboto', sans-serif;
   
   /* Reset any problematic inherited styles */
-  margin: 0;
-  padding: 0;
-  border: none;
-  outline: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  outline: none !important;
   
   /* Ensure proper box model */
   box-sizing: border-box;
@@ -44,11 +44,27 @@
   width: 100%;
 }
 
-/* Apply box-sizing to all children */
+/* Apply box-sizing to all children and remove any borders */
 .mmm-smh-module *,
 .mmm-smh-module *::before,
 .mmm-smh-module *::after {
   box-sizing: border-box;
+  border: none !important;
+  outline: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Specifically target any elements that might have borders */
+.mmm-smh-module div,
+.mmm-smh-module span,
+.mmm-smh-module img,
+.mmm-smh-module h1,
+.mmm-smh-module h2,
+.mmm-smh-module h3,
+.mmm-smh-module p {
+  border: none !important;
+  outline: none !important;
 }
 
 /* Tailwind utility overrides for MagicMirror context */
@@ -121,11 +137,11 @@
 }
 
 .mmm-smh-module .border-blue-700 {
-  border-color: #1d4ed8;
+  border-color: #1d4ed8 !important;
 }
 
 .mmm-smh-module .border-opacity-30 {
-  border-color: rgba(29, 78, 216, 0.3);
+  border-color: rgba(29, 78, 216, 0.3) !important;
 }
 
 /* Layout utilities */
@@ -342,21 +358,25 @@
   object-fit: cover;
 }
 
-/* Border and effects */
+/* Border and effects - Override any inherited borders */
 .mmm-smh-module .rounded {
   border-radius: 0.25rem;
+  border: none !important;
 }
 
 .mmm-smh-module .rounded-lg {
   border-radius: 0.5rem;
+  border: none !important;
 }
 
 .mmm-smh-module .rounded-full {
   border-radius: 9999px;
+  border: none !important;
 }
 
+/* Only apply borders where explicitly needed (season pills) */
 .mmm-smh-module .border {
-  border-width: 1px;
+  border-width: 1px !important;
 }
 
 /* Transitions */
@@ -429,4 +449,22 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.25rem;
   }
+}
+
+/* Nuclear option: Remove borders from everything in the module */
+.mmm-smh-module,
+.mmm-smh-module *,
+.mmm-smh-module *::before,
+.mmm-smh-module *::after {
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-left: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Only allow borders on season pills where we explicitly want them */
+.mmm-smh-module .border.border-blue-700 {
+  border: 1px solid rgba(29, 78, 216, 0.3) !important;
 }
