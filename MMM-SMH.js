@@ -70,16 +70,18 @@ Module.register("MMM-SMH", {
     getDom: function() {
         var self = this;
         
-        // Create absolutely minimal wrapper - NO CLASSES, NO STYLES
+        // Create wrapper with minimal styling
         var wrapper = document.createElement("div");
+        wrapper.style.cssText = "display: block; position: relative; width: 100%; max-width: 300px;";
         
         // Create shadow DOM for complete isolation
         if (wrapper.attachShadow) {
-            this.shadowRoot = wrapper.attachShadow({ mode: 'closed' });
+            this.shadowRoot = wrapper.attachShadow({ mode: 'open' }); // Changed to 'open' for debugging
             
             // Create the actual content container inside shadow DOM
             var shadowContainer = document.createElement("div");
             shadowContainer.id = "mmm-smh-shadow-container";
+            shadowContainer.style.cssText = "display: block; width: 100%; position: relative;";
             
             // Add all styles directly inside shadow DOM
             var shadowStyles = document.createElement("style");
@@ -90,82 +92,120 @@ Module.register("MMM-SMH", {
             
             // Store reference to shadow container
             this.moduleContainer = shadowContainer;
+            
+            Log.info("MMM-SMH: Shadow DOM created successfully");
         } else {
             // Fallback for browsers without shadow DOM support
             wrapper.className = "mmm-smh-fallback";
+            wrapper.style.cssText += " font-family: 'Roboto Condensed', sans-serif; color: #ffffff;";
             this.moduleContainer = wrapper;
+            Log.warn("MMM-SMH: Shadow DOM not supported, using fallback");
         }
         
+        // Handle different states
         if (this.error) {
-            this.moduleContainer.innerHTML = `
-                <div style="
-                    color: #ff6b6b;
-                    text-align: center;
-                    padding: 15px;
-                    font-family: 'Roboto Condensed', sans-serif;
-                    background: rgba(0,0,0,0.3);
-                    border-radius: 8px;
-                    border: 1px solid #ff6b6b;
-                    max-width: 280px;
-                    font-size: 13px;
-                    line-height: 1.4;
-                ">
-                    <div style="font-size: 18px; margin-bottom: 6px;">⚠️</div>
-                    <div style="font-weight: bold; margin-bottom: 6px;">MMM-SMH Error</div>
-                    <div style="font-size: 11px; opacity: 0.9;">
-                        ${this.error}
-                    </div>
-                </div>
-            `;
+            this.showError();
             return wrapper;
         }
         
         if (!this.loaded) {
-            this.moduleContainer.innerHTML = `
-                <div style="
-                    display: flex;
-                    align-items: center;
-                    color: #ffffff;
-                    font-family: 'Roboto Condensed', sans-serif;
-                    text-align: left;
-                    padding: 10px 0;
-                ">
-                    <div style="font-size: 20px; margin-right: 10px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
-                    <div>
-                        <div style="font-size: 16px; margin-bottom: 4px; font-weight: 300;">Scottish Munros</div>
-                        <div style="font-size: 12px; opacity: 0.7; color: #9ca3af;">
-                            Loading...
-                        </div>
-                    </div>
-                </div>
-                <style>
-                    @keyframes mmm-smh-pulse {
-                        0%, 100% { opacity: 1; transform: scale(1); }
-                        50% { opacity: 0.6; transform: scale(1.05); }
-                    }
-                </style>
-            `;
+            this.showLoading();
             return wrapper;
         }
 
-        // Create React container with absolutely no styling
+        // Create React container
+        this.createReactContainer();
+        
+        return wrapper;
+    },
+
+    // Show error state
+    showError: function() {
+        this.moduleContainer.innerHTML = `
+            <div style="
+                color: #ff6b6b;
+                text-align: center;
+                padding: 15px;
+                font-family: 'Roboto Condensed', sans-serif;
+                background: rgba(0,0,0,0.3);
+                border-radius: 8px;
+                border: 1px solid #ff6b6b;
+                max-width: 280px;
+                font-size: 13px;
+                line-height: 1.4;
+            ">
+                <div style="font-size: 18px; margin-bottom: 6px;">⚠️</div>
+                <div style="font-weight: bold; margin-bottom: 6px;">MMM-SMH Error</div>
+                <div style="font-size: 11px; opacity: 0.9;">
+                    ${this.error}
+                </div>
+            </div>
+        `;
+    },
+
+    // Show loading state
+    showLoading: function() {
+        this.moduleContainer.innerHTML = `
+            <div style="
+                display: flex;
+                align-items: center;
+                color: #ffffff;
+                font-family: 'Roboto Condensed', sans-serif;
+                text-align: left;
+                padding: 10px 0;
+            ">
+                <div style="font-size: 20px; margin-right: 10px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
+                <div>
+                    <div style="font-size: 16px; margin-bottom: 4px; font-weight: 300;">Scottish Munros</div>
+                    <div style="font-size: 12px; opacity: 0.7; color: #9ca3af;">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+            <style>
+                @keyframes mmm-smh-pulse {
+                    0%, 100% { opacity: 1; transform: scale(1); }
+                    50% { opacity: 0.6; transform: scale(1.05); }
+                }
+            </style>
+        `;
+    },
+
+    // Create React container
+    createReactContainer: function() {
+        var self = this;
+        
+        // Create React container
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
+        reactContainer.style.cssText = "display: block; width: 100%; position: relative;";
         
+        // Clear existing content and add React container
+        this.moduleContainer.innerHTML = '';
         this.moduleContainer.appendChild(reactContainer);
+        
+        Log.info("MMM-SMH: React container created with ID:", reactContainer.id);
         
         // Initialize React app
         setTimeout(function() {
             self.initializeReactApp(reactContainer.id);
         }, 100);
-        
-        return wrapper;
     },
 
     // Get all styles for shadow DOM
     getShadowStyles: function() {
         return `
             /* Complete reset and isolation */
+            :host {
+                display: block;
+                contain: layout style paint;
+                font-family: 'Roboto Condensed', 'Roboto', sans-serif;
+                color: #ffffff;
+                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+                max-width: 300px;
+                width: 100%;
+            }
+
             * {
                 margin: 0;
                 padding: 0;
@@ -174,13 +214,6 @@ Module.register("MMM-SMH", {
                 vertical-align: baseline;
                 background: transparent;
                 box-sizing: border-box;
-                position: static;
-                top: auto;
-                left: auto;
-                right: auto;
-                bottom: auto;
-                transform: none;
-                overflow: visible;
             }
 
             /* Base styling */
@@ -399,22 +432,29 @@ Module.register("MMM-SMH", {
             var tryInit = function() {
                 initAttempts++;
                 
-                // Look for container in both regular DOM and shadow DOM
+                // Look for container in shadow DOM first, then regular DOM
                 var container = null;
                 if (self.shadowRoot) {
                     container = self.shadowRoot.getElementById(containerId);
+                    Log.info("MMM-SMH: Looking for container in shadow DOM:", containerId);
                 } else {
                     container = document.getElementById(containerId);
+                    Log.info("MMM-SMH: Looking for container in regular DOM:", containerId);
                 }
                 
                 if (container && typeof window !== 'undefined' && window.MMMSMHApp && window.MMMSMHApp.init) {
                     try {
+                        Log.info("MMM-SMH: Found container and React app, initializing...");
                         window.MMMSMHApp.init(containerId, self.shadowRoot);
                         Log.info("MMM-SMH: React app initialized successfully");
                         return;
                     } catch (error) {
                         Log.error("MMM-SMH: Error initializing React app:", error);
                     }
+                } else {
+                    Log.info(`MMM-SMH: Waiting for container or React app... (${initAttempts}/${maxAttempts})`);
+                    Log.info("MMM-SMH: Container found:", !!container);
+                    Log.info("MMM-SMH: React app available:", !!(window.MMMSMHApp && window.MMMSMHApp.init));
                 }
                 
                 if (initAttempts < maxAttempts) {
