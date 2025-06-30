@@ -80,12 +80,6 @@ Module.register("MMM-SMH", {
         wrapper.style.overflow = "visible";
         wrapper.style.boxSizing = "border-box";
         
-        // NUCLEAR BORDER REMOVAL - Override any inherited styles
-        wrapper.style.border = "none";
-        wrapper.style.outline = "none";
-        wrapper.style.margin = "0";
-        wrapper.style.padding = "0";
-        
         // Store reference to container
         this.moduleContainer = wrapper;
         
@@ -122,8 +116,6 @@ Module.register("MMM-SMH", {
                     font-family: 'Roboto Condensed', sans-serif;
                     text-align: left;
                     padding: 10px 0;
-                    border: none;
-                    outline: none;
                 ">
                     <div style="font-size: 20px; margin-right: 10px; animation: mmm-smh-pulse 2s infinite;">⛰️</div>
                     <div>
@@ -150,10 +142,6 @@ Module.register("MMM-SMH", {
         reactContainer.style.height = "auto";
         reactContainer.style.position = "relative";
         reactContainer.style.overflow = "visible";
-        reactContainer.style.border = "none";
-        reactContainer.style.outline = "none";
-        reactContainer.style.margin = "0";
-        reactContainer.style.padding = "0";
         
         wrapper.appendChild(reactContainer);
         
@@ -225,20 +213,6 @@ Module.register("MMM-SMH", {
                     try {
                         window.MMMSMHApp.init(containerId);
                         Log.info("MMM-SMH: React app initialized successfully");
-                        
-                        // Additional border removal after React app loads
-                        setTimeout(function() {
-                            var container = document.getElementById(containerId);
-                            if (container) {
-                                // Remove borders from all elements in the React app
-                                var allElements = container.querySelectorAll('*');
-                                allElements.forEach(function(el) {
-                                    el.style.border = 'none';
-                                    el.style.outline = 'none';
-                                });
-                            }
-                        }, 500);
-                        
                         return;
                     } catch (error) {
                         Log.error("MMM-SMH: Error initializing React app:", error);
@@ -267,23 +241,6 @@ Module.register("MMM-SMH", {
     notificationReceived: function(notification, payload, sender) {
         if (notification === "DOM_OBJECTS_CREATED") {
             Log.info("MMM-SMH: DOM objects created");
-            
-            // Additional cleanup after DOM is created
-            var self = this;
-            setTimeout(function() {
-                if (self.moduleContainer) {
-                    // Remove any borders that might have been added by MagicMirror
-                    self.moduleContainer.style.border = 'none';
-                    self.moduleContainer.style.outline = 'none';
-                    
-                    // Remove borders from all child elements
-                    var allElements = self.moduleContainer.querySelectorAll('*');
-                    allElements.forEach(function(el) {
-                        el.style.border = 'none';
-                        el.style.outline = 'none';
-                    });
-                }
-            }, 1000);
         }
     },
 
