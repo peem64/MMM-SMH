@@ -267,7 +267,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Compact content */}
         <div className="space-y-2">
-          {/* Slightly bigger mountain image - increased to 140px */}
+          {/* Mountain image */}
           <div className="w-full">
             {!imageError ? (
               <img 
@@ -317,13 +317,10 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             </div>
           </div>
 
-          {/* Compact description */}
+          {/* Full description - no truncation */}
           <div className="bg-gray-800 bg-opacity-30 rounded p-2">
-            <p className="text-xs text-gray-300 leading-relaxed line-clamp-3">
-              {currentMunro.description.length > 120 
-                ? currentMunro.description.substring(0, 120) + '...'
-                : currentMunro.description
-              }
+            <p className="text-xs text-gray-300 leading-relaxed">
+              {currentMunro.description}
             </p>
           </div>
 
