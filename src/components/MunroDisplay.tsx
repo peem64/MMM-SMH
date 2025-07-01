@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mountain, MapPin, Clock, TrendingUp } from 'lucide-react';
+import { Mountain, MapPin, Clock, TrendingUp, Route } from 'lucide-react';
 import { Munro, getMunroByIndex, getMunroCount } from '../lib/supabase';
 
 interface MunroDisplayProps {
@@ -316,6 +316,28 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               <div className="text-xs text-gray-400">Time</div>
             </div>
           </div>
+
+          {/* Popular Routes Section */}
+          {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
+            <div className="bg-gray-800 bg-opacity-30 rounded p-2">
+              <div className="flex items-center space-x-2 mb-2">
+                <Route className="w-3 h-3 text-orange-400 flex-shrink-0" />
+                <span className="text-xs font-light text-orange-400">Popular Routes</span>
+              </div>
+              <div className="space-y-1">
+                {currentMunro.popular_routes.slice(0, 2).map((route, index) => (
+                  <div key={index} className="text-xs text-gray-300">
+                    • {route}
+                  </div>
+                ))}
+                {currentMunro.popular_routes.length > 2 && (
+                  <div className="text-xs text-gray-400">
+                    +{currentMunro.popular_routes.length - 2} more routes
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Full description - no truncation */}
           <div className="bg-gray-800 bg-opacity-30 rounded p-2">
