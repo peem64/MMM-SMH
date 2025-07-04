@@ -231,19 +231,10 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   // Calculate time until next Munro change
   const getTimeUntilNextChange = () => {
     const now = new Date();
-    const nextHour = new Date(now);
-    nextHour.setHours(now.getHours() + 1, 0, 0, 0);
-    const minutesUntilNext = Math.ceil((nextHour.getTime() - now.getTime()) / (1000 * 60));
-    return minutesUntilNext;
-  };
-
-  if (!currentMunro) {
-    return (
-      <div className={`mmm-smh-module ${className}`} style={{
-        fontFamily: 'Roboto Condensed, Roboto, sans-serif',
-        color: '#ffffff',
-        maxWidth: '320px',
-        width: '100%'
+    <div className={`text-white max-w-xs ${className}`}>
+      <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 mb-3" style={{
+        backgroundColor: 'rgb(31, 41, 55)',
+        borderColor: 'rgb(55, 65, 81)'
       }}>
         <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
@@ -277,22 +268,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const minutesUntilNext = getTimeUntilNextChange();
 
   return (
-    <div className={`mmm-smh-module ${className}`} style={{
-      fontFamily: 'Roboto Condensed, Roboto, sans-serif',
-      color: '#ffffff',
-      maxWidth: '320px',
-      width: '100%'
-    }}>
+    <div className={`text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
         {/* Header Card */}
-        <div style={{
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
           backgroundColor: 'rgb(31, 41, 55)',
-          background: 'rgb(31, 41, 55)',
-          borderRadius: '0.75rem',
-          padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)',
-          marginBottom: '0.75rem'
+          borderColor: 'rgb(55, 65, 81)'
         }}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
@@ -313,13 +295,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Name and Height Card - matching Corbetts style exactly */}
-        <div style={{
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
           backgroundColor: 'rgb(31, 41, 55)',
-          background: 'rgb(31, 41, 55)',
-          borderRadius: '0.75rem',
-          padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)',
-          marginBottom: '0.75rem'
+          borderColor: 'rgb(55, 65, 81)'
         }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -333,13 +311,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Image Card with location overlay */}
-        <div style={{
+        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden" style={{
           backgroundColor: 'rgb(31, 41, 55)',
-          background: 'rgb(31, 41, 55)',
-          borderRadius: '0.75rem',
-          border: '1px solid rgb(55, 65, 81)',
-          overflow: 'hidden',
-          marginBottom: '0.75rem'
+          borderColor: 'rgb(55, 65, 81)'
         }}>
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
@@ -349,38 +323,17 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
                 className="w-full h-48 object-cover"
               />
             ) : imageStatus === 'loading' ? (
-              <div className="w-full h-48 bg-gray-700 flex items-center justify-center" style={{
-                width: '100%',
-                height: '12rem',
-                backgroundColor: 'rgb(55, 65, 81)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+              <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
                 <Mountain className="w-12 h-12 text-gray-400 animate-pulse" />
               </div>
             ) : (
-              <div className="w-full h-48 bg-gray-700 flex items-center justify-center" style={{
-                width: '100%',
-                height: '12rem',
-                backgroundColor: 'rgb(55, 65, 81)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+              <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
                 <Mountain className="w-12 h-12 text-gray-400" />
               </div>
             )}
             
             {/* Location Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-3" style={{
-              position: 'absolute',
-              bottom: '0',
-              left: '0',
-              right: '0',
-              background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 50%, transparent 100%)',
-              padding: '0.75rem'
-            }}>
+            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black via-black/70 to-transparent">
               <div className="flex items-center space-x-1 text-white text-sm">
                 <MapPin className="w-4 h-4 text-green-400" />
                 <span>{currentMunro.area}, {currentMunro.region}</span>
@@ -390,13 +343,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Stats Grid Card - matching Corbetts layout exactly */}
-        <div style={{
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
           backgroundColor: 'rgb(31, 41, 55)',
-          background: 'rgb(31, 41, 55)',
-          borderRadius: '0.75rem',
-          padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)',
-          marginBottom: '0.75rem'
+          borderColor: 'rgb(55, 65, 81)'
         }}>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
@@ -417,13 +366,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Description Card */}
-        <div style={{
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
           backgroundColor: 'rgb(31, 41, 55)',
-          background: 'rgb(31, 41, 55)',
-          borderRadius: '0.75rem',
-          padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)',
-          marginBottom: '0.75rem'
+          borderColor: 'rgb(55, 65, 81)'
         }}>
           <p className="text-sm text-gray-300 leading-relaxed">
             {currentMunro.description}
@@ -432,13 +377,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Popular Routes Card */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
-          <div style={{
+          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
             backgroundColor: 'rgb(31, 41, 55)',
-            background: 'rgb(31, 41, 55)',
-            borderRadius: '0.75rem',
-            padding: '1rem',
-            border: '1px solid rgb(55, 65, 81)',
-            marginBottom: '0.75rem'
+            borderColor: 'rgb(55, 65, 81)'
           }}>
             <div className="flex items-center space-x-2 mb-3">
               <Route className="w-4 h-4 text-orange-400" />
@@ -457,13 +398,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Best Seasons Card */}
         {currentMunro.best_seasons.length > 0 && (
-          <div style={{
+          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
             backgroundColor: 'rgb(31, 41, 55)',
-            background: 'rgb(31, 41, 55)',
-            borderRadius: '0.75rem',
-            padding: '1rem',
-            border: '1px solid rgb(55, 65, 81)',
-            marginBottom: '0.75rem'
+            borderColor: 'rgb(55, 65, 81)'
           }}>
             <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-green-400" />
@@ -473,14 +410,10 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               {currentMunro.best_seasons.slice(0, 4).map((season, index) => (
                 <span 
                   key={index}
-                  className="px-2 py-1 bg-green-600 bg-opacity-30 text-green-300 rounded text-xs border border-green-600 border-opacity-30"
+                  className="px-2 py-1 text-green-300 rounded text-xs"
                   style={{
                     backgroundColor: 'rgba(22, 163, 74, 0.3)',
-                    color: '#86efac',
-                    borderRadius: '0.25rem',
-                    fontSize: '0.75rem',
-                    border: '1px solid rgba(22, 163, 74, 0.3)',
-                    padding: '0.25rem 0.5rem'
+                    border: '1px solid rgba(22, 163, 74, 0.3)'
                   }}
                 >
                   {season}
@@ -492,13 +425,9 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Debug info - only in development */}
         {process.env.NODE_ENV === 'development' && (
-          <div style={{
+          <div className="bg-gray-900 rounded-xl p-4 border border-gray-600" style={{
             backgroundColor: 'rgb(17, 24, 39)',
-            background: 'rgb(17, 24, 39)',
-            borderRadius: '0.75rem',
-            padding: '1rem',
-            border: '1px solid rgb(75, 85, 99)',
-            marginBottom: '0.75rem'
+            borderColor: 'rgb(75, 85, 99)'
           }}>
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
