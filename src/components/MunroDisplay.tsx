@@ -260,11 +260,11 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const minutesUntilNext = getTimeUntilNextChange();
 
   return (
-    <div className={`text-white max-w-xs ${className}`}>
+    <div className={`mmm-smh-module text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-2`}>
         
         {/* Header Box - SEPARATE BOX like Corbetts */}
-        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2 border border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Mountain className="w-4 h-4 text-blue-400" />
@@ -284,7 +284,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Name and Height Box - SEPARATE BOX like Corbetts */}
-        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2 border border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Mountain className="w-4 h-4 text-green-400" />
@@ -297,7 +297,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Image Box - SEPARATE BOX like Corbetts */}
-        <div className="bg-gray-800 bg-opacity-50 rounded overflow-hidden">
+        <div className="bg-gray-800 bg-opacity-50 rounded overflow-hidden border border-gray-700">
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
@@ -326,7 +326,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Stats Grid Box - SEPARATE BOX like Corbetts */}
-        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2 border border-gray-700">
           <div className="grid grid-cols-3 gap-3">
             <div className="text-center">
               <div className="text-sm font-bold text-blue-400">{currentMunro.prominence_m}m</div>
@@ -346,7 +346,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Description Box - SEPARATE BOX like Corbetts */}
-        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2 border border-gray-700">
           <p className="text-xs text-gray-300 leading-relaxed">
             {currentMunro.description}
           </p>
@@ -354,7 +354,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Popular Routes Box - SEPARATE BOX like Corbetts */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
-          <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+          <div className="bg-gray-800 bg-opacity-50 rounded p-2 border border-gray-700">
             <div className="flex items-center space-x-2 mb-2">
               <Route className="w-3 h-3 text-orange-400" />
               <span className="text-xs font-medium text-orange-400">Popular Routes</span>
@@ -371,7 +371,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Best Seasons Box - SEPARATE BOX like Corbetts */}
         {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
-          <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+          <div className="bg-gray-800 bg-opacity-50 rounded p-2 border border-gray-700">
             <div className="flex items-center space-x-2 mb-2">
               <Clock className="w-3 h-3 text-green-400" />
               <span className="text-xs font-medium text-green-400">Best Seasons</span>
@@ -391,7 +391,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Debug info Box - SEPARATE BOX like Corbetts (development only) */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="bg-gray-900 bg-opacity-50 rounded p-2">
+          <div className="bg-gray-900 bg-opacity-50 rounded p-2 border border-gray-600">
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
