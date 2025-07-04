@@ -207,15 +207,6 @@ Module.register("MMM-SMH", {
                 width: 100%;
             }
 
-            * {
-                margin: 0;
-                padding: 0;
-                border: 0;
-                outline: 0;
-                vertical-align: baseline;
-                background: transparent;
-                box-sizing: border-box;
-            }
 
             /* Base styling */
             #mmm-smh-shadow-container {
@@ -269,6 +260,13 @@ Module.register("MMM-SMH", {
             .mmm-smh-module .bg-green-600 {
                 background-color: rgb(22, 163, 74) !important;
                 background: rgb(22, 163, 74) !important;
+            }
+
+            /* Force solid backgrounds globally within our module */
+            .mmm-smh-module .bg-gray-800,
+            .mmm-smh-module .bg-gray-900,
+            .mmm-smh-module .bg-gray-700 {
+                opacity: 1 !important;
             }
 
             /* Border utilities */
