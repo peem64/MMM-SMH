@@ -2,49 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force solid backgrounds - override any transparent backgrounds */
+/* Use EXACT same styling approach as Corbetts module */
 .bg-gray-800 {
-  background-color: rgb(31, 41, 55) !important;
-  background: rgb(31, 41, 55) !important;
+  background-color: rgba(31, 41, 55, 0.8) !important;
 }
 
 .bg-gray-900 {
-  background-color: rgb(17, 24, 39) !important;
-  background: rgb(17, 24, 39) !important;
+  background-color: rgba(17, 24, 39, 0.9) !important;
 }
 
 .bg-gray-700 {
-  background-color: rgb(55, 65, 81) !important;
-  background: rgb(55, 65, 81) !important;
+  background-color: rgba(55, 65, 81, 1) !important;
 }
 
-.border-gray-700 {
-  border-color: rgb(55, 65, 81) !important;
+.bg-green-600 {
+  background-color: rgba(22, 163, 74, 1) !important;
 }
 
-.border-gray-600 {
-  border-color: rgb(75, 85, 99) !important;
+.bg-opacity-50 {
+  background-color: rgba(31, 41, 55, 0.5) !important;
 }
 
-/* Ensure no transparent backgrounds override our solid ones */
-* {
-  background: initial !important;
+.bg-opacity-30 {
+  background-color: rgba(22, 163, 74, 0.3) !important;
 }
 
-/* Re-apply our specific backgrounds after the reset */
-.bg-gray-800 {
-  background-color: rgb(31, 41, 55) !important;
-  background: rgb(31, 41, 55) !important;
+.border-green-600 {
+  border-color: rgba(22, 163, 74, 1) !important;
 }
 
-.bg-gray-900 {
-  background-color: rgb(17, 24, 39) !important;
-  background: rgb(17, 24, 39) !important;
-}
-
-.bg-gray-700 {
-  background-color: rgb(55, 65, 81) !important;
-  background: rgb(55, 65, 81) !important;
+.border-opacity-30 {
+  border-color: rgba(22, 163, 74, 0.3) !important;
 }
 
 /* Responsive adjustments for smaller screens */

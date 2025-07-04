@@ -238,28 +238,31 @@ Module.register("MMM-SMH", {
             .text-blue-200 { color: #bfdbfe; }
 
             .mmm-smh-module .bg-gray-800 {
-                background-color: rgb(31, 41, 55) !important;
-                background: rgb(31, 41, 55) !important;
+                background-color: rgba(31, 41, 55, 0.8) !important;
             }
 
             .mmm-smh-module .bg-gray-900 {
-                background-color: rgb(17, 24, 39) !important;
-                background: rgb(17, 24, 39) !important;
+                background-color: rgba(17, 24, 39, 0.9) !important;
             }
 
             .mmm-smh-module .bg-blue-900 {
-                background-color: rgb(30, 58, 138) !important;
-                background: rgb(30, 58, 138) !important;
+                background-color: rgba(30, 58, 138, 0.6) !important;
             }
 
             .mmm-smh-module .bg-gray-700 {
-                background-color: rgb(55, 65, 81) !important;
-                background: rgb(55, 65, 81) !important;
+                background-color: rgba(55, 65, 81, 1) !important;
             }
 
             .mmm-smh-module .bg-green-600 {
-                background-color: rgb(22, 163, 74) !important;
-                background: rgb(22, 163, 74) !important;
+                background-color: rgba(22, 163, 74, 1) !important;
+            }
+
+            .mmm-smh-module .bg-opacity-50 {
+                background-color: rgba(31, 41, 55, 0.5) !important;
+            }
+
+            .mmm-smh-module .bg-opacity-30 {
+                background-color: rgba(22, 163, 74, 0.3) !important;
             }
 
             /* Force solid backgrounds globally within our module */
@@ -283,9 +286,13 @@ Module.register("MMM-SMH", {
             }
 
             .mmm-smh-module .border-green-600 {
-                border-color: rgb(22, 163, 74) !important;
+                border-color: rgba(22, 163, 74, 1) !important;
                 border-width: 1px !important;
                 border-style: solid !important;
+            }
+
+            .mmm-smh-module .border-opacity-30 {
+                border-color: rgba(22, 163, 74, 0.3) !important;
             }
 
             .mmm-smh-module .rounded-xl {
@@ -294,6 +301,10 @@ Module.register("MMM-SMH", {
 
             .mmm-smh-module .p-4 {
                 padding: 1rem !important;
+            }
+
+            .mmm-smh-module .p-3 {
+                padding: 0.75rem !important;
             }
 
             .mmm-smh-module .border {
