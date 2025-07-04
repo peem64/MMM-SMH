@@ -263,7 +263,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     <div className={`text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-2`}>
         
-        {/* Header - EXACT same compact structure as Corbetts */}
+        {/* Header */}
         <div className="bg-gray-800 bg-opacity-50 rounded p-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -283,7 +283,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Mountain Name and Height - EXACT same compact structure as Corbetts */}
+        {/* Mountain Name and Height */}
         <div className="bg-gray-800 bg-opacity-50 rounded p-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -296,7 +296,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Mountain Image - EXACT same compact structure as Corbetts */}
+        {/* Mountain Image */}
         <div className="bg-gray-800 bg-opacity-50 rounded overflow-hidden">
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
@@ -315,7 +315,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               </div>
             )}
             
-            {/* Location Overlay - EXACT same compact structure as Corbetts */}
+            {/* Location Overlay */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-2">
               <div className="flex items-center space-x-1 text-white text-xs">
                 <MapPin className="w-3 h-3 text-green-400" />
@@ -325,7 +325,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Stats Grid - EXACT same compact structure as Corbetts */}
+        {/* Stats Grid */}
         <div className="bg-gray-800 bg-opacity-50 rounded p-2">
           <div className="grid grid-cols-3 gap-3">
             <div className="text-center">
@@ -333,8 +333,8 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               <div className="text-xs text-gray-400">Prominence</div>
             </div>
             <div className="text-center">
-              <div className="text-sm font-bold text-green-400">{currentMunro.estimated_time_hours}</div>
-              <div className="text-xs text-gray-400">hours</div>
+              <div className="text-sm font-bold text-green-400">{currentMunro.estimated_time_hours}h</div>
+              <div className="text-xs text-gray-400">Time</div>
             </div>
             <div className="text-center">
               <div className="flex justify-center space-x-1 mb-1">
@@ -345,14 +345,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Description - EXACT same compact structure as Corbetts */}
+        {/* Description */}
         <div className="bg-gray-800 bg-opacity-50 rounded p-2">
           <p className="text-xs text-gray-300 leading-relaxed">
             {currentMunro.description}
           </p>
         </div>
 
-        {/* Popular Routes - EXACT same compact structure as Corbetts */}
+        {/* Popular Routes */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
           <div className="bg-gray-800 bg-opacity-50 rounded p-2">
             <div className="flex items-center space-x-2 mb-2">
@@ -369,7 +369,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         )}
 
-        {/* Best Seasons - EXACT same compact structure as Corbetts */}
+        {/* Best Seasons */}
         {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
           <div className="bg-gray-800 bg-opacity-50 rounded p-2">
             <div className="flex items-center space-x-2 mb-2">
