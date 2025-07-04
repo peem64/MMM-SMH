@@ -261,13 +261,11 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
   return (
     <div className={`text-white max-w-xs ${className}`}>
-      <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}>
+      <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-2`}>
         
-        {/* Single unified card container - EXACTLY like Corbetts */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
-          
-          {/* Header */}
-          <div className="flex items-center justify-between mb-3">
+        {/* Header Box - SEPARATE BOX like Corbetts */}
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Mountain className="w-4 h-4 text-blue-400" />
               <span className="text-sm font-light">Scottish Munros</span>
@@ -280,14 +278,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               })}
             </div>
           </div>
-          
-          {/* Progress indicator */}
-          <div className="text-xs text-gray-400 mb-4">
+          <div className="text-xs text-gray-400 mt-1">
             {currentIndex + 1} of {munroCount} • {minutesUntilNext}min
           </div>
+        </div>
 
-          {/* Mountain Name and Height */}
-          <div className="flex items-center justify-between mb-4">
+        {/* Mountain Name and Height Box - SEPARATE BOX like Corbetts */}
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Mountain className="w-4 h-4 text-green-400" />
               <span className="text-lg font-medium text-white">{currentMunro.name}</span>
@@ -296,9 +294,11 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               {currentMunro.height_m}m
             </div>
           </div>
+        </div>
 
-          {/* Mountain Image */}
-          <div className="relative mb-4 overflow-hidden rounded-lg">
+        {/* Mountain Image Box - SEPARATE BOX like Corbetts */}
+        <div className="bg-gray-800 bg-opacity-50 rounded overflow-hidden">
+          <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
                 src={imageUrl}
@@ -323,9 +323,11 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
+        {/* Stats Grid Box - SEPARATE BOX like Corbetts */}
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+          <div className="grid grid-cols-3 gap-3">
             <div className="text-center">
               <div className="text-sm font-bold text-blue-400">{currentMunro.prominence_m}m</div>
               <div className="text-xs text-gray-400">Prominence</div>
@@ -341,63 +343,63 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               <div className="text-xs text-gray-400">Difficulty</div>
             </div>
           </div>
-
-          {/* Description */}
-          <div className="mb-4">
-            <p className="text-xs text-gray-300 leading-relaxed">
-              {currentMunro.description}
-            </p>
-          </div>
-
-          {/* Popular Routes */}
-          {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
-            <div className="mb-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <Route className="w-3 h-3 text-orange-400" />
-                <span className="text-xs font-medium text-orange-400">Popular Routes</span>
-              </div>
-              <div className="space-y-1">
-                {currentMunro.popular_routes.slice(0, 2).map((route, index) => (
-                  <div key={index} className="text-xs text-gray-300">
-                    {route}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Best Seasons */}
-          {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
-            <div className="mb-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <Clock className="w-3 h-3 text-green-400" />
-                <span className="text-xs font-medium text-green-400">Best Seasons</span>
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {currentMunro.best_seasons.slice(0, 4).map((season, index) => (
-                  <span 
-                    key={index}
-                    className="px-2 py-1 bg-green-600 bg-opacity-30 text-green-300 rounded text-xs border border-green-600 border-opacity-30"
-                  >
-                    {season}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Debug info - only in development */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="border-t border-gray-600 pt-3 mt-3">
-              <div className="text-xs text-gray-400 space-y-1">
-                <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
-                <div>Next change: {minutesUntilNext} minutes</div>
-                <div>Image status: {imageStatus}</div>
-                <div className="text-yellow-400">Use ← → arrow keys to cycle</div>
-              </div>
-            </div>
-          )}
         </div>
+
+        {/* Description Box - SEPARATE BOX like Corbetts */}
+        <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+          <p className="text-xs text-gray-300 leading-relaxed">
+            {currentMunro.description}
+          </p>
+        </div>
+
+        {/* Popular Routes Box - SEPARATE BOX like Corbetts */}
+        {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
+          <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+            <div className="flex items-center space-x-2 mb-2">
+              <Route className="w-3 h-3 text-orange-400" />
+              <span className="text-xs font-medium text-orange-400">Popular Routes</span>
+            </div>
+            <div className="space-y-1">
+              {currentMunro.popular_routes.slice(0, 2).map((route, index) => (
+                <div key={index} className="text-xs text-gray-300">
+                  {route}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Best Seasons Box - SEPARATE BOX like Corbetts */}
+        {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
+          <div className="bg-gray-800 bg-opacity-50 rounded p-2">
+            <div className="flex items-center space-x-2 mb-2">
+              <Clock className="w-3 h-3 text-green-400" />
+              <span className="text-xs font-medium text-green-400">Best Seasons</span>
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {currentMunro.best_seasons.slice(0, 4).map((season, index) => (
+                <span 
+                  key={index}
+                  className="px-2 py-1 bg-green-600 bg-opacity-30 text-green-300 rounded text-xs border border-green-600 border-opacity-30"
+                >
+                  {season}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Debug info Box - SEPARATE BOX like Corbetts (development only) */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-gray-900 bg-opacity-50 rounded p-2">
+            <div className="text-xs text-gray-400 space-y-1">
+              <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
+              <div>Next change: {minutesUntilNext} minutes</div>
+              <div>Image status: {imageStatus}</div>
+              <div className="text-yellow-400">Use ← → arrow keys to cycle</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
