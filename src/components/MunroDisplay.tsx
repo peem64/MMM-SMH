@@ -266,100 +266,105 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
   return (
     <div className={`text-white w-80 ${className}`}>
-      <div className={`bg-gray-800 bg-opacity-90 rounded-xl backdrop-blur-sm border border-gray-700 overflow-hidden transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}>
+      <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 pb-2">
-          <div className="flex items-center space-x-2">
-            <Mountain className="w-5 h-5 text-blue-400" />
-            <span className="text-lg font-light">Scottish Munros</span>
+        {/* Header Card */}
+        <div className="bg-gray-800 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-700">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-2">
+              <Mountain className="w-5 h-5 text-blue-400" />
+              <span className="text-lg font-light">Scottish Munros</span>
+            </div>
+            <div className="text-sm text-gray-400">
+              {currentTime.toLocaleTimeString('en-GB', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                timeZone: 'UTC'
+              })}
+            </div>
           </div>
-          <div className="text-sm text-gray-400">
-            {currentTime.toLocaleTimeString('en-GB', { 
-              hour: '2-digit', 
-              minute: '2-digit',
-              timeZone: 'UTC'
-            })}
-          </div>
-        </div>
-
-        <div className="px-4 pb-3">
           <div className="text-xs text-gray-400">
             {currentIndex + 1} of {munroCount} • {minutesUntilNext}min
           </div>
         </div>
 
-        {/* Mountain Name and Height Header - matching Corbetts style */}
-        <div className="flex items-center justify-between px-4 pb-3">
-          <div className="flex items-center space-x-2">
-            <Mountain className="w-5 h-5 text-green-400" />
-            <span className="text-xl font-medium text-white">{currentMunro.name}</span>
-          </div>
-          <div className="text-2xl font-bold text-green-400">
-            {currentMunro.height_m}m
-          </div>
-        </div>
-
-        {/* Mountain Image with location overlay */}
-        <div className="relative mx-4 mb-4 rounded-lg overflow-hidden">
-          {imageStatus === 'loaded' && imageUrl ? (
-            <img 
-              src={imageUrl}
-              alt={currentMunro.name}
-              className="w-full h-48 object-cover"
-            />
-          ) : imageStatus === 'loading' ? (
-            <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
-              <Mountain className="w-12 h-12 text-gray-400 animate-pulse" />
+        {/* Mountain Name and Height Card - matching Corbetts style exactly */}
+        <div className="bg-gray-800 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Mountain className="w-5 h-5 text-green-400" />
+              <span className="text-xl font-medium text-white">{currentMunro.name}</span>
             </div>
-          ) : (
-            <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
-              <Mountain className="w-12 h-12 text-gray-400" />
-            </div>
-          )}
-          
-          {/* Location Overlay */}
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
-            <div className="flex items-center space-x-1 text-white text-sm">
-              <MapPin className="w-4 h-4 text-green-400" />
-              <span>{currentMunro.area}, {currentMunro.region}</span>
+            <div className="text-2xl font-bold text-green-400">
+              {currentMunro.height_m}m
             </div>
           </div>
         </div>
 
-        {/* Stats Grid - matching Corbetts layout */}
-        <div className="grid grid-cols-3 gap-4 px-4 mb-4">
-          <div className="bg-gray-700 bg-opacity-50 rounded-lg p-3 text-center">
-            <div className="text-lg font-bold text-blue-400">{currentMunro.prominence_m}m</div>
-            <div className="text-xs text-gray-400">Prominence</div>
-          </div>
-          <div className="bg-gray-700 bg-opacity-50 rounded-lg p-3 text-center">
-            <div className="text-lg font-bold text-green-400">{currentMunro.estimated_time_hours}</div>
-            <div className="text-xs text-gray-400">hours</div>
-          </div>
-          <div className="bg-gray-700 bg-opacity-50 rounded-lg p-3 text-center">
-            <div className="flex justify-center space-x-1 mb-1">
-              {getDifficultyStars(currentMunro.difficulty_rating)}
+        {/* Mountain Image Card with location overlay */}
+        <div className="bg-gray-800 bg-opacity-90 rounded-xl backdrop-blur-sm border border-gray-700 overflow-hidden">
+          <div className="relative">
+            {imageStatus === 'loaded' && imageUrl ? (
+              <img 
+                src={imageUrl}
+                alt={currentMunro.name}
+                className="w-full h-48 object-cover"
+              />
+            ) : imageStatus === 'loading' ? (
+              <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
+                <Mountain className="w-12 h-12 text-gray-400 animate-pulse" />
+              </div>
+            ) : (
+              <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
+                <Mountain className="w-12 h-12 text-gray-400" />
+              </div>
+            )}
+            
+            {/* Location Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
+              <div className="flex items-center space-x-1 text-white text-sm">
+                <MapPin className="w-4 h-4 text-green-400" />
+                <span>{currentMunro.area}, {currentMunro.region}</span>
+              </div>
             </div>
-            <div className="text-xs text-gray-400">Difficulty</div>
           </div>
         </div>
 
-        {/* Description */}
-        <div className="px-4 mb-4">
+        {/* Stats Grid Card - matching Corbetts layout exactly */}
+        <div className="bg-gray-800 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-700">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-lg font-bold text-blue-400">{currentMunro.prominence_m}m</div>
+              <div className="text-xs text-gray-400">Prominence</div>
+            </div>
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-400">{currentMunro.estimated_time_hours}</div>
+              <div className="text-xs text-gray-400">hours</div>
+            </div>
+            <div className="text-center">
+              <div className="flex justify-center space-x-1 mb-1">
+                {getDifficultyStars(currentMunro.difficulty_rating)}
+              </div>
+              <div className="text-xs text-gray-400">Difficulty</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Description Card */}
+        <div className="bg-gray-800 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-700">
           <p className="text-sm text-gray-300 leading-relaxed">
             {currentMunro.description}
           </p>
         </div>
 
-        {/* Popular Routes */}
+        {/* Popular Routes Card */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
-          <div className="px-4 mb-4">
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="bg-gray-800 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-700">
+            <div className="flex items-center space-x-2 mb-3">
               <Route className="w-4 h-4 text-orange-400" />
               <span className="text-sm font-medium text-orange-400">Popular Routes</span>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {currentMunro.popular_routes.slice(0, 3).map((route, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <div className="w-1 h-1 bg-green-400 rounded-full"></div>
@@ -370,14 +375,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         )}
 
-        {/* Best Seasons */}
+        {/* Best Seasons Card */}
         {currentMunro.best_seasons.length > 0 && (
-          <div className="px-4 pb-4">
-            <div className="flex items-center space-x-2 mb-2">
+          <div className="bg-gray-800 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-700">
+            <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-green-400" />
               <span className="text-sm font-medium text-green-400">Best Seasons</span>
             </div>
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-2">
               {currentMunro.best_seasons.slice(0, 4).map((season, index) => (
                 <span 
                   key={index}
@@ -392,8 +397,8 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Debug info - only in development */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="px-4 pb-4">
-            <div className="text-xs text-gray-500 bg-gray-900 bg-opacity-50 rounded p-2 space-y-1">
+          <div className="bg-gray-900 bg-opacity-90 rounded-xl p-4 backdrop-blur-sm border border-gray-600">
+            <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
