@@ -245,11 +245,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         maxWidth: '320px',
         width: '100%'
       }}>
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+        <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
+          background: 'rgb(31, 41, 55)',
           borderRadius: '0.75rem',
           padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)'
+          border: '1px solid rgb(55, 65, 81)',
+          marginBottom: '0.75rem'
         }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-2">
@@ -284,11 +286,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
         {/* Header Card */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+        <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
+          background: 'rgb(31, 41, 55)',
           borderRadius: '0.75rem',
           padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)'
+          border: '1px solid rgb(55, 65, 81)',
+          marginBottom: '0.75rem'
         }}>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
@@ -309,11 +313,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Name and Height Card - matching Corbetts style exactly */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+        <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
+          background: 'rgb(31, 41, 55)',
           borderRadius: '0.75rem',
           padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)'
+          border: '1px solid rgb(55, 65, 81)',
+          marginBottom: '0.75rem'
         }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -327,11 +333,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Image Card with location overlay */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden" style={{
+        <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
+          background: 'rgb(31, 41, 55)',
           borderRadius: '0.75rem',
           border: '1px solid rgb(55, 65, 81)',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          marginBottom: '0.75rem'
         }}>
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
@@ -382,11 +390,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Stats Grid Card - matching Corbetts layout exactly */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+        <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
+          background: 'rgb(31, 41, 55)',
           borderRadius: '0.75rem',
           padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)'
+          border: '1px solid rgb(55, 65, 81)',
+          marginBottom: '0.75rem'
         }}>
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
@@ -407,11 +417,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Description Card */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+        <div style={{
           backgroundColor: 'rgb(31, 41, 55)',
+          background: 'rgb(31, 41, 55)',
           borderRadius: '0.75rem',
           padding: '1rem',
-          border: '1px solid rgb(55, 65, 81)'
+          border: '1px solid rgb(55, 65, 81)',
+          marginBottom: '0.75rem'
         }}>
           <p className="text-sm text-gray-300 leading-relaxed">
             {currentMunro.description}
@@ -420,11 +432,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Popular Routes Card */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+          <div style={{
             backgroundColor: 'rgb(31, 41, 55)',
+            background: 'rgb(31, 41, 55)',
             borderRadius: '0.75rem',
             padding: '1rem',
-            border: '1px solid rgb(55, 65, 81)'
+            border: '1px solid rgb(55, 65, 81)',
+            marginBottom: '0.75rem'
           }}>
             <div className="flex items-center space-x-2 mb-3">
               <Route className="w-4 h-4 text-orange-400" />
@@ -443,11 +457,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Best Seasons Card */}
         {currentMunro.best_seasons.length > 0 && (
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
+          <div style={{
             backgroundColor: 'rgb(31, 41, 55)',
+            background: 'rgb(31, 41, 55)',
             borderRadius: '0.75rem',
             padding: '1rem',
-            border: '1px solid rgb(55, 65, 81)'
+            border: '1px solid rgb(55, 65, 81)',
+            marginBottom: '0.75rem'
           }}>
             <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-green-400" />
@@ -476,11 +492,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Debug info - only in development */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="bg-gray-900 rounded-xl p-4 border border-gray-600" style={{
+          <div style={{
             backgroundColor: 'rgb(17, 24, 39)',
+            background: 'rgb(17, 24, 39)',
             borderRadius: '0.75rem',
             padding: '1rem',
-            border: '1px solid rgb(75, 85, 99)'
+            border: '1px solid rgb(75, 85, 99)',
+            marginBottom: '0.75rem'
           }}>
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
