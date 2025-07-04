@@ -490,8 +490,8 @@ Module.register("MMM-SMH", {
         
         script.onload = function() {
             Log.info("MMM-SMH: React app script loaded successfully");
-            this.loaded = true;
-            this.updateDom(this.config.animationSpeed);
+            self.loaded = true;
+            self.updateDom(self.config.animationSpeed);
         };
         
         script.onerror = function(error) {
