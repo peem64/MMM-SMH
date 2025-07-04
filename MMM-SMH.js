@@ -178,7 +178,8 @@ Module.register("MMM-SMH", {
         // Create React container
         var reactContainer = document.createElement("div");
         reactContainer.id = "mmm-smh-react-" + this.identifier;
-        reactContainer.style.cssText = "display: block; width: 100%; position: relative;";
+        reactContainer.style.cssText = "display: block; width: 100%; position: relative; font-family: 'Roboto Condensed', 'Roboto', sans-serif; color: #ffffff;";
+        reactContainer.className = "mmm-smh-module";
         
         // Clear existing content and add React container
         this.moduleContainer.innerHTML = '';
@@ -245,12 +246,62 @@ Module.register("MMM-SMH", {
             .text-red-500 { color: #ef4444; }
             .text-blue-200 { color: #bfdbfe; }
 
-            .bg-gray-800 { background-color: rgba(31, 41, 55, 0.8); }
-            .bg-gray-900 { background-color: rgba(17, 24, 39, 0.9); }
-            .bg-blue-900 { background-color: rgba(30, 58, 138, 0.6); }
-            .bg-opacity-50 { background-color: rgba(31, 41, 55, 0.5); }
-            .bg-opacity-30 { background-color: rgba(31, 41, 55, 0.3); }
-            .bg-opacity-40 { background-color: rgba(30, 58, 138, 0.4); }
+            .mmm-smh-module .bg-gray-800 {
+                background-color: rgb(31, 41, 55) !important;
+                background: rgb(31, 41, 55) !important;
+            }
+
+            .mmm-smh-module .bg-gray-900 {
+                background-color: rgb(17, 24, 39) !important;
+                background: rgb(17, 24, 39) !important;
+            }
+
+            .mmm-smh-module .bg-blue-900 {
+                background-color: rgb(30, 58, 138) !important;
+                background: rgb(30, 58, 138) !important;
+            }
+
+            .mmm-smh-module .bg-gray-700 {
+                background-color: rgb(55, 65, 81) !important;
+                background: rgb(55, 65, 81) !important;
+            }
+
+            .mmm-smh-module .bg-green-600 {
+                background-color: rgb(22, 163, 74) !important;
+                background: rgb(22, 163, 74) !important;
+            }
+
+            /* Border utilities */
+            .mmm-smh-module .border-gray-700 {
+                border-color: rgb(55, 65, 81) !important;
+                border-width: 1px !important;
+                border-style: solid !important;
+            }
+
+            .mmm-smh-module .border-gray-600 {
+                border-color: rgb(75, 85, 99) !important;
+                border-width: 1px !important;
+                border-style: solid !important;
+            }
+
+            .mmm-smh-module .border-green-600 {
+                border-color: rgb(22, 163, 74) !important;
+                border-width: 1px !important;
+                border-style: solid !important;
+            }
+
+            .mmm-smh-module .rounded-xl {
+                border-radius: 0.75rem !important;
+            }
+
+            .mmm-smh-module .p-4 {
+                padding: 1rem !important;
+            }
+
+            .mmm-smh-module .border {
+                border-width: 1px !important;
+                border-style: solid !important;
+            }
 
             .border-blue-700 { border-color: #1d4ed8; }
             .border-opacity-30 { border-color: rgba(29, 78, 216, 0.3); }
