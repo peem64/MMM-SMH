@@ -463,29 +463,15 @@ Module.register("MMM-SMH", {
         var existingScript = document.querySelector('script[data-mmm-smh="true"]');
         if (existingScript) {
             Log.info("MMM-SMH: React script already loaded");
-            // Force reload by removing existing script
-            existingScript.remove();
-            Log.info("MMM-SMH: Removed existing script, reloading...");
+            this.loaded = true;
+            this.updateDom(this.config.animationSpeed);
+            return;
         }
-        
-        // Also remove any existing CSS
-        var existingCSS = document.querySelector('link[data-mmm-smh-css="true"]');
-        if (existingCSS) {
-            existingCSS.remove();
-            Log.info("MMM-SMH: Removed existing CSS");
-        }
-        
-        // Load CSS first
-        var cssLink = document.createElement("link");
-        cssLink.rel = "stylesheet";
-        cssLink.href = this.file("dist/assets/index.css");
-        cssLink.setAttribute("data-mmm-smh-css", "true");
-        document.head.appendChild(cssLink);
         
         // Create a script element to load the built React app
         var script = document.createElement("script");
         script.type = "module";
-        script.src = this.file("dist/assets/index.js") + "?v=" + Date.now(); // Cache busting
+        script.src = this.file("dist/assets/index.js");
         script.setAttribute("data-mmm-smh", "true");
         
         script.onload = function() {
