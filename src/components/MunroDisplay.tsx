@@ -12,7 +12,8 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [imageError, setImageError] = useState(false);
+  const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+  const [imageUrl, setImageUrl] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<string>('');
 
   // Update time every minute
@@ -41,6 +42,63 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     initializeCount();
   }, []);
 
+  // Preload image when munro changes
+  useEffect(() => {
+    if (!currentMunro?.image_filename) {
+      setImageStatus('error');
+      setImageUrl('');
+      return;
+    }
+
+    setImageStatus('loading');
+    const img = new Image();
+    
+    const handleLoad = () => {
+      setImageStatus('loaded');
+      setImageUrl(img.src);
+    };
+    
+    const handleError = () => {
+      // Try alternative paths
+      const filename = currentMunro.image_filename;
+      const altPaths = [
+        'modules/MMM-SMH/public/images/munros/' + filename,
+        'modules/MMM-SMH/images/munros/' + filename,
+        '/modules/MMM-SMH/dist/images/munros/' + filename,
+        '/modules/MMM-SMH/public/images/munros/' + filename,
+        '/modules/MMM-SMH/images/munros/' + filename,
+        'images/munros/' + filename,
+        './images/munros/' + filename,
+        '/images/munros/' + filename
+      ];
+      
+      const currentSrc = img.src;
+      const currentPathIndex = altPaths.findIndex(path => currentSrc.includes(path.split('/').pop() || ''));
+      
+      if (currentPathIndex < altPaths.length - 1) {
+        // Try next path
+        const nextPath = altPaths[currentPathIndex + 1];
+        console.log(`MMM-SMH: Image failed, trying: ${nextPath}`);
+        img.src = nextPath;
+      } else {
+        // All paths failed
+        console.log(`MMM-SMH: All image paths failed for: ${filename}`);
+        setImageStatus('error');
+        setImageUrl('');
+      }
+    };
+    
+    img.addEventListener('load', handleLoad);
+    img.addEventListener('error', handleError);
+    
+    // Start loading with the first path
+    img.src = getImagePath(currentMunro.image_filename);
+    
+    return () => {
+      img.removeEventListener('load', handleLoad);
+      img.removeEventListener('error', handleError);
+    };
+  }, [currentMunro?.image_filename]);
   // Load munro by index
   const loadMunro = async (index: number) => {
     if (munroCount === 0) return;
@@ -48,7 +106,8 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     try {
       console.log(`MMM-SMH: Loading Munro at index ${index} of ${munroCount}`);
       setIsTransitioning(true);
-      setImageError(false);
+      setImageStatus('loading');
+      setImageUrl('');
       
       const munro = await getMunroByIndex(index);
       
@@ -181,39 +240,6 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     return basePaths[0] + filename;
   };
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const img = e.target as HTMLImageElement;
-    const filename = currentMunro?.image_filename;
-    
-    if (!filename) return;
-    
-    // Try alternative paths
-    const altPaths = [
-      'modules/MMM-SMH/public/images/munros/' + filename,
-      'modules/MMM-SMH/images/munros/' + filename,
-      '/modules/MMM-SMH/dist/images/munros/' + filename,
-      '/modules/MMM-SMH/public/images/munros/' + filename,
-      '/modules/MMM-SMH/images/munros/' + filename,
-      'images/munros/' + filename,
-      './images/munros/' + filename,
-      // Fallback to development path
-      '/images/munros/' + filename
-    ];
-    
-    const currentSrc = img.src;
-    const currentPathIndex = altPaths.findIndex(path => currentSrc.includes(path.split('/').pop() || ''));
-    
-    if (currentPathIndex < altPaths.length - 1) {
-      // Try next path
-      const nextPath = altPaths[currentPathIndex + 1];
-      console.log(`MMM-SMH: Image failed, trying: ${nextPath}`);
-      img.src = nextPath;
-    } else {
-      // All paths failed, show placeholder
-      console.log(`MMM-SMH: All image paths failed for: ${filename}`);
-      setImageError(true);
-    }
-  };
 
   // Calculate time until next Munro change
   const getTimeUntilNextChange = () => {
@@ -269,14 +295,17 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         <div className="space-y-2">
           {/* Mountain image - increased height by 30px (from 140px to 170px) */}
           <div className="w-full">
-            {!imageError ? (
+            {imageStatus === 'loaded' && imageUrl ? (
               <img 
-                src={getImagePath(currentMunro.image_filename)}
+                src={imageUrl}
                 alt={currentMunro.name}
                 className="w-full h-42 object-cover rounded bg-gray-800"
-                onError={handleImageError}
                 style={{ width: '100%', height: '170px' }}
               />
+            ) : imageStatus === 'loading' ? (
+              <div className="w-full h-42 bg-gray-800 rounded flex items-center justify-center" style={{ height: '170px' }}>
+                <Mountain className="w-8 h-8 text-gray-400 animate-pulse" />
+              </div>
             ) : (
               <div className="w-full h-42 bg-gray-800 rounded flex items-center justify-center" style={{ height: '170px' }}>
                 <Mountain className="w-8 h-8 text-gray-400" />
@@ -365,6 +394,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             <div className="text-xs text-gray-500 mt-1 p-1 bg-gray-900 bg-opacity-50 rounded">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
+              <div>Image status: {imageStatus}</div>
               <div className="text-yellow-400">Use ← → arrow keys to cycle</div>
             </div>
           )}
