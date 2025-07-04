@@ -265,7 +265,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const minutesUntilNext = getTimeUntilNextChange();
 
   return (
-    <div className={`text-white w-80 ${className}`}>
+    <div className={`mmm-smh-module text-white w-80 ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
         {/* Header Card */}
