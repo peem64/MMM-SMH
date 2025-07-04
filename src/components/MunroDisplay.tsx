@@ -248,10 +248,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
         {/* Header Card */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
-          backgroundColor: 'rgb(31, 41, 55)',
-          borderColor: 'rgb(55, 65, 81)'
-        }}>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <Mountain className="w-5 h-5 text-blue-400" />
@@ -271,10 +268,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Name and Height Card - matching Corbetts style exactly */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
-          backgroundColor: 'rgb(31, 41, 55)',
-          borderColor: 'rgb(55, 65, 81)'
-        }}>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Mountain className="w-5 h-5 text-green-400" />
@@ -287,10 +281,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Mountain Image Card with location overlay */}
-        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden" style={{
-          backgroundColor: 'rgb(31, 41, 55)',
-          borderColor: 'rgb(55, 65, 81)'
-        }}>
+        <div className="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
@@ -319,10 +310,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Stats Grid Card - matching Corbetts layout exactly */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
-          backgroundColor: 'rgb(31, 41, 55)',
-          borderColor: 'rgb(55, 65, 81)'
-        }}>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
               <div className="text-lg font-bold text-blue-400">{currentMunro?.prominence_m}m</div>
@@ -342,10 +330,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
         </div>
 
         {/* Description Card */}
-        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
-          backgroundColor: 'rgb(31, 41, 55)',
-          borderColor: 'rgb(55, 65, 81)'
-        }}>
+        <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
           <p className="text-sm text-gray-300 leading-relaxed">
             {currentMunro?.description}
           </p>
@@ -353,10 +338,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Popular Routes Card */}
         {currentMunro?.popular_routes && currentMunro.popular_routes.length > 0 && (
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
-            backgroundColor: 'rgb(31, 41, 55)',
-            borderColor: 'rgb(55, 65, 81)'
-          }}>
+          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div className="flex items-center space-x-2 mb-3">
               <Route className="w-4 h-4 text-orange-400" />
               <span className="text-sm font-medium text-orange-400">Popular Routes</span>
@@ -374,10 +356,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Best Seasons Card */}
         {currentMunro?.best_seasons && currentMunro.best_seasons.length > 0 && (
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700" style={{
-            backgroundColor: 'rgb(31, 41, 55)',
-            borderColor: 'rgb(55, 65, 81)'
-          }}>
+          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
             <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-green-400" />
               <span className="text-sm font-medium text-green-400">Best Seasons</span>
@@ -387,10 +366,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
                 <span 
                   key={index}
                   className="px-2 py-1 text-green-300 rounded text-xs"
-                  style={{
-                    backgroundColor: 'rgba(22, 163, 74, 0.3)',
-                    border: '1px solid rgba(22, 163, 74, 0.3)'
-                  }}
+                  style={{ backgroundColor: 'rgba(22, 163, 74, 0.3)', border: '1px solid rgba(22, 163, 74, 0.3)' }}
                 >
                   {season}
                 </span>
@@ -401,10 +377,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Debug info - only in development */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="bg-gray-900 rounded-xl p-4 border border-gray-600" style={{
-            backgroundColor: 'rgb(17, 24, 39)',
-            borderColor: 'rgb(75, 85, 99)'
-          }}>
+          <div className="bg-gray-900 rounded-xl p-4 border border-gray-600">
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
