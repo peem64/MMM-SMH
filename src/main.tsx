@@ -33,8 +33,9 @@ function initStandardApp() {
 }
 
 // MagicMirror module initialization with shadow DOM support
-function initMagicMirrorApp(containerId: string, shadowRoot?: ShadowRoot) {
+function initMagicMirrorApp(containerId: string, shadowRoot?: ShadowRoot, config?: any) {
   console.log('MMM-SMH: Attempting to initialize React app in container:', containerId);
+  console.log('MMM-SMH: Module config received:', config);
   
   // Prevent double initialization
   if (initializedContainers.has(containerId)) {
@@ -69,9 +70,16 @@ function initMagicMirrorApp(containerId: string, shadowRoot?: ShadowRoot) {
         const root = createRoot(container);
         rootInstances.set(containerId, root);
         
+        // Use config from MagicMirror module or defaults
+        const appConfig = config || {
+          mountainType: 'munros',
+          title: 'Scottish Munros',
+          iconColor: 'text-blue-400'
+        };
+        
         root.render(
           <StrictMode>
-            <App />
+            <App {...appConfig} />
           </StrictMode>
         );
         

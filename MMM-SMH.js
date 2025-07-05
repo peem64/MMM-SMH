@@ -527,7 +527,13 @@ Module.register("MMM-SMH", {
                 if (container && typeof window !== 'undefined' && window.MMMSMHApp && window.MMMSMHApp.init) {
                     try {
                         Log.info("MMM-SMH: Found container and React app, initializing...");
-                        window.MMMSMHApp.init(containerId, self.shadowRoot);
+                        // Pass the module configuration to the React app
+                        var moduleConfig = {
+                            mountainType: self.config.mountainType || 'munros',
+                            title: self.config.title || 'Scottish Munros',
+                            iconColor: self.config.iconColor || 'text-blue-400'
+                        };
+                        window.MMMSMHApp.init(containerId, self.shadowRoot, moduleConfig);
                         Log.info("MMM-SMH: React app initialized successfully");
                         return;
                     } catch (error) {
