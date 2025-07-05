@@ -1,10 +1,10 @@
 import React from 'react';
-import MunroDisplay from './components/MunroDisplay';
+import MountainDisplay from './components/MunroDisplay';
 
 function App() {
   return (
     <div className="mmm-smh-app">
-      <MunroDisplay />
+      <MountainDisplay mountainType="munros" title="Scottish Munros" iconColor="text-blue-400" />
     </div>
   );
 }

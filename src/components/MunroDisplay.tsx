@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Mountain, MapPin, Clock, TrendingUp, Route, Star } from 'lucide-react';
-import { Munro, getMunroByIndex, getMunroCount } from '../lib/supabase';
+import { Mountain as MountainType, getMountainByIndex, getMountainCount } from '../lib/supabase';
 
-interface MunroDisplayProps {
+interface MountainDisplayProps {
   className?: string;
+  mountainType?: 'munros' | 'corbetts';
+  title?: string;
+  iconColor?: string;
 }
 
-export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
-  const [currentMunro, setCurrentMunro] = useState<Munro | null>(null);
-  const [munroCount, setMunroCount] = useState<number>(0);
+export default function MountainDisplay({ 
+  className = '', 
+  mountainType = 'munros',
+  title = 'Scottish Munros',
+  iconColor = 'text-blue-400'
+}: MountainDisplayProps) {
+  const [currentMountain, setCurrentMountain] = useState<MountainType | null>(null);
+  const [mountainCount, setMountainCount] = useState<number>(0);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -25,26 +33,26 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     return () => clearInterval(timer);
   }, []);
 
-  // Initialize munro count
+  // Initialize mountain count
   useEffect(() => {
     const initializeCount = async () => {
       try {
-        const count = await getMunroCount();
-        console.log('MMM-SMH: Total Munros in database:', count);
-        setMunroCount(count);
+        const count = await getMountainCount(mountainType);
+        console.log(`MMM-SMH: Total ${mountainType} in database:`, count);
+        setMountainCount(count);
         setDebugInfo(`DB Count: ${count}`);
       } catch (error) {
-        console.error('MMM-SMH: Error getting munro count:', error);
+        console.error(`MMM-SMH: Error getting ${mountainType} count:`, error);
         setDebugInfo('Error loading count');
       }
     };
 
     initializeCount();
-  }, []);
+  }, [mountainType]);
 
-  // Preload image when munro changes
+  // Preload image when mountain changes
   useEffect(() => {
-    if (!currentMunro?.image_filename) {
+    if (!currentMountain?.image_filename) {
       setImageStatus('error');
       setImageUrl('');
       return;
@@ -60,16 +68,17 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     
     const handleError = () => {
       // Try alternative paths
-      const filename = currentMunro.image_filename;
+      const filename = currentMountain.image_filename;
+      const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
       const altPaths = [
-        'modules/MMM-SMH/public/images/munros/' + filename,
-        'modules/MMM-SMH/images/munros/' + filename,
-        '/modules/MMM-SMH/dist/images/munros/' + filename,
-        '/modules/MMM-SMH/public/images/munros/' + filename,
-        '/modules/MMM-SMH/images/munros/' + filename,
-        'images/munros/' + filename,
-        './images/munros/' + filename,
-        '/images/munros/' + filename
+        `modules/MMM-SMH/public/images/${basePath}/${filename}`,
+        `modules/MMM-SMH/images/${basePath}/${filename}`,
+        `/modules/MMM-SMH/dist/images/${basePath}/${filename}`,
+        `/modules/MMM-SMH/public/images/${basePath}/${filename}`,
+        `/modules/MMM-SMH/images/${basePath}/${filename}`,
+        `images/${basePath}/${filename}`,
+        `./images/${basePath}/${filename}`,
+        `/images/${basePath}/${filename}`
       ];
       
       const currentSrc = img.src;
@@ -92,77 +101,77 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     img.addEventListener('error', handleError);
     
     // Start loading with the first path
-    img.src = getImagePath(currentMunro.image_filename);
+    img.src = getImagePath(currentMountain.image_filename);
     
     return () => {
       img.removeEventListener('load', handleLoad);
       img.removeEventListener('error', handleError);
     };
-  }, [currentMunro?.image_filename]);
+  }, [currentMountain?.image_filename, mountainType]);
 
-  // Load munro by index
-  const loadMunro = async (index: number) => {
-    if (munroCount === 0) return;
+  // Load mountain by index
+  const loadMountain = async (index: number) => {
+    if (mountainCount === 0) return;
     
     try {
-      console.log(`MMM-SMH: Loading Munro at index ${index} of ${munroCount}`);
+      console.log(`MMM-SMH: Loading ${mountainType} at index ${index} of ${mountainCount}`);
       setIsTransitioning(true);
       setImageStatus('loading');
       setImageUrl('');
       
-      const munro = await getMunroByIndex(index);
+      const mountain = await getMountainByIndex(index, mountainType);
       
-      if (munro) {
-        console.log(`MMM-SMH: Loaded Munro: ${munro.name} (${index + 1}/${munroCount})`);
+      if (mountain) {
+        console.log(`MMM-SMH: Loaded ${mountainType}: ${mountain.name} (${index + 1}/${mountainCount})`);
         setTimeout(() => {
-          setCurrentMunro(munro);
+          setCurrentMountain(mountain);
           setIsTransitioning(false);
         }, 300);
       } else {
-        console.error(`MMM-SMH: No Munro found at index ${index}`);
-        setDebugInfo(`No Munro at index ${index}`);
+        console.error(`MMM-SMH: No ${mountainType} found at index ${index}`);
+        setDebugInfo(`No ${mountainType} at index ${index}`);
       }
     } catch (error) {
-      console.error('MMM-SMH: Error loading munro:', error);
+      console.error(`MMM-SMH: Error loading ${mountainType}:`, error);
       setDebugInfo(`Error loading index ${index}`);
       setIsTransitioning(false);
     }
   };
 
-  // Calculate current Munro index based on UTC hour
-  const getCurrentMunroIndex = () => {
-    if (munroCount === 0) return 0;
+  // Calculate current mountain index based on UTC hour
+  const getCurrentMountainIndex = () => {
+    if (mountainCount === 0) return 0;
     
     const now = new Date();
     const hoursSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 60));
-    const calculatedIndex = hoursSinceEpoch % munroCount;
+    const calculatedIndex = hoursSinceEpoch % mountainCount;
     
     console.log(`MMM-SMH: Time calculation - UTC: ${now.toISOString()}, Hours since epoch: ${hoursSinceEpoch}, Index: ${calculatedIndex}`);
     
     return calculatedIndex;
   };
 
-  // Initialize with calculated current munro based on time
+  // Initialize with calculated current mountain based on time
   useEffect(() => {
-    if (munroCount > 0) {
-      const calculatedIndex = getCurrentMunroIndex();
+    if (mountainCount > 0) {
+      const calculatedIndex = getCurrentMountainIndex();
       console.log(`MMM-SMH: Initializing with calculated index ${calculatedIndex}`);
       setCurrentIndex(calculatedIndex);
-      loadMunro(calculatedIndex);
+      loadMountain(calculatedIndex);
     }
-  }, [munroCount]);
+  }, [mountainCount, mountainType]);
 
-  // Check for hour changes and update munro accordingly
+  // Check for hour changes and update mountain accordingly
   useEffect(() => {
-    if (munroCount === 0) return;
+    if (mountainCount === 0) return;
 
     const checkForHourChange = () => {
-      const newIndex = getCurrentMunroIndex();
+      const newIndex = getCurrentMountainIndex();
       
       if (newIndex !== currentIndex) {
-        console.log(`MMM-SMH: Hour changed! Switching from Munro ${currentIndex} to ${newIndex}`);
+        console.log(`MMM-SMH: Hour changed! Switching from ${mountainType} ${currentIndex} to ${newIndex}`);
         setCurrentIndex(newIndex);
-        loadMunro(newIndex);
+        loadMountain(newIndex);
       }
     };
 
@@ -170,7 +179,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     const interval = setInterval(checkForHourChange, 60000);
 
     return () => clearInterval(interval);
-  }, [munroCount, currentIndex]);
+  }, [mountainCount, currentIndex, mountainType]);
 
   // REMOVE IN PRODUCTION: Manual cycling for testing
   useEffect(() => {
@@ -178,22 +187,22 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     if (process.env.NODE_ENV !== 'development') return;
 
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight' && munroCount > 0) {
-        const nextIndex = (currentIndex + 1) % munroCount;
+      if (event.key === 'ArrowRight' && mountainCount > 0) {
+        const nextIndex = (currentIndex + 1) % mountainCount;
         console.log(`MMM-SMH: Manual advance to index ${nextIndex}`);
         setCurrentIndex(nextIndex);
-        loadMunro(nextIndex);
-      } else if (event.key === 'ArrowLeft' && munroCount > 0) {
-        const prevIndex = currentIndex === 0 ? munroCount - 1 : currentIndex - 1;
+        loadMountain(nextIndex);
+      } else if (event.key === 'ArrowLeft' && mountainCount > 0) {
+        const prevIndex = currentIndex === 0 ? mountainCount - 1 : currentIndex - 1;
         console.log(`MMM-SMH: Manual back to index ${prevIndex}`);
         setCurrentIndex(prevIndex);
-        loadMunro(prevIndex);
+        loadMountain(prevIndex);
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentIndex, munroCount]);
+  }, [currentIndex, mountainCount]);
 
   const getDifficultyStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -206,29 +215,31 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
   // Get the correct image path for MagicMirror and development
   const getImagePath = (filename: string) => {
+    const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
+    
     // For development mode, use the public folder directly
     if (import.meta.env.DEV) {
-      return `/images/munros/${filename}`;
+      return `/images/${basePath}/${filename}`;
     }
     
     // For production/MagicMirror, try multiple possible paths
     const basePaths = [
-      'modules/MMM-SMH/dist/images/munros/',
-      'modules/MMM-SMH/public/images/munros/',
-      'modules/MMM-SMH/images/munros/',
-      '/modules/MMM-SMH/dist/images/munros/',
-      '/modules/MMM-SMH/public/images/munros/',
-      '/modules/MMM-SMH/images/munros/',
+      `modules/MMM-SMH/dist/images/${basePath}/`,
+      `modules/MMM-SMH/public/images/${basePath}/`,
+      `modules/MMM-SMH/images/${basePath}/`,
+      `/modules/MMM-SMH/dist/images/${basePath}/`,
+      `/modules/MMM-SMH/public/images/${basePath}/`,
+      `/modules/MMM-SMH/images/${basePath}/`,
       // Also try relative paths from dist
-      'images/munros/',
-      './images/munros/'
+      `images/${basePath}/`,
+      `./images/${basePath}/`
     ];
     
     // Return the first path (we'll handle fallbacks in onError)
     return basePaths[0] + filename;
   };
 
-  // Calculate time until next Munro change
+  // Calculate time until next mountain change
   const getTimeUntilNextChange = () => {
     const now = new Date();
     const nextHour = new Date(now);
@@ -241,15 +252,34 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     return diffMinutes;
   };
 
-  if (!currentMunro) {
+  // Format estimated time based on mountain type
+  const formatEstimatedTime = (time: number | string) => {
+    if (typeof time === 'number') {
+      return `${time}h`;
+    }
+    return time;
+  };
+
+  // Get location string based on mountain type
+  const getLocationString = (mountain: MountainType) => {
+    if (mountain.area) {
+      return `${mountain.area}, ${mountain.region}`;
+    }
+    if (mountain.location) {
+      return `${mountain.location}, ${mountain.region}`;
+    }
+    return mountain.region;
+  };
+
+  if (!currentMountain) {
     return (
       <div className={`text-white max-w-xs ${className}`}>
         <div className="flex items-center space-x-2 mb-2">
-          <Mountain className="w-4 h-4 text-blue-400 animate-pulse" />
+          <Mountain className={`w-4 h-4 ${iconColor} animate-pulse`} />
           <div>
-            <div className="text-sm font-light">Scottish Munros</div>
+            <div className="text-sm font-light">{title}</div>
             <div className="text-xs text-gray-400">
-              {munroCount > 0 ? `Loading... (${debugInfo})` : 'Connecting...'}
+              {mountainCount > 0 ? `Loading... (${debugInfo})` : 'Connecting...'}
             </div>
           </div>
         </div>
@@ -263,12 +293,12 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     <div className={`text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
-        {/* Header with title and time - EXACT SAME AS CORBETT */}
+        {/* Header with title and time */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
-              <Mountain className="w-5 h-5 text-blue-400" />
-              <span className="text-lg font-light">Scottish Munros</span>
+              <Mountain className={`w-5 h-5 ${iconColor}`} />
+              <span className="text-lg font-light">{title}</span>
             </div>
             <div className="text-sm text-gray-400">
               {currentTime.toLocaleTimeString('en-GB', { 
@@ -279,30 +309,30 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             </div>
           </div>
           <div className="text-sm text-gray-300">
-            {currentIndex + 1} of {munroCount} • {minutesUntilNext}min
+            {currentIndex + 1} of {mountainCount} • {minutesUntilNext}min
           </div>
         </div>
 
-        {/* Mountain name and height - EXACT SAME AS CORBETT */}
+        {/* Mountain name and height */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <div className="flex items-center justify-between mb-2">
             <Mountain className="w-6 h-6 text-green-400" />
             <div className="text-2xl font-bold text-green-400">
-              {currentMunro.height_m}m
+              {currentMountain.height}m
             </div>
           </div>
           <h2 className="text-xl font-medium text-white leading-relaxed">
-            {currentMunro.name}
+            {currentMountain.name}
           </h2>
         </div>
 
-        {/* Mountain image - EXACT SAME AS CORBETT */}
+        {/* Mountain image */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl overflow-hidden border border-gray-700">
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
                 src={imageUrl}
-                alt={currentMunro.name}
+                alt={currentMountain.name}
                 className="w-full h-35 object-cover"
               />
             ) : imageStatus === 'loading' ? (
@@ -315,52 +345,52 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               </div>
             )}
             
-            {/* Location overlay - EXACT SAME AS CORBETT */}
+            {/* Location overlay */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
               <div className="flex items-center space-x-2 text-white">
                 <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
-                <span className="text-sm">{currentMunro.area}, {currentMunro.region}</span>
+                <span className="text-sm">{getLocationString(currentMountain)}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats grid - EXACT SAME AS CORBETT */}
+        {/* Stats grid */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-lg font-bold text-blue-400">{currentMunro.prominence_m}m</div>
+              <div className="text-lg font-bold text-blue-400">{currentMountain.prominence}m</div>
               <div className="text-xs text-gray-400">Prominence</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-green-400">{currentMunro.estimated_time_hours}h</div>
+              <div className="text-lg font-bold text-green-400">{formatEstimatedTime(currentMountain.estimated_time)}</div>
               <div className="text-xs text-gray-400">Time</div>
             </div>
             <div className="text-center">
               <div className="flex justify-center space-x-1 mb-1">
-                {getDifficultyStars(currentMunro.difficulty_rating)}
+                {getDifficultyStars(currentMountain.difficulty_rating)}
               </div>
               <div className="text-xs text-gray-400">Difficulty</div>
             </div>
           </div>
         </div>
 
-        {/* Description - EXACT SAME AS CORBETT */}
+        {/* Description */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <p className="text-sm text-gray-300 leading-relaxed line-clamp-4">
-            {currentMunro.description}
+            {currentMountain.description}
           </p>
         </div>
 
-        {/* Popular Routes - EXACT SAME AS CORBETT */}
-        {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
+        {/* Popular Routes */}
+        {currentMountain.popular_routes && currentMountain.popular_routes.length > 0 && (
           <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
             <div className="flex items-center space-x-2 mb-3">
               <Route className="w-4 h-4 text-orange-400" />
               <span className="text-sm font-medium text-orange-400">Popular Routes</span>
             </div>
             <div className="space-y-2">
-              {currentMunro.popular_routes.slice(0, 3).map((route, index) => (
+              {currentMountain.popular_routes.slice(0, 3).map((route, index) => (
                 <div key={index} className="text-sm text-gray-300">
                   • {route}
                 </div>
@@ -369,15 +399,15 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         )}
 
-        {/* Best Seasons - EXACT SAME AS CORBETT */}
-        {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
+        {/* Best Seasons */}
+        {currentMountain.best_seasons && currentMountain.best_seasons.length > 0 && (
           <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
             <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-green-400" />
               <span className="text-sm font-medium text-green-400">Best Seasons</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {currentMunro.best_seasons.slice(0, 4).map((season, index) => (
+              {currentMountain.best_seasons.slice(0, 4).map((season, index) => (
                 <span 
                   key={index}
                   className="px-3 py-1 bg-green-600 bg-opacity-30 text-green-300 rounded text-sm border border-green-600 border-opacity-30"
@@ -389,13 +419,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         )}
 
-        {/* Debug info - EXACT SAME AS CORBETT (development only) */}
+        {/* Debug info (development only) */}
         {process.env.NODE_ENV === 'development' && (
           <div className="bg-gray-900 bg-opacity-50 rounded-xl p-4 border border-gray-600">
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
+              <div>Type: {mountainType}</div>
               <div className="text-yellow-400">Use ← → arrow keys to cycle</div>
             </div>
           </div>
