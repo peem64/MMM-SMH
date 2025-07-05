@@ -1,35 +1,34 @@
-# MMM-SMH - Scottish Munros Highland Module
+# MMM-SMH - Scottish Mountains Highland Module
 
-A beautiful MagicMirror module that displays detailed information about Scottish Munros, rotating through all 282 peaks every hour.
+A beautiful MagicMirror module that displays detailed information about Scottish mountains, rotating through all peaks every hour. Supports both **Munros** (282 peaks) and **Corbetts** (219 peaks) with identical visual design.
 
-## Features
+## 🏔️ Features
 
-- **Hourly Rotation**: Automatically cycles through all 282 Scottish Munros every hour
-- **Comprehensive Data**: Each Munro includes:
-  - Height (meters and feet) and prominence
-  - Location, region, and OS grid reference
-  - Difficulty rating (1-5 scale)
+- **Dual Mountain Support**: Display either Scottish Munros or Corbetts using the same component
+- **Hourly Rotation**: Automatically cycles through all mountains every hour based on UTC time
+- **Comprehensive Data**: Each mountain includes:
+  - Height, prominence, and location details
+  - Difficulty rating (1-5 scale) with star display
   - Estimated completion time
   - Popular climbing routes
   - Best seasons for climbing
-  - Historical information and significance
-  - Detailed descriptions
+  - Detailed descriptions and historical information
+  - High-quality mountain images
 
-- **Local Image Support**: Displays high-quality images stored locally
-- **Real-time Clock**: Shows current time and next rotation schedule
-- **Responsive Design**: Optimized for mirror displays with high contrast
-- **Smooth Transitions**: Elegant fade effects between Munros
+- **Smart Image System**: Local image support with intelligent fallback paths
+- **Real-time Clock**: Shows current UTC time and countdown to next rotation
+- **Responsive Design**: Optimized for MagicMirror displays with high contrast
+- **Smooth Transitions**: Elegant fade effects between mountains
+- **Development Tools**: Arrow key navigation for testing
 
-## MagicMirror Installation
+## 🚀 Quick Start
 
 ### Prerequisites
 - MagicMirror² installed and running
-- Node.js and npm
+- Node.js 16+ and npm
 - Supabase account and project
 
-### Step 1: Install the Module
-
-Navigate to your MagicMirror modules directory and clone this repository:
+### 1. Install the Module
 
 ```bash
 cd ~/MagicMirror/modules
@@ -38,136 +37,178 @@ cd MMM-SMH
 npm install
 ```
 
-### Step 2: Database Setup
+### 2. Database Setup
 
-1. **Create a Supabase Project**
+1. **Create Supabase Project**
    - Go to [supabase.com](https://supabase.com) and create a new project
-   - Note your project URL and anon key
+   - Note your project URL and anon key from Settings > API
 
-2. **Run Database Migration**
-   - In your Supabase dashboard, go to SQL Editor
-   - Copy and paste the contents of `supabase/migrations/20250628092129_silent_credit.sql`
-   - Run the migration to create the munros table and populate it with data
+2. **Run Database Migrations**
+   - In Supabase dashboard, go to SQL Editor
+   - Run the migration files in order from `supabase/migrations/`
+   - This creates both `munros` and `corbetts` tables with complete datasets
 
-### Step 3: Build the Module
+### 3. Build the Module
 
-**IMPORTANT**: You must build the module before using it in MagicMirror:
+**CRITICAL**: You must build before using in MagicMirror:
 
 ```bash
 cd ~/MagicMirror/modules/MMM-SMH
 npm run build
 ```
 
-This creates the `dist/` folder with the compiled React application that MagicMirror will load.
+### 4. Configure MagicMirror
 
-### Step 4: Image Setup
-
-1. **Prepare Munro Images**
-   - Place all 282 Munro images in `public/images/munros/`
-   - Use naming convention: lowercase with underscores (e.g., `ben_nevis.jpg`)
-   - Recommended specs:
-     - Format: JPEG
-     - Size: Minimum 800x600 pixels
-     - Orientation: Landscape preferred
-
-2. **Image Naming Examples**
-   ```
-   public/images/munros/
-   ├── ben_nevis.jpg
-   ├── cairn_gorm.jpg
-   ├── aonach_beag.jpg
-   ├── braeriach.jpg
-   ├── schiehallion.jpg
-   ├── ben_macdui.jpg
-   └── ... (all 282 munros)
-   ```
-
-### Step 5: MagicMirror Configuration
-
-Add the module to your MagicMirror config file (`~/MagicMirror/config/config.js`):
+Add to your `~/MagicMirror/config/config.js`:
 
 ```javascript
 {
     module: "MMM-SMH",
-    position: "fullscreen_below", // or your preferred position
+    position: "top_left", // or top_right, bottom_left, bottom_right
     config: {
         // REQUIRED: Your Supabase credentials
         supabaseUrl: "https://your-project.supabase.co",
         supabaseAnonKey: "your-anon-key-here",
         
+        // Choose mountain type
+        mountainType: "munros", // or "corbetts"
+        title: "Scottish Munros", // or "Scottish Corbetts"
+        iconColor: "text-blue-400", // or any Tailwind color class
+        
         // Optional settings
         updateInterval: 60000,      // Check for updates every minute
         animationSpeed: 1000,       // Animation speed in ms
-        maxWidth: "100%",           // Maximum width
-        maxHeight: "100%"           // Maximum height
+        maxWidth: "300px",          // Maximum width
+        maxHeight: "auto"           // Maximum height
     }
 }
 ```
 
-**CRITICAL**: You must set your Supabase credentials in the config. Get these from your Supabase project dashboard:
-- **supabaseUrl**: Found in Project Settings > API > Project URL
-- **supabaseAnonKey**: Found in Project Settings > API > Project API keys > anon public
+### 5. Add Images (Optional)
 
-### Step 6: Start MagicMirror
+Place mountain images in the appropriate directories:
+- Munros: `public/images/munros/`
+- Corbetts: `public/images/corbetts/`
+
+Expected naming: `ben_nevis.jpg`, `schiehallion.jpg`, etc. (lowercase, underscores)
+
+### 6. Start MagicMirror
 
 ```bash
 cd ~/MagicMirror
 npm start
 ```
 
-## Module Positions
+## 🏗️ Architecture
 
-The module works best in these MagicMirror positions:
-- `fullscreen_below` - Full screen display (recommended)
-- `middle_center` - Center region
-- `lower_third` - Bottom section
+### Component Structure
 
-## Configuration Options
+```
+MMM-SMH/
+├── MMM-SMH.js                    # MagicMirror module file
+├── src/
+│   ├── components/
+│   │   └── MunroDisplay.tsx      # Main mountain display component
+│   ├── lib/
+│   │   └── supabase.ts           # Database client & utilities
+│   └── App.tsx                   # Root component
+├── public/
+│   └── images/
+│       ├── munros/               # Munro images
+│       └── corbetts/             # Corbett images
+├── dist/                         # Built files (after npm run build)
+├── supabase/
+│   └── migrations/               # Database schema & data
+└── package.json
+```
+
+### Data Flow
+
+1. **Time-Based Selection**: Module calculates current mountain based on UTC hour
+2. **Database Query**: Fetches mountain data from Supabase (munros or corbetts table)
+3. **Image Loading**: Attempts to load local images with intelligent fallback
+4. **Display Update**: Shows mountain with smooth transitions every hour
+5. **Auto-Rotation**: Automatically advances to next mountain each hour
+
+### Database Schema
+
+#### Munros Table
+- **282 Scottish Munros** (mountains over 3,000 feet)
+- Includes Ben Nevis (1,345m) to Sgurr a Chaorachain (792m)
+- Complete with routes, seasons, difficulty ratings
+
+#### Corbetts Table  
+- **219 Scottish Corbetts** (mountains 2,500-3,000 feet with 500ft prominence)
+- Includes detailed climbing information
+- Regional coverage across Scotland
+
+## 🔧 Configuration Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `supabaseUrl` | String | **Required** | Your Supabase project URL |
 | `supabaseAnonKey` | String | **Required** | Your Supabase anonymous key |
+| `mountainType` | String | "munros" | "munros" or "corbetts" |
+| `title` | String | "Scottish Munros" | Display title |
+| `iconColor` | String | "text-blue-400" | Tailwind color class for icons |
 | `updateInterval` | Number | 60000 | Update interval in milliseconds |
 | `animationSpeed` | Number | 1000 | Animation speed in milliseconds |
-| `maxWidth` | String | "100%" | Maximum width of the module |
-| `maxHeight` | String | "100%" | Maximum height of the module |
+| `maxWidth` | String | "300px" | Maximum width of module |
+| `maxHeight` | String | "auto" | Maximum height of module |
 
-## Troubleshooting
+## 🎯 Multiple Instances
 
-### Common Issues
+You can run both Munros and Corbetts simultaneously:
 
-1. **"Loading Scottish Munros" stuck**
-   - Check that you've set `supabaseUrl` and `supabaseAnonKey` in your config
-   - Verify your Supabase credentials are correct
-   - Check MagicMirror logs: `pm2 logs MagicMirror`
-   - Ensure you've run `npm run build` in the module directory
+```javascript
+// First instance - Munros
+{
+    module: "MMM-SMH",
+    position: "top_left",
+    config: {
+        supabaseUrl: "https://your-project.supabase.co",
+        supabaseAnonKey: "your-anon-key",
+        mountainType: "munros",
+        title: "Scottish Munros",
+        iconColor: "text-blue-400"
+    }
+},
+// Second instance - Corbetts  
+{
+    module: "MMM-SMH",
+    position: "top_right",
+    config: {
+        supabaseUrl: "https://your-project.supabase.co",
+        supabaseAnonKey: "your-anon-key",
+        mountainType: "corbetts",
+        title: "Scottish Corbetts", 
+        iconColor: "text-purple-400"
+    }
+}
+```
 
-2. **"no MMM-SMH/MMM-SMH.js found"**
-   - Make sure the module is in `~/MagicMirror/modules/MMM-SMH/`
-   - Verify `MMM-SMH.js` exists in the module root directory
-   - Check file permissions
+## 🖼️ Image Management
 
-3. **Module not displaying**
-   - Ensure you've built the module: `npm run build`
-   - Check that `dist/` folder exists with `assets/index.js` and `assets/index.css`
-   - Verify Supabase configuration in MagicMirror config
-   - Check browser console for errors (F12)
+### Image Requirements
+- **Format**: JPEG (.jpg)
+- **Size**: Minimum 800x600 pixels, recommended 1200x800
+- **Orientation**: Landscape preferred
+- **Naming**: Lowercase with underscores (e.g., `ben_nevis.jpg`)
 
-4. **Images not loading**
-   - Verify image files exist in `public/images/munros/`
-   - Check image naming matches database `image_filename` field
-   - Ensure proper file permissions
+### Image Sources
+- **Wikimedia Commons**: Creative Commons licensed
+- **Unsplash/Pexels**: Free stock photos
+- **Personal Photography**: Best option if you've climbed the mountains!
 
-5. **Database connection issues**
-   - Verify Supabase URL and key are correct
-   - Check Supabase project is active
-   - Ensure RLS policies allow public read access
-   - Test connection in Supabase dashboard
+### Fallback System
+The module includes intelligent image fallback:
+1. Tries multiple path variations automatically
+2. Shows mountain icon if image not found
+3. No broken images or layout issues
+
+## 🛠️ Development
 
 ### Development Mode
-
-For development and testing outside of MagicMirror:
 
 ```bash
 cd ~/MagicMirror/modules/MMM-SMH
@@ -176,88 +217,182 @@ cp .env.example .env
 npm run dev
 ```
 
-This starts a development server at `http://localhost:5173`
+This starts a development server at `http://localhost:5173` with:
+- Hot reload for code changes
+- Arrow key navigation (← →) for testing
+- Debug information overlay
+- Console logging for troubleshooting
 
-### Rebuilding After Changes
-
-If you make changes to the source code:
+### Building for Production
 
 ```bash
-cd ~/MagicMirror/modules/MMM-SMH
 npm run build
-# Restart MagicMirror
 ```
 
-## Technical Details
+This creates optimized files in `dist/` that MagicMirror loads.
 
-### Architecture
-- **Frontend**: React + TypeScript + Vite
-- **Database**: Supabase PostgreSQL
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Image Handling**: Local file system with fallback placeholders
+### Code Structure
 
-### Data Flow
-1. Module calculates current Munro based on UTC hour
-2. Fetches Munro data from Supabase
-3. Displays with smooth transitions every hour
-4. Images loaded locally with graceful fallbacks
-
-### File Structure
-```
-MMM-SMH/
-├── MMM-SMH.js                    # MagicMirror module file
-├── src/
-│   ├── components/
-│   │   └── MunroDisplay.tsx      # Main display component
-│   ├── lib/
-│   │   └── supabase.ts           # Database client
-│   └── App.tsx                   # Root component
-├── public/
-│   └── images/
-│       └── munros/               # Local Munro images
-├── dist/                         # Built files (after npm run build)
-│   └── assets/
-│       ├── index.js              # Built JavaScript
-│       └── index.css             # Built CSS
-├── supabase/
-│   └── migrations/               # Database schema
-└── package.json
+#### Generic Mountain Interface
+```typescript
+interface Mountain {
+  id: string | number;
+  name: string;
+  height: number;
+  prominence: number;
+  region: string;
+  description: string;
+  difficulty_rating: number;
+  estimated_time: number | string;
+  popular_routes: string[];
+  best_seasons: string[];
+  image_filename: string;
+  classification: string;
+}
 ```
 
-## Performance
+#### Conversion Functions
+- `munroToMountain()`: Converts Munro data to generic format
+- `corbettToMountain()`: Converts Corbett data to generic format
+- `getMountainByIndex()`: Unified function for both types
+- `getMountainCount()`: Gets total count for either type
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **"Loading..." stuck forever**
+   - ✅ Check Supabase credentials in config
+   - ✅ Verify database migrations ran successfully
+   - ✅ Check browser console for errors (F12)
+   - ✅ Ensure `npm run build` was executed
+
+2. **Module not appearing**
+   - ✅ Verify module is in `~/MagicMirror/modules/MMM-SMH/`
+   - ✅ Check `MMM-SMH.js` exists in module root
+   - ✅ Ensure `dist/` folder exists with built files
+   - ✅ Restart MagicMirror after config changes
+
+3. **Images not loading**
+   - ✅ Check image files exist in correct directories
+   - ✅ Verify naming matches database `image_filename` field
+   - ✅ Ensure proper file permissions
+   - ✅ Images will fallback to mountain icon if missing
+
+4. **Database connection issues**
+   - ✅ Test Supabase connection in dashboard
+   - ✅ Verify RLS policies allow public read access
+   - ✅ Check project is active and not paused
+
+### Debug Mode
+
+In development, the module shows debug information:
+- Current index and UTC hour
+- Time until next change
+- Image loading status
+- Mountain type being displayed
+- Arrow key controls for manual navigation
+
+### Logs
+
+Check MagicMirror logs for detailed information:
+```bash
+pm2 logs MagicMirror
+```
+
+## 🔄 How Rotation Works
+
+### Time-Based Algorithm
+```javascript
+const hoursSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60));
+const mountainIndex = hoursSinceEpoch % totalMountains;
+```
+
+### Synchronization
+- All instances worldwide show the same mountain at the same time
+- Based on UTC time to avoid timezone issues
+- Changes exactly on the hour (e.g., 14:00:00 UTC)
+- Countdown shows minutes until next change
+
+### Examples
+- Hour 0: Mountain index 0 (first in alphabetical order)
+- Hour 1: Mountain index 1 (second mountain)
+- Hour 282: Mountain index 0 (cycles back to first Munro)
+- Hour 283: Mountain index 1 (second Munro again)
+
+## 📊 Performance
 
 - **Memory Usage**: ~50MB typical
 - **CPU Usage**: Minimal (updates hourly)
 - **Network**: Initial data load only, then cached
-- **Storage**: ~500MB for all images
+- **Storage**: ~500MB for all images (optional)
+- **Database**: Efficient indexed queries
+- **Startup Time**: ~2-3 seconds
 
-## License
+## 🔒 Security
+
+- **RLS Enabled**: Row Level Security on all tables
+- **Public Read**: Anonymous read access for mountain data
+- **No Writes**: Module only reads data, never modifies
+- **Environment Variables**: Credentials stored securely
+- **HTTPS**: All Supabase connections encrypted
+
+## 🚀 Deployment
+
+### Production Checklist
+- [ ] Supabase project configured
+- [ ] Database migrations completed
+- [ ] Module built (`npm run build`)
+- [ ] Config file updated with credentials
+- [ ] Images added (optional)
+- [ ] MagicMirror restarted
+- [ ] Module appears and rotates correctly
+
+### Performance Optimization
+- Images are lazy-loaded and cached
+- Database queries are minimal and indexed
+- Component updates only when necessary
+- Smooth transitions prevent jarring changes
+
+## 🤝 Contributing
+
+### Adding New Mountains
+1. Add entries to appropriate database table
+2. Follow existing data format and naming conventions
+3. Add corresponding images to public directories
+4. Test with both development and production builds
+
+### Code Contributions
+1. Follow existing TypeScript patterns
+2. Maintain component modularity
+3. Add proper error handling
+4. Update documentation for new features
+
+## 📝 License
 
 Private use only - not intended for public distribution.
 
-## Contributing
-
-This module is designed for personal use. To modify:
-
-1. Fork the repository
-2. Make your changes in the `src/` directory
-3. Run `npm run build` to compile
-4. Test thoroughly with MagicMirror
-5. Update documentation as needed
-
-## Support
+## 🆘 Support
 
 For issues specific to this module:
-1. Check the troubleshooting section above
-2. Verify your MagicMirror installation is working
-3. Test the module in development mode first
+1. Check troubleshooting section above
+2. Verify MagicMirror installation is working
+3. Test module in development mode first
 4. Check browser console and MagicMirror logs for errors
+5. Ensure all prerequisites are met
 
-## Version History
+## 📈 Version History
 
-- **v1.0.0** - Initial release with all 282 Scottish Munros
-- Complete database with comprehensive mountain information
-- Local image support with fallback system
-- Hourly rotation based on UTC time
-- Optimized for MagicMirror display
+- **v1.0.0** - Initial release
+  - Complete Munros dataset (282 peaks)
+  - Complete Corbetts dataset (219 peaks)
+  - Unified component architecture
+  - Local image support with fallback system
+  - Hourly rotation based on UTC time
+  - Optimized for MagicMirror display
+  - Development and production modes
+  - Comprehensive documentation
+
+---
+
+**🏔️ Enjoy exploring Scotland's magnificent mountains from your MagicMirror!**
