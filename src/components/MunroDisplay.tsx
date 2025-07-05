@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mountain, MapPin, Clock, TrendingUp, Route, Star } from 'lucide-react';
 import { Mountain as MountainType, getMountainByIndex, getMountainCount } from '../lib/supabase';
+import '../lib/verify-database'; // Auto-run database verification in dev
 
 interface MountainDisplayProps {
   className?: string;
@@ -24,6 +25,10 @@ export default function MountainDisplay({
   const [imageUrl, setImageUrl] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<string>('');
 
+  // Add state for actual database counts
+  const [actualCount, setActualCount] = useState<number>(0);
+  const [expectedCount, setExpectedCount] = useState<number>(0);
+
   // Update time every minute
   useEffect(() => {
     const timer = setInterval(() => {
@@ -38,12 +43,22 @@ export default function MountainDisplay({
     const initializeCount = async () => {
       try {
         const count = await getMountainCount(mountainType);
-        console.log(`MMM-SMH: Total ${mountainType} in database:`, count);
+        const expected = mountainType === 'munros' ? 282 : 222;
+        
+        console.log(`MMM-SMH: Total ${mountainType} in database: ${count} (expected: ${expected})`);
         setMountainCount(count);
-        setDebugInfo(`DB Count: ${count}`);
+        setActualCount(count);
+        setExpectedCount(expected);
+        
+        if (count !== expected) {
+          setDebugInfo(`DB: ${count}/${expected} ${mountainType}`);
+          console.warn(`MMM-SMH: Count mismatch - Expected ${expected} ${mountainType}, found ${count}`);
+        } else {
+          setDebugInfo(`Complete: ${count} ${mountainType}`);
+        }
       } catch (error) {
         console.error(`MMM-SMH: Error getting ${mountainType} count:`, error);
-        setDebugInfo('Error loading count');
+        setDebugInfo(`Error: ${mountainType} count`);
       }
     };
 
@@ -311,7 +326,12 @@ export default function MountainDisplay({
             </div>
           </div>
           <div className="text-sm text-gray-300">
-            {currentIndex + 1} of {mountainCount} • {minutesUntilNext}min
+            {currentIndex + 1} of {actualCount} • {minutesUntilNext}min
+            {actualCount !== expectedCount && (
+              <span className="text-yellow-400 text-xs ml-2">
+                (Expected: {expectedCount})
+              </span>
+            )}
           </div>
         </div>
 
@@ -429,6 +449,10 @@ export default function MountainDisplay({
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
               <div>Type: {mountainType}</div>
+              <div>Count: {actualCount}/{expectedCount} {mountainType}</div>
+              <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
+                {actualCount === expectedCount ? "✓ Complete dataset" : "⚠ Incomplete dataset"}
+              </div>
               <div className="text-yellow-400">Use ← → arrow keys to cycle</div>
             </div>
           </div>

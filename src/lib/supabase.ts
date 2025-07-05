@@ -274,7 +274,8 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
         return 0;
       }
 
-      console.log(`Total Corbetts in database: ${count}`);
+      const actualCount = count || 0;
+      console.log(`Total Corbetts in database: ${actualCount}`);
       return count || 0;
     }
   } catch (error) {
@@ -283,6 +284,60 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
   }
 }
 
+// Add function to verify and report database status
+export async function verifyMountainDatabase(type: 'munros' | 'corbetts'): Promise<{
+  actualCount: number;
+  expectedCount: number;
+  isComplete: boolean;
+  sampleNames: string[];
+}> {
+  try {
+    const expectedCount = type === 'munros' ? 282 : 222;
+    const actualCount = await getMountainCount(type);
+    
+    // Get sample names to verify data quality
+    const { data, error } = await supabase
+      .from(type)
+      .select('name')
+      .order('name', { ascending: true })
+      .limit(5);
+
+    if (error) {
+      console.error(`Error getting sample ${type}:`, error);
+      return {
+        actualCount: 0,
+        expectedCount,
+        isComplete: false,
+        sampleNames: []
+      };
+    }
+
+    const sampleNames = data?.map(item => item.name) || [];
+    const isComplete = actualCount === expectedCount;
+    
+    console.log(`${type.toUpperCase()} Database Status:`, {
+      actualCount,
+      expectedCount,
+      isComplete,
+      sampleNames
+    });
+    
+    return {
+      actualCount,
+      expectedCount,
+      isComplete,
+      sampleNames
+    };
+  } catch (error) {
+    console.error(`Error verifying ${type} database:`, error);
+    return {
+      actualCount: 0,
+      expectedCount: type === 'munros' ? 282 : 222,
+      isComplete: false,
+      sampleNames: []
+    };
+  }
+}
 // Helper function to verify database connectivity and data
 export async function verifyDatabase(): Promise<{ success: boolean; count: number; sampleMunros: string[] }> {
   try {
