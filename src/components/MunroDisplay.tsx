@@ -273,13 +273,15 @@ export default function MountainDisplay({
 
   if (!currentMountain) {
     return (
-      <div className={`text-white max-w-xs ${className}`}>
-        <div className="flex items-center space-x-2 mb-2">
-          <Mountain className={`w-4 h-4 ${iconColor} animate-pulse`} />
-          <div>
-            <div className="text-sm font-light">{title}</div>
-            <div className="text-xs text-gray-400">
-              {mountainCount > 0 ? `Loading... (${debugInfo})` : 'Connecting...'}
+      <div className={`text-white max-w-xs bg-gray-900 bg-opacity-95 p-4 rounded-lg border border-gray-600 ${className}`}>
+        <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
+          <div className="flex items-center space-x-2 mb-2">
+            <Mountain className={`w-4 h-4 ${iconColor} animate-pulse`} />
+            <div>
+              <div className="text-sm font-light">{title}</div>
+              <div className="text-xs text-gray-400">
+                {mountainCount > 0 ? `Loading... (${debugInfo})` : 'Connecting...'}
+              </div>
             </div>
           </div>
         </div>
@@ -290,11 +292,11 @@ export default function MountainDisplay({
   const minutesUntilNext = getTimeUntilNextChange();
 
   return (
-    <div className={`text-white max-w-xs ${className}`}>
+    <div className={`text-white max-w-xs bg-gray-900 bg-opacity-95 p-4 rounded-lg border border-gray-600 ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
         {/* Header with title and time */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
+        <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
               <Mountain className={`w-5 h-5 ${iconColor}`} />
@@ -314,7 +316,7 @@ export default function MountainDisplay({
         </div>
 
         {/* Mountain name and height */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
+        <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
           <div className="flex items-center justify-between mb-2">
             <Mountain className="w-6 h-6 text-green-400" />
             <div className="text-2xl font-bold text-green-400">
@@ -327,7 +329,7 @@ export default function MountainDisplay({
         </div>
 
         {/* Mountain image */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-xl overflow-hidden border border-gray-700">
+        <div className="bg-gray-800 bg-opacity-80 rounded-lg overflow-hidden border border-gray-600 shadow-lg">
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
@@ -356,7 +358,7 @@ export default function MountainDisplay({
         </div>
 
         {/* Stats grid */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
+        <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
               <div className="text-lg font-bold text-blue-400">{currentMountain.prominence}m</div>
@@ -376,7 +378,7 @@ export default function MountainDisplay({
         </div>
 
         {/* Description */}
-        <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
+        <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
           <p className="text-sm text-gray-300 leading-relaxed line-clamp-4">
             {currentMountain.description}
           </p>
@@ -384,7 +386,7 @@ export default function MountainDisplay({
 
         {/* Popular Routes */}
         {currentMountain.popular_routes && currentMountain.popular_routes.length > 0 && (
-          <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
+          <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
             <div className="flex items-center space-x-2 mb-3">
               <Route className="w-4 h-4 text-orange-400" />
               <span className="text-sm font-medium text-orange-400">Popular Routes</span>
@@ -401,7 +403,7 @@ export default function MountainDisplay({
 
         {/* Best Seasons */}
         {currentMountain.best_seasons && currentMountain.best_seasons.length > 0 && (
-          <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
+          <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
             <div className="flex items-center space-x-2 mb-3">
               <Clock className="w-4 h-4 text-green-400" />
               <span className="text-sm font-medium text-green-400">Best Seasons</span>
@@ -421,7 +423,7 @@ export default function MountainDisplay({
 
         {/* Debug info (development only) */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="bg-gray-900 bg-opacity-50 rounded-xl p-4 border border-gray-600">
+          <div className="bg-gray-900 bg-opacity-90 rounded-lg p-3 border border-gray-500 shadow-lg">
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
