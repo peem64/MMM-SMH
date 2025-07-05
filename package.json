@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "build:magicmirror": "npm run build && echo 'Build complete for MagicMirror module'",
     "clean": "rm -rf dist",
-    "clean:build": "npm run clean && npm run build"
+    "clean:build": "npm run clean && npm run build",
+    "verify-db": "node verify-database.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
