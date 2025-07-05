@@ -238,11 +238,16 @@ Module.register("MMM-SMH", {
             .text-blue-200 { color: #bfdbfe; }
 
             .bg-gray-800, .mmm-smh-module .bg-gray-800 {
-                background-color: rgba(31, 41, 55, 0.8) !important;
+                background-color: rgba(31, 41, 55, 0.5) !important;
             }
 
             .bg-gray-900, .mmm-smh-module .bg-gray-900 {
                 background-color: rgba(17, 24, 39, 0.9) !important;
+            }
+
+            .mmm-smh-module .bg-opacity-50,
+            .mmm-smh-module.bg-opacity-50 {
+                background-color: rgba(31, 41, 55, 0.5) !important;
             }
 
             .bg-blue-900, .mmm-smh-module .bg-blue-900 {
@@ -255,11 +260,6 @@ Module.register("MMM-SMH", {
 
             .bg-green-600, .mmm-smh-module .bg-green-600 {
                 background-color: rgba(22, 163, 74, 1) !important;
-            }
-
-            .bg-opacity-50, .mmm-smh-module .bg-opacity-50 {
-                background-color: rgba(31, 41, 55, 0.5) !important;
-            }
 
             .bg-opacity-30, .mmm-smh-module .bg-opacity-30 {
                 background-color: rgba(22, 163, 74, 0.3) !important;
@@ -330,6 +330,7 @@ Module.register("MMM-SMH", {
             .grid { display: grid; }
             .items-center { align-items: center; }
             .justify-between { justify-content: space-between; }
+            .justify-center { justify-content: center; }
             .flex-wrap { flex-wrap: wrap; }
             .flex-shrink-0 { flex-shrink: 0; }
 
@@ -347,6 +348,7 @@ Module.register("MMM-SMH", {
             .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
+            .mb-1 { margin-bottom: 0.25rem; }
             .mb-2 { margin-bottom: 0.5rem; }
             .mb-3 { margin-bottom: 0.75rem; }
             .mb-4 { margin-bottom: 1rem; }
@@ -366,6 +368,8 @@ Module.register("MMM-SMH", {
             .text-2xl { font-size: 1.5rem; line-height: 2rem; }
 
             .font-light { font-weight: 300; }
+            .font-medium { font-weight: 500; }
+            .font-bold { font-weight: 700; }
             .leading-relaxed { line-height: 1.625; }
             .text-center { text-align: center; }
 
@@ -405,6 +409,13 @@ Module.register("MMM-SMH", {
             .duration-300 { transition-duration: 300ms; }
             .opacity-100 { opacity: 1; }
             .opacity-50 { opacity: 0.5; }
+
+            .line-clamp-3 {
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+            }
 
             .line-clamp-3 {
                 overflow: hidden;
