@@ -13,7 +13,7 @@ Module.register("MMM-SMH", {
         animationSpeed: 1000,
         initialLoadDelay: 0,
         retryDelay: 2500,
-        maxWidth: "280px",
+        maxWidth: "300px",
         maxHeight: "auto",
         // Supabase configuration - users need to set these
         supabaseUrl: "",
@@ -70,9 +70,9 @@ Module.register("MMM-SMH", {
     getDom: function() {
         var self = this;
         
-        // Create wrapper with compact styling for corner positioning
+        // Create wrapper with minimal styling
         var wrapper = document.createElement("div");
-        wrapper.style.cssText = "display: block; position: relative; width: 100%; max-width: 280px;";
+        wrapper.style.cssText = "display: block; position: relative; width: 100%; max-width: 300px;";
         
         // Create shadow DOM for complete isolation
         if (wrapper.attachShadow) {
@@ -441,11 +441,19 @@ Module.register("MMM-SMH", {
             }
 
             @media (max-width: 480px) {
-                #mmm-smh-shadow-container { max-width: 260px; }
+                #mmm-smh-shadow-container {
+                    max-width: 280px;
+                }
                 
-                .text-base { font-size: 0.875rem; line-height: 1.25rem; }
+                .text-base {
+                    font-size: 0.875rem;
+                    line-height: 1.25rem;
+                }
                 
-                .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.25rem; }
+                .grid-cols-3 {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 0.25rem;
+                }
             }
         `;
     },
