@@ -263,7 +263,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     <div className={`text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'} space-y-3`}>
         
-        {/* Header with title and time - EXACT SAME AS CORBETT */}
+        {/* Header with title and time */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center space-x-3">
@@ -283,7 +283,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Mountain name and height - EXACT SAME AS CORBETT */}
+        {/* Mountain name and height */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <div className="flex items-center justify-between mb-2">
             <Mountain className="w-6 h-6 text-green-400" />
@@ -296,7 +296,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </h2>
         </div>
 
-        {/* Mountain image - EXACT SAME AS CORBETT */}
+        {/* Mountain image */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl overflow-hidden border border-gray-700">
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
@@ -315,7 +315,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
               </div>
             )}
             
-            {/* Location overlay - EXACT SAME AS CORBETT */}
+            {/* Location overlay */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3">
               <div className="flex items-center space-x-2 text-white">
                 <MapPin className="w-4 h-4 text-green-400 flex-shrink-0" />
@@ -325,7 +325,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Stats grid - EXACT SAME AS CORBETT */}
+        {/* Stats grid */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
@@ -345,14 +345,14 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         </div>
 
-        {/* Description - EXACT SAME AS CORBETT */}
+        {/* Description */}
         <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
           <p className="text-sm text-gray-300 leading-relaxed line-clamp-4">
             {currentMunro.description}
           </p>
         </div>
 
-        {/* Popular Routes - EXACT SAME AS CORBETT */}
+        {/* Popular Routes */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
           <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
             <div className="flex items-center space-x-2 mb-3">
@@ -369,7 +369,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         )}
 
-        {/* Best Seasons - EXACT SAME AS CORBETT */}
+        {/* Best Seasons */}
         {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
           <div className="bg-gray-800 bg-opacity-50 rounded-xl p-4 border border-gray-700">
             <div className="flex items-center space-x-2 mb-3">
@@ -389,7 +389,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
           </div>
         )}
 
-        {/* Debug info - EXACT SAME AS CORBETT (development only) */}
+        {/* Debug info (development only) */}
         {process.env.NODE_ENV === 'development' && (
           <div className="bg-gray-900 bg-opacity-50 rounded-xl p-4 border border-gray-600">
             <div className="text-xs text-gray-400 space-y-1">
