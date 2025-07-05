@@ -342,6 +342,23 @@ Module.register("MMM-SMH", {
                 padding: 0.5rem !important;
             }
 
+            .mmm-smh-module .p-1,
+            .mmm-smh-module.p-1 {
+                padding: 0.25rem !important;
+            }
+
+            .mmm-smh-module .py-0\.5,
+            .mmm-smh-module.py-0\.5 {
+                padding-top: 0.125rem !important;
+                padding-bottom: 0.125rem !important;
+            }
+
+            .mmm-smh-module .px-2,
+            .mmm-smh-module.px-2 {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+
             .mmm-smh-module .border,
             .mmm-smh-module.border {
                 border-width: 1px !important;
@@ -381,6 +398,9 @@ Module.register("MMM-SMH", {
             .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
             .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
             .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+            .space-y-1 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.25rem; }
+
+            .space-x-0\.5 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.125rem; }
 
             /* Position utilities */
             .bottom-0 { bottom: 0; }
@@ -410,6 +430,7 @@ Module.register("MMM-SMH", {
             .gap-2 { gap: 0.5rem; }
             .gap-3 { gap: 0.75rem; }
             .gap-4 { gap: 1rem; }
+            .gap-1 { gap: 0.25rem; }
 
             .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -420,6 +441,7 @@ Module.register("MMM-SMH", {
             .mb-3 { margin-bottom: 0.75rem; }
             .mb-4 { margin-bottom: 1rem; }
             .mr-2 { margin-right: 0.5rem; }
+            .mb-1 { margin-bottom: 0.25rem; }
 
             .p-1 { padding: 0.25rem; }
             .p-2 { padding: 0.5rem; }
@@ -429,6 +451,7 @@ Module.register("MMM-SMH", {
             .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
             .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 
+            .text-2xs { font-size: 0.625rem; line-height: 0.75rem; }
             .text-xs { font-size: 0.75rem; line-height: 1rem; }
             .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
             .text-base { font-size: 1rem; line-height: 1.5rem; }
@@ -441,6 +464,7 @@ Module.register("MMM-SMH", {
             .font-bold { font-weight: 700; }
             .leading-relaxed { line-height: 1.625; }
             .text-center { text-align: center; }
+            .leading-tight { line-height: 1.25; }
 
             .w-3 { width: 0.75rem; }
             .w-4 { width: 1rem; }
@@ -448,6 +472,7 @@ Module.register("MMM-SMH", {
             .w-6 { width: 1.5rem; }
             .w-8 { width: 2rem; }
             .w-12 { width: 3rem; }
+            .w-2\.5 { width: 0.625rem; }
             .w-full { width: 100%; }
 
             .h-3 { height: 0.75rem; }
@@ -456,6 +481,7 @@ Module.register("MMM-SMH", {
             .h-6 { height: 1.5rem; }
             .h-8 { height: 2rem; }
             .h-12 { height: 3rem; }
+            .h-2\.5 { height: 0.625rem; }
             .h-20 { height: 5rem; }
             .h-30 { height: 7.5rem; }
             .h-35 { height: 8.75rem; }
@@ -485,6 +511,13 @@ Module.register("MMM-SMH", {
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 -webkit-line-clamp: 3;
+            }
+
+            .line-clamp-2 {
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
             }
 
             .line-clamp-4 {
