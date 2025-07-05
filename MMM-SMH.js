@@ -238,10 +238,26 @@ Module.register("MMM-SMH", {
             .text-blue-200 { color: #bfdbfe; }
 
             .bg-gray-800, .mmm-smh-module .bg-gray-800 {
-                background-color: rgba(31, 41, 55, 0.5) !important;
+                background-color: rgba(31, 41, 55, 0.8) !important;
             }
 
             .bg-gray-900, .mmm-smh-module .bg-gray-900 {
+                background-color: rgba(17, 24, 39, 0.95) !important;
+            }
+
+            /* Add missing background opacity classes */
+            .mmm-smh-module .bg-opacity-80,
+            .mmm-smh-module.bg-opacity-80 {
+                background-color: rgba(31, 41, 55, 0.8) !important;
+            }
+
+            .mmm-smh-module .bg-opacity-95,
+            .mmm-smh-module.bg-opacity-95 {
+                background-color: rgba(17, 24, 39, 0.95) !important;
+            }
+
+            .mmm-smh-module .bg-opacity-90,
+            .mmm-smh-module.bg-opacity-90 {
                 background-color: rgba(17, 24, 39, 0.9) !important;
             }
 
@@ -260,72 +276,96 @@ Module.register("MMM-SMH", {
 
             .bg-green-600, .mmm-smh-module .bg-green-600 {
                 background-color: rgba(22, 163, 74, 1) !important;
+            }
 
-            .bg-opacity-30, .mmm-smh-module .bg-opacity-30 {
+            .mmm-smh-module .bg-opacity-30,
+            .mmm-smh-module.bg-opacity-30 {
                 background-color: rgba(22, 163, 74, 0.3) !important;
             }
 
-            /* Force solid backgrounds globally within our module */
-            .bg-gray-800,
-            .bg-gray-900,
-            .bg-gray-700,
-            .mmm-smh-module .bg-gray-800,
-            .mmm-smh-module .bg-gray-900,
-            .mmm-smh-module .bg-gray-700 {
-                opacity: 1 !important;
-            }
-
             /* Border utilities */
-            .border-gray-700, .mmm-smh-module .border-gray-700 {
+            .mmm-smh-module .border-gray-700,
+            .mmm-smh-module.border-gray-700 {
                 border-color: rgb(55, 65, 81) !important;
                 border-width: 1px !important;
                 border-style: solid !important;
             }
 
-            .border-gray-600, .mmm-smh-module .border-gray-600 {
+            .mmm-smh-module .border-gray-600,
+            .mmm-smh-module.border-gray-600 {
                 border-color: rgb(75, 85, 99) !important;
                 border-width: 1px !important;
                 border-style: solid !important;
             }
 
-            .border-green-600, .mmm-smh-module .border-green-600 {
+            .mmm-smh-module .border-gray-500,
+            .mmm-smh-module.border-gray-500 {
+                border-color: rgb(107, 114, 128) !important;
+                border-width: 1px !important;
+                border-style: solid !important;
+            }
+
+            .mmm-smh-module .border-green-600,
+            .mmm-smh-module.border-green-600 {
                 border-color: rgba(22, 163, 74, 1) !important;
                 border-width: 1px !important;
                 border-style: solid !important;
             }
 
-            .border-opacity-30, .mmm-smh-module .border-opacity-30 {
+            .mmm-smh-module .border-opacity-30,
+            .mmm-smh-module.border-opacity-30 {
                 border-color: rgba(22, 163, 74, 0.3) !important;
             }
 
-            .rounded-xl, .mmm-smh-module .rounded-xl {
+            .mmm-smh-module .rounded-xl,
+            .mmm-smh-module.rounded-xl {
                 border-radius: 0.75rem !important;
             }
 
-            .p-4, .mmm-smh-module .p-4 {
+            .mmm-smh-module .rounded-lg,
+            .mmm-smh-module.rounded-lg {
+                border-radius: 0.5rem !important;
+            }
+
+            .mmm-smh-module .p-4,
+            .mmm-smh-module.p-4 {
                 padding: 1rem !important;
             }
 
-            .p-3, .mmm-smh-module .p-3 {
+            .mmm-smh-module .p-3,
+            .mmm-smh-module.p-3 {
                 padding: 0.75rem !important;
             }
 
-            .p-2, .mmm-smh-module .p-2 {
+            .mmm-smh-module .p-2,
+            .mmm-smh-module.p-2 {
                 padding: 0.5rem !important;
             }
 
-            .border, .mmm-smh-module .border {
+            .mmm-smh-module .border,
+            .mmm-smh-module.border {
                 border-width: 1px !important;
                 border-style: solid !important;
             }
 
-            .rounded, .mmm-smh-module .rounded {
+            .mmm-smh-module .rounded,
+            .mmm-smh-module.rounded {
                 border-radius: 0.25rem !important;
             }
 
-            .border-blue-700 { border-color: #1d4ed8; }
-            .border-opacity-30 { border-color: rgba(29, 78, 216, 0.3); }
+            /* Shadow utilities */
+            .mmm-smh-module .shadow-lg,
+            .mmm-smh-module.shadow-lg {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+            }
 
+            /* Overflow utilities */
+            .mmm-smh-module .overflow-hidden,
+            .mmm-smh-module.overflow-hidden {
+                overflow: hidden !important;
+            }
+
+            /* Layout utilities */
             .flex { display: flex; }
             .grid { display: grid; }
             .items-center { align-items: center; }
@@ -333,12 +373,38 @@ Module.register("MMM-SMH", {
             .justify-center { justify-content: center; }
             .flex-wrap { flex-wrap: wrap; }
             .flex-shrink-0 { flex-shrink: 0; }
+            .relative { position: relative; }
+            .absolute { position: absolute; }
 
             .space-x-2 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.5rem; }
             .space-x-3 > :not([hidden]) ~ :not([hidden]) { margin-left: 0.75rem; }
             .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.5rem; }
             .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: 0.75rem; }
             .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; }
+
+            /* Position utilities */
+            .bottom-0 { bottom: 0; }
+            .left-0 { left: 0; }
+            .right-0 { right: 0; }
+
+            /* Background gradient utilities */
+            .bg-gradient-to-t {
+                background-image: linear-gradient(to top, var(--tw-gradient-stops)) !important;
+            }
+
+            .from-black {
+                --tw-gradient-from: #000000;
+                --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(0, 0, 0, 0));
+            }
+
+            .via-black\\/70 {
+                --tw-gradient-via: rgba(0, 0, 0, 0.7);
+                --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via), var(--tw-gradient-to, rgba(0, 0, 0, 0));
+            }
+
+            .to-transparent {
+                --tw-gradient-to: transparent;
+            }
 
             .gap-1 { gap: 0.25rem; }
             .gap-2 { gap: 0.5rem; }
@@ -347,11 +413,13 @@ Module.register("MMM-SMH", {
 
             .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
             .mb-1 { margin-bottom: 0.25rem; }
             .mb-2 { margin-bottom: 0.5rem; }
             .mb-3 { margin-bottom: 0.75rem; }
             .mb-4 { margin-bottom: 1rem; }
+            .mr-2 { margin-right: 0.5rem; }
 
             .p-1 { padding: 0.25rem; }
             .p-2 { padding: 0.5rem; }
@@ -359,6 +427,7 @@ Module.register("MMM-SMH", {
             .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
             .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
             .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+            .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 
             .text-xs { font-size: 0.75rem; line-height: 1rem; }
             .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
@@ -390,6 +459,7 @@ Module.register("MMM-SMH", {
             .h-20 { height: 5rem; }
             .h-30 { height: 7.5rem; }
             .h-35 { height: 8.75rem; }
+            .h-40 { height: 10rem; }
 
             .max-w-xs { max-width: 20rem; }
             .max-w-md { max-width: 28rem; }
@@ -399,7 +469,6 @@ Module.register("MMM-SMH", {
             .rounded { border-radius: 0.25rem; }
             .rounded-lg { border-radius: 0.5rem; }
             .rounded-full { border-radius: 9999px; }
-            .border { border-width: 1px; }
 
             .transition-opacity { 
                 transition-property: opacity; 
@@ -409,13 +478,7 @@ Module.register("MMM-SMH", {
             .duration-300 { transition-duration: 300ms; }
             .opacity-100 { opacity: 1; }
             .opacity-50 { opacity: 0.5; }
-
-            .line-clamp-3 {
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                -webkit-line-clamp: 3;
-            }
+            .opacity-90 { opacity: 0.9; }
 
             .line-clamp-3 {
                 overflow: hidden;
@@ -438,6 +501,12 @@ Module.register("MMM-SMH", {
 
             .animate-pulse {
                 animation: mmm-smh-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+
+            /* Force visibility and proper styling */
+            .mmm-smh-module * {
+                opacity: 1 !important;
+                visibility: visible !important;
             }
 
             @media (max-width: 480px) {
