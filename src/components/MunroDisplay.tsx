@@ -199,7 +199,7 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
     return Array.from({ length: 5 }, (_, i) => (
       <Star 
         key={i} 
-        className={`w-3 h-3 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-600'}`} 
+        className={`w-2 h-2 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-600'}`} 
       />
     ));
   };
@@ -243,13 +243,13 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
   if (!currentMunro) {
     return (
-      <div className={`text-white ${className}`}>
+      <div className={`text-white max-w-xs ${className}`}>
         <div className="flex items-center space-x-2">
           <Mountain className="w-4 h-4 text-blue-400 animate-pulse" />
           <div>
             <div className="text-sm font-light">Scottish Munros</div>
             <div className="text-xs text-gray-400">
-              {munroCount > 0 ? `Loading... (${debugInfo})` : 'Connecting...'}
+              {munroCount > 0 ? `Loading...` : 'Connecting...'}
             </div>
           </div>
         </div>
@@ -260,63 +260,40 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
   const minutesUntilNext = getTimeUntilNextChange();
 
   return (
-    <div className={`text-white ${className}`}>
+    <div className={`text-white max-w-xs ${className}`}>
       <div className={`transition-opacity duration-300 ${isTransitioning ? 'opacity-50' : 'opacity-100'}`}>
         
-        {/* Header - exactly like Corbett module */}
+        {/* Header - compact for corner positioning */}
         <div className="flex items-center space-x-2 mb-2">
           <Mountain className="w-4 h-4 text-blue-400" />
-          <div>
+          <div className="flex-1">
             <div className="text-sm font-light">Scottish Munros</div>
             <div className="text-xs text-gray-400">
-              {currentTime.toLocaleTimeString('en-GB', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                timeZone: 'UTC'
-              })} • {currentIndex + 1} of {munroCount} • {minutesUntilNext}min
+              {currentIndex + 1}/{munroCount} • {minutesUntilNext}min
             </div>
           </div>
         </div>
 
-        {/* Mountain name and height - simple layout like Corbett */}
+        {/* Mountain name and height - compact */}
         <div className="mb-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium text-white">
+          <div className="flex items-baseline justify-between">
+            <h2 className="text-base font-medium text-white leading-tight flex-1 pr-2">
               {currentMunro.name}
             </h2>
-            <div className="text-lg font-bold text-green-400">
+            <div className="text-base font-bold text-green-400 flex-shrink-0">
               {currentMunro.height_m}m
             </div>
           </div>
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-gray-400 mt-1">
             {currentMunro.area}, {currentMunro.region}
           </div>
         </div>
 
-        {/* Mountain image - simple without overlay */}
-        <div className="mb-2">
-          {imageStatus === 'loaded' && imageUrl ? (
-            <img 
-              src={imageUrl}
-              alt={currentMunro.name}
-              className="w-full h-20 object-cover rounded"
-            />
-          ) : imageStatus === 'loading' ? (
-            <div className="w-full h-20 bg-gray-700 flex items-center justify-center rounded">
-              <Mountain className="w-8 h-8 text-gray-400 animate-pulse" />
-            </div>
-          ) : (
-            <div className="w-full h-20 bg-gray-700 flex items-center justify-center rounded">
-              <Mountain className="w-8 h-8 text-gray-400" />
-            </div>
-          )}
-        </div>
-
-        {/* Stats - simple grid like Corbett */}
+        {/* Stats - compact 3-column grid */}
         <div className="grid grid-cols-3 gap-2 mb-2 text-xs">
           <div className="text-center">
             <div className="text-blue-400 font-medium">{currentMunro.prominence_m}m</div>
-            <div className="text-gray-400">Prominence</div>
+            <div className="text-gray-400">Prom</div>
           </div>
           <div className="text-center">
             <div className="text-green-400 font-medium">{currentMunro.estimated_time_hours}h</div>
@@ -326,36 +303,32 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
             <div className="flex justify-center space-x-1 mb-1">
               {getDifficultyStars(currentMunro.difficulty_rating)}
             </div>
-            <div className="text-gray-400">Difficulty</div>
+            <div className="text-gray-400">Diff</div>
           </div>
         </div>
 
-        {/* Description - simple text like Corbett */}
+        {/* Description - compact */}
         <div className="mb-2">
-          <p className="text-xs text-gray-300 leading-relaxed line-clamp-3">
+          <p className="text-xs text-gray-300 leading-relaxed line-clamp-2">
             {currentMunro.description}
           </p>
         </div>
 
-        {/* Routes - simple list like Corbett */}
+        {/* Routes - compact single line */}
         {currentMunro.popular_routes && currentMunro.popular_routes.length > 0 && (
-          <div className="mb-2">
-            <div className="text-xs text-orange-400 mb-1">Popular Routes:</div>
-            <div className="text-xs text-gray-300">
-              {currentMunro.popular_routes.slice(0, 2).join(', ')}
-            </div>
+          <div className="mb-1">
+            <div className="text-xs text-orange-400">Route: {currentMunro.popular_routes[0]}</div>
           </div>
         )}
 
-        {/* Seasons - simple badges like Corbett */}
+        {/* Seasons - compact badges */}
         {currentMunro.best_seasons && currentMunro.best_seasons.length > 0 && (
-          <div className="mb-2">
-            <div className="text-xs text-green-400 mb-1">Best Seasons:</div>
+          <div className="mb-1">
             <div className="flex flex-wrap gap-1">
-              {currentMunro.best_seasons.slice(0, 3).map((season, index) => (
+              {currentMunro.best_seasons.slice(0, 2).map((season, index) => (
                 <span 
                   key={index}
-                  className="px-2 py-1 bg-green-600 bg-opacity-30 text-green-300 rounded text-xs"
+                  className="px-1 py-0.5 bg-green-600 bg-opacity-30 text-green-300 rounded text-xs"
                 >
                   {season}
                 </span>
@@ -366,9 +339,8 @@ export default function MunroDisplay({ className = '' }: MunroDisplayProps) {
 
         {/* Debug info (development only) */}
         {process.env.NODE_ENV === 'development' && (
-          <div className="text-xs text-yellow-400 mt-2">
-            Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}, Next: {minutesUntilNext}min
-            <br />Use ← → arrow keys to cycle
+          <div className="text-xs text-yellow-400 mt-1">
+            Debug: {currentIndex} • Use ← → keys
           </div>
         )}
       </div>
