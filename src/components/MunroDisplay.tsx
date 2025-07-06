@@ -82,6 +82,7 @@ export default function MountainDisplay({
     const handleLoad = () => {
       setImageStatus('loaded');
       setImageUrl(img.src);
+      console.log(`MMM-SMH: Successfully loaded image: ${img.src}`);
     };
     
     const handleError = () => {
@@ -89,6 +90,7 @@ export default function MountainDisplay({
       const filename = currentMountain.image_filename;
       const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
       const altPaths = [
+        `modules/MMM-SMH/dist/images/${basePath}/${filename}`,
         `modules/MMM-SMH/public/images/${basePath}/${filename}`,
         `modules/MMM-SMH/images/${basePath}/${filename}`,
         `/modules/MMM-SMH/dist/images/${basePath}/${filename}`,
@@ -96,20 +98,24 @@ export default function MountainDisplay({
         `/modules/MMM-SMH/images/${basePath}/${filename}`,
         `images/${basePath}/${filename}`,
         `./images/${basePath}/${filename}`,
-        `/images/${basePath}/${filename}`
+        `/images/${basePath}/${filename}`,
+        // Development fallbacks
+        `/public/images/${basePath}/${filename}`,
+        `public/images/${basePath}/${filename}`
       ];
       
       const currentSrc = img.src;
-      const currentPathIndex = altPaths.findIndex(path => currentSrc.includes(path.split('/').pop() || ''));
+      const currentPathIndex = altPaths.findIndex(path => currentSrc.endsWith(path));
       
       if (currentPathIndex < altPaths.length - 1) {
         // Try next path
         const nextPath = altPaths[currentPathIndex + 1];
-        console.log(`MMM-SMH: Image failed, trying: ${nextPath}`);
+        console.log(`MMM-SMH: Image failed (${currentSrc}), trying: ${nextPath}`);
         img.src = nextPath;
       } else {
         // All paths failed
-        console.log(`MMM-SMH: All image paths failed for: ${filename}`);
+        console.log(`MMM-SMH: All image paths failed for ${mountainType}: ${filename}`);
+        console.log(`MMM-SMH: Tried paths:`, altPaths);
         setImageStatus('error');
         setImageUrl('');
       }
@@ -119,6 +125,8 @@ export default function MountainDisplay({
     img.addEventListener('error', handleError);
     
     // Start loading with the first path
+    const initialPath = getImagePath(currentMountain.image_filename);
+    console.log(`MMM-SMH: Loading ${mountainType} image: ${initialPath}`);
     img.src = getImagePath(currentMountain.image_filename);
     
     return () => {
@@ -242,19 +250,20 @@ export default function MountainDisplay({
     
     // For production/MagicMirror, try multiple possible paths
     const basePaths = [
-      `modules/MMM-SMH/dist/images/${basePath}/`,
-      `modules/MMM-SMH/public/images/${basePath}/`,
-      `modules/MMM-SMH/images/${basePath}/`,
-      `/modules/MMM-SMH/dist/images/${basePath}/`,
-      `/modules/MMM-SMH/public/images/${basePath}/`,
-      `/modules/MMM-SMH/images/${basePath}/`,
+      `modules/MMM-SMH/dist/images/${basePath}/${filename}`,
+      `modules/MMM-SMH/public/images/${basePath}/${filename}`,
+      `modules/MMM-SMH/images/${basePath}/${filename}`,
+      `/modules/MMM-SMH/dist/images/${basePath}/${filename}`,
+      `/modules/MMM-SMH/public/images/${basePath}/${filename}`,
+      `/modules/MMM-SMH/images/${basePath}/${filename}`,
       // Also try relative paths from dist
-      `images/${basePath}/`,
-      `./images/${basePath}/`
+      `images/${basePath}/${filename}`,
+      `./images/${basePath}/${filename}`,
+      `/images/${basePath}/${filename}`
     ];
     
-    // Return the first path (we'll handle fallbacks in onError)
-    return basePaths[0] + filename;
+    // Return the first path (we'll handle fallbacks in the error handler)
+    return basePaths[0];
   };
 
   // Calculate time until next mountain change
@@ -456,6 +465,8 @@ export default function MountainDisplay({
               <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
+              <div>Image file: {currentMountain?.image_filename}</div>
+              <div>Image URL: {imageUrl || 'none'}</div>
               <div>Type: {mountainType}</div>
               <div>Count: {actualCount}/{expectedCount} {mountainType}</div>
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
