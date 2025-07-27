@@ -248,14 +248,14 @@ export async function getMunroCount(): Promise<number> {
       .select('*', { count: 'exact', head: true });
 
     if (error) {
-      console.error('Error getting munro count:', error);
+      console.error('Error getting munro count:', error.message || error);
       return 0;
     }
 
     console.log(`Total Munros in database: ${count}`);
     return count || 0;
   } catch (error) {
-    console.error('Network error getting munro count:', error);
+    console.error('Network error getting munro count:', error instanceof Error ? error.message : error);
     return 0;
   }
 }
@@ -307,7 +307,7 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
         .select('*', { count: 'exact', head: true });
 
       if (error) {
-        console.error('Error getting corbett count:', error);
+        console.error('Error getting corbett count:', error.message || error);
         return 0;
       }
 
@@ -316,7 +316,7 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
       return count || 0;
     }
   } catch (error) {
-    console.error('Network error getting mountain count:', error);
+    console.error('Network error getting mountain count:', error instanceof Error ? error.message : error);
     return 0;
   }
 }
