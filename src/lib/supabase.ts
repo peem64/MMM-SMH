@@ -27,10 +27,45 @@ const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
 const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase configuration. Please check your environment variables or MagicMirror config.');
+  console.error('Missing Supabase configuration:', {
+    supabaseUrl: supabaseUrl ? 'Present' : 'Missing',
+    supabaseAnonKey: supabaseAnonKey ? 'Present' : 'Missing',
+    windowVars: typeof window !== 'undefined' ? {
+      VITE_SUPABASE_URL: !!(window as any).VITE_SUPABASE_URL,
+      VITE_SUPABASE_ANON_KEY: !!(window as any).VITE_SUPABASE_ANON_KEY
+    } : 'Window not available',
+    viteEnv: typeof import.meta !== 'undefined' && import.meta.env ? {
+      VITE_SUPABASE_URL: !!import.meta.env.VITE_SUPABASE_URL,
+      VITE_SUPABASE_ANON_KEY: !!import.meta.env.VITE_SUPABASE_ANON_KEY
+    } : 'Vite env not available'
+  });
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create a fallback client that will show meaningful errors
+const createSupabaseClient = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    // Return a mock client that throws helpful errors
+    return {
+      from: () => ({
+        select: () => ({
+          order: () => ({
+            limit: () => ({
+              range: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
+            }),
+            then: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
+          }),
+          then: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
+        })
+      })
+    } as any;
+  }
+  
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
+
+export const supabase = createSupabaseClient();
+}
+
 
 export interface Munro {
   id: string;
