@@ -65,6 +65,7 @@ const createSupabaseClient = () => {
 
 export const supabase = createSupabaseClient();
 
+
 export interface Munro {
   id: string;
   name: string;
