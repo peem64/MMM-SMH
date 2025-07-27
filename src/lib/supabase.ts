@@ -64,8 +64,6 @@ const createSupabaseClient = () => {
 };
 
 export const supabase = createSupabaseClient();
-}
-
 
 export interface Munro {
   id: string;
@@ -373,6 +371,7 @@ export async function verifyMountainDatabase(type: 'munros' | 'corbetts'): Promi
     };
   }
 }
+
 // Helper function to verify database connectivity and data
 export async function verifyDatabase(): Promise<{ success: boolean; count: number; sampleMunros: string[] }> {
   try {
