@@ -67,22 +67,6 @@ const createSupabaseClient = () => {
 };
 
 export const supabase = createSupabaseClient();
-          order: () => ({
-            limit: () => ({
-              range: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
-            }),
-            then: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
-          }),
-          then: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
-        })
-      })
-    } as any;
-  }
-  
-  return createClient(supabaseUrl, supabaseAnonKey);
-};
-
-export const supabase = createSupabaseClient();
 
 
 export interface Munro {
@@ -264,14 +248,14 @@ export async function getMunroCount(): Promise<number> {
       .select('*', { count: 'exact', head: true });
 
     if (error) {
-      console.error('Error getting munro count:', error.message || error);
+      console.error('Error getting munro count:', error);
       return 0;
     }
 
     console.log(`Total Munros in database: ${count}`);
     return count || 0;
   } catch (error) {
-    console.error('Network error getting munro count:', error instanceof Error ? error.message : error);
+    console.error('Network error getting munro count:', error);
     return 0;
   }
 }
@@ -323,7 +307,7 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
         .select('*', { count: 'exact', head: true });
 
       if (error) {
-        console.error('Error getting corbett count:', error.message || error);
+        console.error('Error getting corbett count:', error);
         return 0;
       }
 
@@ -332,7 +316,7 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
       return count || 0;
     }
   } catch (error) {
-    console.error('Network error getting mountain count:', error instanceof Error ? error.message : error);
+    console.error('Network error getting mountain count:', error);
     return 0;
   }
 }
