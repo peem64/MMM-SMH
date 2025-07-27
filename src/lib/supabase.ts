@@ -44,10 +44,29 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // Create a fallback client that will show meaningful errors
 const createSupabaseClient = () => {
   if (!supabaseUrl || !supabaseAnonKey) {
-    // Return a mock client that throws helpful errors
+    // Return a mock client that returns proper error responses
     return {
       from: () => ({
         select: () => ({
+          order: () => ({
+            limit: () => ({
+              range: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please set credentials in MagicMirror config.' }, count: 0 }),
+              then: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please set credentials in MagicMirror config.' }, count: 0 })
+            }),
+            then: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please set credentials in MagicMirror config.' }, count: 0 })
+          }),
+          then: () => Promise.resolve({ data: null, error: { message: 'Supabase not configured. Please set credentials in MagicMirror config.' }, count: 0 }),
+          count: 'exact',
+          head: true
+        })
+      })
+    } as any;
+  }
+  
+  return createClient(supabaseUrl, supabaseAnonKey);
+};
+
+export const supabase = createSupabaseClient();
           order: () => ({
             limit: () => ({
               range: () => Promise.reject(new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables or configure them in MagicMirror config.'))
@@ -245,14 +264,14 @@ export async function getMunroCount(): Promise<number> {
       .select('*', { count: 'exact', head: true });
 
     if (error) {
-      console.error('Error getting munro count:', error);
+      console.error('Error getting munro count:', error.message || error);
       return 0;
     }
 
     console.log(`Total Munros in database: ${count}`);
     return count || 0;
   } catch (error) {
-    console.error('Network error getting munro count:', error);
+    console.error('Network error getting munro count:', error instanceof Error ? error.message : error);
     return 0;
   }
 }
@@ -304,7 +323,7 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
         .select('*', { count: 'exact', head: true });
 
       if (error) {
-        console.error('Error getting corbett count:', error);
+        console.error('Error getting corbett count:', error.message || error);
         return 0;
       }
 
@@ -313,7 +332,7 @@ export async function getMountainCount(type: 'munros' | 'corbetts'): Promise<num
       return count || 0;
     }
   } catch (error) {
-    console.error('Network error getting mountain count:', error);
+    console.error('Network error getting mountain count:', error instanceof Error ? error.message : error);
     return 0;
   }
 }
