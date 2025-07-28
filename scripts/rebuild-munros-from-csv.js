@@ -1,45 +1,45 @@
 import fs from 'fs';
 import path from 'path';
 
-// Read and parse the CSV file
-function parseCSV(filePath) {
+// Read and parse the text file
+function parseMunrosTxt(filePath) {
   try {
-    const csvContent = fs.readFileSync(filePath, 'utf8');
-    const lines = csvContent.split('\n').filter(line => line.trim());
+    const txtContent = fs.readFileSync(filePath, 'utf8');
+    const lines = txtContent.split('\n').filter(line => line.trim());
     
     if (lines.length === 0) {
-      console.error('❌ CSV file is empty');
+      console.error('❌ Text file is empty');
       return [];
     }
     
-    // Get headers from first line
-    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
-    console.log('📊 CSV Headers:', headers);
+    // Skip header line and parse data
+    console.log('📊 Processing Munros text file...');
     
     // Parse data rows
     const munros = [];
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+      const values = lines[i].split('\t').map(v => v.trim());
       
-      if (values.length >= headers.length) {
-        const munro = {};
-        headers.forEach((header, index) => {
-          munro[header] = values[index] || '';
-        });
+      if (values.length >= 3) {
+        const munro = {
+          Mountain: values[0],
+          Region: values[1],
+          Altitude: parseInt(values[2].replace('m', ''), 10)
+        };
         munros.push(munro);
       }
     }
     
-    console.log(`✅ Parsed ${munros.length} Munros from CSV`);
+    console.log(`✅ Parsed ${munros.length} Munros from text file`);
     return munros;
     
   } catch (error) {
-    console.error('❌ Error reading CSV file:', error.message);
+    console.error('❌ Error reading text file:', error.message);
     return [];
   }
 }
 
-// Generate SQL migration from CSV data
+// Generate SQL migration from text data
 function generateMigration(munros) {
   if (munros.length === 0) {
     console.error('❌ No Munros data to process');
@@ -50,9 +50,9 @@ function generateMigration(munros) {
   console.log(JSON.stringify(munros[0], null, 2));
   
   let sql = `/*
-  # Rebuild Munros Database from Authentic CSV Data
+  # Rebuild Munros Database from Authentic Text Data
   
-  This migration completely rebuilds the Munros table with authentic data from munrotab_v8.0.1.csv
+  This migration completely rebuilds the Munros table with authentic data from allmunros.txt
   
   1. Drops existing corrupted table
   2. Creates new table with proper structure
@@ -115,12 +115,12 @@ INSERT INTO munros (
   // Process each Munro
   munros.forEach((munro, index) => {
     // Map CSV fields to our database structure
-    const name = munro.Name || munro.name || `Unknown Munro ${index + 1}`;
-    const heightM = parseInt(munro.Height || munro.height_m || munro['Height(m)'] || '914');
-    const heightFt = parseInt(munro['Height(ft)'] || munro.height_ft || Math.round(heightM * 3.28084));
-    const region = munro.Region || munro.region || munro.Area || 'Unknown';
-    const area = munro.Area || munro.area || munro.Section || region;
-    const gridRef = munro['Grid Ref'] || munro.grid_ref || munro.GridRef || '';
+    const name = munro.Mountain;
+    const heightM = munro.Altitude;
+    const heightFt = Math.round(heightM * 3.28084);
+    const region = munro.Region;
+    const area = munro.Region; // Using Region for Area as it's not in the new file
+    const gridRef = ''; // No grid ref in this file, so default to empty
     
     // Generate description and image filename
     const description = `${name} is a ${heightM}m Munro located in ${region}. This peak offers excellent views and is a popular destination for hillwalkers.`;
@@ -164,11 +164,11 @@ function main() {
   console.log('🏔️ Rebuilding Munros Database from CSV');
   console.log('=====================================');
   
-  const csvPath = path.join(__dirname, '..', 'public', 'data', 'munrotab_v8.0.1.csv');
-  console.log('📁 Reading CSV file:', csvPath);
+  const munrosTxtPath = path.join(__dirname, '..', 'public', 'data', 'allmunros.txt');
+  console.log('📁 Reading text file:', munrosTxtPath);
   
-  if (!fs.existsSync(csvPath)) {
-    console.error('❌ CSV file not found:', csvPath);
+  if (!fs.existsSync(munrosTxtPath)) {
+    console.error('❌ Text file not found:', munrosTxtPath);
     console.log('💡 Available files in public/data/:');
     const dataDir = path.join(__dirname, '..', 'public', 'data');
     if (fs.existsSync(dataDir)) {
@@ -179,14 +179,14 @@ function main() {
     return;
   }
   
-  const munros = parseCSV(csvPath);
+  const munros = parseMunrosTxt(munrosTxtPath);
   
   if (munros.length === 0) {
-    console.error('❌ No Munros data found in CSV');
+    console.error('❌ No Munros data found in text file');
     return;
   }
   
-  console.log(`✅ Found ${munros.length} Munros in CSV`);
+  console.log(`✅ Found ${munros.length} Munros in text file`);
   
   if (munros.length !== 282) {
     console.warn(`⚠️ Expected 282 Munros, found ${munros.length}`);
@@ -195,7 +195,7 @@ function main() {
   const migration = generateMigration(munros);
   
   if (migration) {
-    const migrationPath = path.join(__dirname, '..', 'supabase', 'migrations', 'rebuild_authentic_munros.sql');
+    const migrationPath = path.join(__dirname, '..', 'supabase', 'migrations', 'rebuild_authentic_munros_from_txt.sql');
     fs.writeFileSync(migrationPath, migration);
     console.log('✅ Migration created:', migrationPath);
     console.log('🚀 Run this migration in Supabase to fix the database');
