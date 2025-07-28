@@ -1,5 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Define __dirname for ES module
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Read and parse the text file
 function parseMunrosTxt(filePath) {
