@@ -1,0 +1,284 @@
+
+Mountain	Region	Altitude
+A' Bhuidheanach Bheag	Cairngorms	936m
+A' Chailleach (Fannichs)	Ullapool	997m
+A' Chailleach (Monadhliath)	Cairngorms	930m
+A' Chralaig	Kintail	1120m
+A' Ghlas-bheinn	Kintail	918m
+A' Mhaighdean	Ullapool	967m
+A' Mharconaich	Cairngorms	975m
+Am Basteir	Isle of Skye	934m
+Am Bodach	Fort William	1032m
+Am Faochagach	Ullapool	954m
+An Caisteal	Loch Lomond	995m
+An Coileachan	Ullapool	923m
+An Gearanach	Fort William	982m
+An Riabhachan	Loch Ness	1129m
+An Sgarsoch	Cairngorms	1006m
+An Socach (Affric)	Loch Ness	921m
+An Socach (Braemar)	Cairngorms	944m
+An Socach (Mullardoch)	Loch Ness	1069m
+An Stùc	Perthshire	1118m
+Aonach Air Chrith	Kintail	1021m
+Aonach Beag (Alder)	Cairngorms	1116m
+Aonach Beag (Nevis Range)	Fort William	1234m
+Aonach Meadhoin	Kintail	1001m
+Aonach Mòr	Fort William	1221m
+Beinn a' Bhùird	Cairngorms	1197m
+Beinn a' Chaorainn (Cairngorms)	Cairngorms	1082m
+Beinn a' Chaorainn (Glen Spean)	Fort William	1050m
+Beinn a' Chlachair	Fort William	1087m
+Beinn a' Chlèibh	Argyll	916m
+Beinn a' Chochuill	Argyll	980m
+Beinn a' Chreachain	Argyll	1081m
+Beinn a' Chròin	Loch Lomond	942m
+Beinn Achaladair	Argyll	1038m
+Beinn an Dòthaidh	Argyll	1004m
+Beinn Bheoil	Cairngorms	1019m
+Beinn Bhreac	Cairngorms	931m
+Beinn Bhrotain	Cairngorms	1157m
+Beinn Bhuidhe	Argyll	948m
+Beinn Chabhair	Loch Lomond	933m
+Beinn Dearg (Blair Atholl)	Perthshire	1008m
+Beinn Dearg (Ullapool)	Ullapool	1084m
+Beinn Dòrain	Argyll	1076m
+Beinn Dubhchraig	Argyll	978m
+Beinn Èibhinn	Cairngorms	1102m
+Beinn Eunaich	Argyll	989m
+Beinn Fhada	Kintail	1032m
+Beinn Fhionnlaidh	Argyll	959m
+Beinn Fhionnlaidh (Càrn Eige)	Loch Ness	1005m
+Beinn Ghlas	Perthshire	1103m
+Beinn Heasgarnich	Perthshire	1078m
+Beinn Ìme	Loch Lomond	1011m
+Beinn Iutharn Mhòr	Cairngorms	1045m
+Beinn Liath Mhòr	Torridon	926m
+Beinn Liath Mhòr Fannaich	Ullapool	954m
+Beinn Mhanach	Argyll	953m
+Beinn Mheadhoin	Cairngorms	1182m
+Beinn na Lap	Fort William	937m
+Beinn nan Aighenan	Fort William	960m
+Beinn Narnain	Loch Lomond	926m
+Beinn Sgritheall	Kintail	974m
+Beinn Sgulaird	Argyll	937m
+Beinn Tarsuinn	Ullapool	937m
+Beinn Teallach	Fort William	915m
+Beinn Tulaichean	Loch Lomond	946m
+Beinn Udlamain	Cairngorms	1010m
+Ben Alder	Cairngorms	1148m
+Ben Avon	Cairngorms	1171m
+Ben Challum	Argyll	1025m
+Ben Chonzie	Perthshire	931m
+Ben Cruachan	Argyll	1126m
+Ben Hope	Sutherland	927m
+Ben Klibreck	Sutherland	961m
+Ben Lawers	Perthshire	1214m
+Ben Lomond	Loch Lomond	974m
+Ben Lui	Argyll	1130m
+Ben Macdui	Cairngorms	1309m
+Ben More	Loch Lomond	1174m
+Ben More (Mull)	Isle of Mull	966m
+Ben More Assynt	Ullapool	998m
+Ben Nevis	Fort William	1345m
+Ben Oss	Argyll	1029m
+Ben Starav	Fort William	1078m
+Ben Vane	Loch Lomond	915m
+Ben Vorlich (Loch Earn)	Perthshire	985m
+Ben Vorlich (Loch Lomond)	Loch Lomond	943m
+Ben Wyvis	Loch Ness	1046m
+Bidean nam Bian	Fort William	1150m
+Bidein a' Choire Sheasgaich	Torridon	945m
+Bidein a' Ghlas Thuill (An Teallach)	Ullapool	1062m
+Binnein Beag	Fort William	943m
+Binnein Mòr	Fort William	1130m
+Blà Bheinn	Isle of Skye	928m
+Braeriach	Cairngorms	1296m
+Bràigh Coire Chruinn-bhalgain	Perthshire	1070m
+Broad Cairn	Cairngorms	998m
+Bruach na Frìthe	Isle of Skye	958m
+Bynack More	Cairngorms	1090m
+Cairn Bannoch	Cairngorms	1012m
+Cairn Gorm	Cairngorms	1245m
+Cairn of Claise	Cairngorms	1064m
+Cairn Toul	Cairngorms	1291m
+Càrn a' Chlamain	Perthshire	963m
+Càrn a' Choire Bhòidheach	Cairngorms	1118m
+Càrn a' Ghèoidh	Cairngorms	975m
+Càrn a' Mhàim	Cairngorms	1037m
+Càrn an Fhìdhleir (Càrn Ealar)	Cairngorms	994m
+Càrn an Rìgh	Perthshire	1029m
+Càrn an t-Sagairt Mòr	Cairngorms	1047m
+Càrn an Tuirc	Cairngorms	1019m
+Càrn Aosda	Cairngorms	917m
+Càrn Bhac	Cairngorms	946m
+Càrn Dearg (Corrour)	Fort William	941m
+Càrn Dearg (Loch Pattack)	Cairngorms	1034m
+Càrn Dearg (Monadhliath)	Cairngorms	945m
+Càrn Eige	Loch Ness	1183m
+Càrn Ghluasaid	Kintail	957m
+Càrn Gorm	Perthshire	1029m
+Càrn Liath (Beinn a' Ghlò)	Perthshire	975m
+Càrn Liath (Creag Meagaidh)	Fort William	1006m
+Càrn Mairg	Perthshire	1042m
+Càrn Mòr Dearg	Fort William	1220m
+Càrn na Caim	Cairngorms	941m
+Càrn nan Gabhar	Perthshire	1121m
+Càrn nan Gobhar (Loch Mullardoch)	Loch Ness	992m
+Càrn nan Gobhar (Strathfarrar)	Loch Ness	992m
+Càrn Sgulain	Cairngorms	920m
+Chno Dearg	Fort William	1046m
+Ciste Dhubh	Kintail	979m
+Cona' Mheall	Ullapool	978m
+Conival	Ullapool	987m
+Creag a'Mhàim	Kintail	947m
+Creag Leacach	Cairngorms	987m
+Creag Meagaidh	Fort William	1130m
+Creag Mhòr (Glen Lochay)	Perthshire	1047m
+Creag Mhòr (Meall na Aighean)	Perthshire	981m
+Creag nan Dàmh	Kintail	918m
+Creag Pitridh	Fort William	924m
+Creise	Fort William	1100m
+Cruach Àrdrain	Loch Lomond	1046m
+Derry Cairngorm	Cairngorms	1155m
+Driesh	Angus	947m
+Druim Shionnach	Kintail	987m
+Eididh nan Clach Geala	Ullapool	927m
+Fionn Bheinn	Torridon	933m
+Gairich	Fort William	919m
+Garbh Chioch Mhòr	Fort William	1013m
+Geal chàrn (Laggan)	Fort William	1049m
+Geal Chàrn (Monadhliath)	Cairngorms	926m
+Geal-chàrn (Alder)	Cairngorms	1132m
+Geal-chàrn (Drumochter)	Cairngorms	917m
+Glas Bheinn Mhòr	Fort William	997m
+Glas Maol	Cairngorms	1068m
+Glas Tulaichean	Perthshire	1051m
+Gleouraich	Fort William	1035m
+Gulvain	Fort William	987m
+Inaccessible Pinnacle	Isle of Skye	986m
+Ladhar Bheinn	Fort William	1020m
+Lochnagar	Cairngorms	1156m
+Luinne Bheinn	Fort William	939m
+Lurg Mhòr	Torridon	986m
+Màm Sodhail	Loch Ness	1181m
+Maoile Lunndaidh	Torridon	1007m
+Maol Chean-dearg	Torridon	933m
+Maol chinn-dearg	Kintail	981m
+Mayar	Angus	928m
+Meall a' Bhùiridh	Fort William	1108m
+Meall a' Choire Lèith	Perthshire	926m
+Meall a' Chrasgaidh	Ullapool	934m
+Meall Buidhe (Glen Lyon)	Perthshire	932m
+Meall Buidhe (Knoydart)	Fort William	946m
+Meall Chuaich	Cairngorms	951m
+Meall Corranaich	Perthshire	1069m
+Meall Dearg (Aonach Eagach)	Fort William	953m
+Meall Garbh (Ben Lawers)	Perthshire	1118m
+Meall Garbh (Càrn Mairg)	Perthshire	968m
+Meall Ghaordaidh	Perthshire	1039m
+Meall Glas	Loch Lomond	959m
+Meall Gorm	Ullapool	949m
+Meall Greigh	Perthshire	1001m
+Meall na Teanga	Fort William	918m
+Meall nan Ceapraichean	Ullapool	977m
+Meall nan Eun	Fort William	928m
+Meall nan Tarmachan	Perthshire	1044m
+Monadh Mòr	Cairngorms	1113m
+Moruisg	Torridon	928m
+Mount Keen	Angus	939m
+Mullach an Rathain (Liathach)	Torridon	1023m
+Mullach Clach a' Bhlàir	Cairngorms	1019m
+Mullach Coire Mhic Fhearchair	Ullapool	1019m
+Mullach Fraoch-choire	Kintail	1102m
+Mullach na Dheiragain	Loch Ness	982m
+Mullach nan Coirean	Fort William	939m
+Na Gruagaichean	Fort William	1056m
+Ruadh Stac Mòr	Ullapool	918m
+Ruadh-stac Mòr (Beinn Eighe)	Torridon	1010m
+Sàil Chaorainn	Kintail	1002m
+Sàileag	Kintail	956m
+Schiehallion	Perthshire	1083m
+Seana Bhràigh	Ullapool	926m
+Sgàirneach Mhòr	Cairngorms	991m
+Sgiath Chùil	Loch Lomond	921m
+Sgòr an Lochain Uaine	Cairngorms	1258m
+Sgòr Gaibhre	Fort William	955m
+Sgòr Gaoith	Cairngorms	1118m
+Sgòr na h-Ulaidh	Fort William	994m
+Sgòrr Dhearg (Beinn a' Bheithir)	Fort William	1024m
+Sgòrr Dhònuill (Beinn a' Bheithir)	Fort William	1001m
+Sgòrr nam Fiannaidh (Aonach Eagach)	Fort William	967m
+Sgòrr Ruadh	Torridon	962m
+Sgùrr a' Bhealaich Dheirg	Kintail	1036m
+Sgùrr a' Chaorachain	Torridon	1053m
+Sgùrr a' Choire Ghlais	Loch Ness	1083m
+Sgùrr a' Ghreadaidh	Isle of Skye	973m
+Sgùrr a' Mhadaidh	Isle of Skye	918m
+Sgùrr a' Mhàim	Fort William	1099m
+Sgùrr a' Mhaoraich	Fort William	1027m
+Sgùrr Alasdair	Isle of Skye	992m
+Sgùrr an Doire Leathain	Kintail	1010m
+Sgùrr an Lochain	Kintail	1004m
+Sgùrr Bàn	Ullapool	989m
+Sgùrr Breac	Ullapool	999m
+Sgùrr Chòinnich	Torridon	999m
+Sgùrr Chòinnich Mòr	Fort William	1094m
+Sgùrr Dubh Mòr	Isle of Skye	944m
+Sgùrr Èilde Mòr	Fort William	1010m
+Sgùrr Fhuar-thuill	Loch Ness	1049m
+Sgùrr Fhuaran	Kintail	1067m
+Sgùrr Fiona (An Teallach)	Ullapool	1060m
+Sgùrr Mhic Chòinnich	Isle of Skye	948m
+Sgùrr Mòr	Ullapool	1110m
+Sgùrr Mòr (Beinn Alligin)	Torridon	986m
+Sgùrr Mòr (Loch Cuaich)	Fort William	1003m
+Sgùrr na Banachdich	Isle of Skye	965m
+Sgùrr na Càrnach	Kintail	1002m
+Sgùrr na Cìche	Fort William	1040m
+Sgùrr na Ciste Duibhe	Kintail	1027m
+Sgùrr na Lapaich	Loch Ness	1150m
+Sgùrr na Ruaidhe	Loch Ness	993m
+Sgùrr na Sgìne	Kintail	945m
+Sgùrr nan Ceathreamhnan	Loch Ness	1151m
+Sgùrr nan Clach Geala	Ullapool	1093m
+Sgùrr nan Coireachan (Glen Dessary)	Fort William	953m
+Sgùrr nan Coireachan (Glenfinnan)	Fort William	956m
+Sgùrr nan Conbhairean	Kintail	1109m
+Sgùrr nan Each	Ullapool	923m
+Sgùrr nan Eag	Isle of Skye	924m
+Sgùrr nan Gillean	Isle of Skye	964m
+Sgùrr Thuilm	Fort William	963m
+Slioch	Torridon	981m
+Spidean a' Choire Lèith (Liathach)	Torridon	1055m
+Spidean Coire nan Clach (Beinn Eighe)	Torridon	993m
+Spidean Mialach	Fort William	996m
+Sròn a' Choire Ghairbh	Fort William	937m
+Stob a' Choire Mheadhoin	Fort William	1106m
+Stob a' Choire Odhair	Argyll	945m
+Stob Bàn (Grey Corries)	Fort William	977m
+Stob Bàn (Mamores)	Fort William	999m
+Stob Binnein	Loch Lomond	1165m
+Stob Choire Claurigh	Fort William	1177m
+Stob Coir an Albannaich	Fort William	1044m
+Stob Coire a' Chàirn	Fort William	981m
+Stob Coire an Laoigh	Fort William	1116m
+Stob Coire Easain	Fort William	1115m
+Stob Coire Raineach (Buachaille Etive Beag)	Fort William	925m
+Stob Coire Sgreamhach	Fort William	1072m
+Stob Coire Sgriodain	Fort William	979m
+Stob Daimh	Argyll	998m
+Stob Dearg (Buachaille Etive Mòr)	Fort William	1021m
+Stob Dubh (Buachaille Etive Beag)	Fort William	956m
+Stob Ghabhar	Argyll	1090m
+Stob na Bròige (Buachaille Etive Mòr)	Fort William	956m
+Stob Poite Coire Àrdair	Fort William	1054m
+Stùc a' Chròin	Perthshire	975m
+Stùcd an Lochain	Perthshire	960m
+The Cairnwell	Cairngorms	933m
+The Devil's Point	Cairngorms	1004m
+The Saddle	Kintail	1010m
+Toll Creagach	Loch Ness	1054m
+Tolmount	Cairngorms	958m
+Tom a' Chòinich	Loch Ness	1112m
+Tom Buidhe	Cairngorms	957m
+Tom na Gruagaich (Beinn Alligin)	Torridon	922m
