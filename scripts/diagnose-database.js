@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // You need to add your Supabase credentials here
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL_HERE';
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://rdllpquzaxauhwbtejel.supabase.co';
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkbGxwcXV6YXhhdWh3YnRlamVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExMDEwNDUsImV4cCI6MjA2NjY3NzA0NX0.wKTlZ2-4TpcHSgXI__yNETnPh7mqhL4gbPQ1PRPtga8';
 
 // Check if credentials are set
 if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL_HERE' || !SUPABASE_ANON_KEY || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY_HERE') {
