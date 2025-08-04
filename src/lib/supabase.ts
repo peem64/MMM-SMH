@@ -69,6 +69,24 @@ const createSupabaseClient = () => {
 export const supabase = createSupabaseClient();
 
 
+export interface MountainCompletion {
+  id: string;
+  mountain_id: string;
+  mountain_type: 'munros' | 'corbetts';
+  user_id: string;
+  completed_at: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CompletionStats {
+  total_mountains: number;
+  completed_mountains: number;
+  completion_percentage: number;
+  recent_completions: number;
+}
+
 export interface Munro {
   id: string;
   name: string;
