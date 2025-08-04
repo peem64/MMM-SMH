@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Mountain, MapPin, Clock, TrendingUp, Route, Star } from 'lucide-react';
-import { Mountain as MountainType, getMountainByIndex, getMountainCount, getCurrentUser, getUserCompletionStats, CompletionStats } from '../lib/supabase';
+import { Mountain, MapPin, Clock, TrendingUp, Route, Star, Check } from 'lucide-react';
+import { 
+  Mountain as MountainType, 
+  getMountainByIndex, 
+  getMountainCount, 
+  getCurrentUser, 
+  getUserCompletionStats, 
+  CompletionStats,
+  toggleMountainCompletion,
+  getMountainCompletion,
+  signInAnonymously
+} from '../lib/supabase';
 import '../lib/database-check'; // Auto-run database verification in dev
 
 interface MountainDisplayProps {
@@ -25,12 +35,13 @@ export default function MountainDisplay({
   const [imageUrl, setImageUrl] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<string>('');
 
-  // Add state for user authentication and completion tracking
+  // User authentication and completion tracking
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [completionStats, setCompletionStats] = useState<CompletionStats | null>(null);
-  const [showCompletionButton, setShowCompletionButton] = useState<boolean>(false);
+  const [isCompleted, setIsCompleted] = useState<boolean>(false);
+  const [isTogglingCompletion, setIsTogglingCompletion] = useState<boolean>(false);
 
-  // Add state for actual database counts
+  // Database status
   const [actualCount, setActualCount] = useState<number>(0);
   const [expectedCount, setExpectedCount] = useState<number>(0);
 
@@ -43,13 +54,18 @@ export default function MountainDisplay({
     return () => clearInterval(timer);
   }, []);
 
-  // Initialize user authentication and completion stats
+  // Initialize user authentication
   useEffect(() => {
     const initializeUser = async () => {
       try {
-        const user = await getCurrentUser();
+        let user = await getCurrentUser();
+        
+        // If no user, sign in anonymously
+        if (!user) {
+          user = await signInAnonymously();
+        }
+        
         setCurrentUser(user);
-        setShowCompletionButton(!!user);
         
         if (user) {
           const stats = await getUserCompletionStats(mountainType);
@@ -58,7 +74,6 @@ export default function MountainDisplay({
       } catch (error) {
         console.error('Error initializing user:', error);
         setCurrentUser(null);
-        setShowCompletionButton(false);
         setCompletionStats(null);
       }
     };
@@ -95,6 +110,26 @@ export default function MountainDisplay({
 
     initializeCount();
   }, [mountainType]);
+
+  // Check if current mountain is completed
+  useEffect(() => {
+    const checkCompletion = async () => {
+      if (!currentMountain || !currentUser) {
+        setIsCompleted(false);
+        return;
+      }
+
+      try {
+        const completion = await getMountainCompletion(currentMountain.id, mountainType);
+        setIsCompleted(!!completion);
+      } catch (error) {
+        console.error('Error checking completion:', error);
+        setIsCompleted(false);
+      }
+    };
+
+    checkCompletion();
+  }, [currentMountain, currentUser, mountainType]);
 
   // Preload image when mountain changes
   useEffect(() => {
@@ -315,6 +350,34 @@ export default function MountainDisplay({
     return time;
   };
 
+  // Handle completion toggle
+  const handleToggleCompletion = async () => {
+    if (!currentMountain || !currentUser || isTogglingCompletion) return;
+
+    setIsTogglingCompletion(true);
+    try {
+      const result = await toggleMountainCompletion(
+        currentMountain.id,
+        mountainType,
+        `Completed ${currentMountain.name} on ${new Date().toLocaleDateString()}`
+      );
+
+      if (result) {
+        setIsCompleted(result.completed);
+        
+        // Refresh completion stats
+        if (currentUser) {
+          const stats = await getUserCompletionStats(mountainType);
+          setCompletionStats(stats);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling completion:', error);
+    } finally {
+      setIsTogglingCompletion(false);
+    }
+  };
+
   // Get location string based on mountain type
   const getLocationString = (mountain: MountainType) => {
     if (mountain.area) {
@@ -355,7 +418,14 @@ export default function MountainDisplay({
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <Mountain className={`w-4 h-4 ${iconColor}`} />
-              <span className="text-base font-light">{title}</span>
+              <div className="flex items-center space-x-2">
+                <span className="text-base font-light">{title}</span>
+                {completionStats && (
+                  <span className="text-xs text-green-400 font-medium">
+                    {completionStats.completed_mountains}/{completionStats.total_mountains}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="text-xs text-gray-400">
               {currentTime.toLocaleTimeString('en-GB', { 
@@ -378,7 +448,12 @@ export default function MountainDisplay({
         {/* Mountain name and height */}
         <div className="bg-gray-800 bg-opacity-80 rounded-lg p-2 border border-gray-600 shadow-lg">
           <div className="flex items-center justify-between mb-1">
-            <Mountain className="w-5 h-5 text-green-400" />
+            <div className="flex items-center space-x-2">
+              <Mountain className="w-5 h-5 text-green-400" />
+              {isCompleted && (
+                <Check className="w-4 h-4 text-green-400" />
+              )}
+            </div>
             <div className="text-xl font-bold text-green-400">
               {currentMountain.height}m
             </div>
@@ -386,6 +461,9 @@ export default function MountainDisplay({
           <h2 className="text-lg font-medium text-white leading-tight">
             {currentMountain.name}
           </h2>
+          {isCompleted && (
+            <div className="text-xs text-green-400 mt-1">✓ Completed</div>
+          )}
         </div>
 
         {/* Mountain image */}
@@ -486,6 +564,32 @@ export default function MountainDisplay({
           </div>
         )}
 
+        {/* Completion Button */}
+        {currentUser && (
+          <div className="bg-gray-800 bg-opacity-80 rounded-lg p-2 border border-gray-600 shadow-lg">
+            <button
+              onClick={handleToggleCompletion}
+              disabled={isTogglingCompletion}
+              className={`w-full px-3 py-2 rounded text-sm font-medium transition-colors ${
+                isCompleted
+                  ? 'bg-green-600 text-white border border-green-500'
+                  : 'bg-gray-700 text-gray-300 border border-gray-600 hover:bg-gray-600'
+              } ${isTogglingCompletion ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
+              {isTogglingCompletion ? (
+                'Updating...'
+              ) : isCompleted ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <Check className="w-4 h-4" />
+                  <span>Completed</span>
+                </div>
+              ) : (
+                'Mark as Completed'
+              )}
+            </button>
+          </div>
+        )}
+
         {/* Debug info (development only) */}
         {process.env.NODE_ENV === 'development' && (
           <div className="bg-gray-900 bg-opacity-90 rounded-lg p-2 border border-gray-500 shadow-lg">
@@ -500,8 +604,8 @@ export default function MountainDisplay({
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
                 {actualCount === expectedCount ? "✅ Complete dataset" : `⚠️ Missing ${expectedCount - actualCount} ${mountainType}`}
               </div>
-              <div>User: {currentUser ? '✅ Authenticated' : '❌ Not authenticated'}</div>
-              <div>Completion tracking: {showCompletionButton ? '✅ Enabled' : '❌ Disabled'}</div>
+              <div>User: {currentUser ? `✅ ${currentUser.id?.slice(0, 8)}...` : '❌ Not authenticated'}</div>
+              <div>Completion: {isCompleted ? '✅ Completed' : '❌ Not completed'}</div>
               {completionStats && (
                 <div>Progress: {completionStats.completed_mountains}/{completionStats.total_mountains} ({completionStats.completion_percentage}%)</div>
               )}
