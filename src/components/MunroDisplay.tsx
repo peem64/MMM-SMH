@@ -50,15 +50,6 @@ export default function MountainDisplay({
   const [actualCount, setActualCount] = useState<number>(0);
   const [expectedCount, setExpectedCount] = useState<number>(0);
 
-  // Update time every minute
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   // Initialize user authentication
   useEffect(() => {
     const initializeUser = async () => {
@@ -458,13 +449,6 @@ export default function MountainDisplay({
                   </span>
                 )}
               </div>
-            </div>
-            <div className="text-xs text-gray-400">
-              {currentTime.toLocaleTimeString('en-GB', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                timeZone: 'UTC'
-              })}
             </div>
           </div>
           <div className="text-xs text-gray-300">
