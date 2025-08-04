@@ -11,6 +11,7 @@ import {
   getMountainCompletion,
   signInAnonymously
 } from '../lib/supabase';
+import { signInWithEmail, signUpWithEmail } from '../lib/supabase';
 import '../lib/database-check'; // Auto-run database verification in dev
 
 interface MountainDisplayProps {
@@ -40,6 +41,10 @@ export default function MountainDisplay({
   const [completionStats, setCompletionStats] = useState<CompletionStats | null>(null);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [isTogglingCompletion, setIsTogglingCompletion] = useState<boolean>(false);
+  const [showAuthForm, setShowAuthForm] = useState<boolean>(false);
+  const [authEmail, setAuthEmail] = useState<string>('');
+  const [authPassword, setAuthPassword] = useState<string>('');
+  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
   // Database status
   const [actualCount, setActualCount] = useState<number>(0);
@@ -60,21 +65,20 @@ export default function MountainDisplay({
       try {
         let user = await getCurrentUser();
         
-        // If no user, sign in anonymously
-        if (!user) {
-          user = await signInAnonymously();
-        }
-        
         setCurrentUser(user);
         
         if (user) {
           const stats = await getUserCompletionStats(mountainType);
           setCompletionStats(stats);
+        } else {
+          // Show auth form if no user
+          setShowAuthForm(true);
         }
       } catch (error) {
         console.error('Error initializing user:', error);
         setCurrentUser(null);
         setCompletionStats(null);
+        setShowAuthForm(true);
       }
     };
 
@@ -378,6 +382,34 @@ export default function MountainDisplay({
     }
   };
 
+  // Handle authentication
+  const handleAuth = async (isSignUp: boolean = false) => {
+    if (!authEmail || !authPassword) return;
+    
+    setIsAuthenticating(true);
+    try {
+      let user;
+      if (isSignUp) {
+        user = await signUpWithEmail(authEmail, authPassword);
+      } else {
+        user = await signInWithEmail(authEmail, authPassword);
+      }
+      
+      if (user) {
+        setCurrentUser(user);
+        setShowAuthForm(false);
+        
+        // Load completion stats
+        const stats = await getUserCompletionStats(mountainType);
+        setCompletionStats(stats);
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
   // Get location string based on mountain type
   const getLocationString = (mountain: MountainType) => {
     if (mountain.area) {
@@ -564,8 +596,56 @@ export default function MountainDisplay({
           </div>
         )}
 
+        {/* Authentication Form */}
+        {showAuthForm && (
+          <div className="bg-gray-800 bg-opacity-80 rounded-lg p-3 border border-gray-600 shadow-lg">
+            <div className="flex items-center space-x-2 mb-3">
+              <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+              <span className="text-sm font-medium text-blue-400">Sign in to track completions</span>
+            </div>
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder="Email"
+                value={authEmail}
+                onChange={(e) => setAuthEmail(e.target.value)}
+                className="w-full px-2 py-1 bg-gray-700 text-white text-xs rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={authPassword}
+                onChange={(e) => setAuthPassword(e.target.value)}
+                className="w-full px-2 py-1 bg-gray-700 text-white text-xs rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+              />
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => handleAuth(false)}
+                  disabled={isAuthenticating || !authEmail || !authPassword}
+                  className="flex-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isAuthenticating ? 'Signing in...' : 'Sign In'}
+                </button>
+                <button
+                  onClick={() => handleAuth(true)}
+                  disabled={isAuthenticating || !authEmail || !authPassword}
+                  className="flex-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isAuthenticating ? 'Signing up...' : 'Sign Up'}
+                </button>
+              </div>
+              <button
+                onClick={() => setShowAuthForm(false)}
+                className="w-full px-2 py-1 bg-gray-600 text-gray-300 text-xs rounded hover:bg-gray-500"
+              >
+                Skip (view only)
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Completion Button */}
-        {currentUser && (
+        {currentUser && !showAuthForm && (
           <div className="bg-gray-800 bg-opacity-80 rounded-lg p-2 border border-gray-600 shadow-lg">
             <button
               onClick={handleToggleCompletion}

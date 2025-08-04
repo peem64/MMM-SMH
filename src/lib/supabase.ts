@@ -508,18 +508,43 @@ export async function getUserCompletions(
 }
 
 // Authentication helpers
-export async function signInAnonymously() {
+export async function signInWithEmail(email: string, password: string) {
   try {
-    const { data, error } = await supabase.auth.signInAnonymously();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
     
     if (error) {
-      console.error('Error signing in anonymously:', error);
+      console.error('Error signing in with email:', error);
       return null;
     }
     
     return data.user;
   } catch (error) {
-    console.error('Network error signing in:', error);
+    console.error('Network error signing in with email:', error);
+    return null;
+  }
+}
+
+export async function signUpWithEmail(email: string, password: string) {
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: undefined // Disable email confirmation
+      }
+    });
+    
+    if (error) {
+      console.error('Error signing up with email:', error);
+      return null;
+    }
+    
+    return data.user;
+  } catch (error) {
+    console.error('Network error signing up with email:', error);
     return null;
   }
 }
