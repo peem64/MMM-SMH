@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mountain, MapPin, Clock, TrendingUp, Route, Star } from 'lucide-react';
-import { Mountain as MountainType, getMountainByIndex, getMountainCount } from '../lib/supabase';
+import { Mountain as MountainType, getMountainByIndex, getMountainCount, getCurrentUser, getUserCompletionStats, CompletionStats } from '../lib/supabase';
 import '../lib/database-check'; // Auto-run database verification in dev
 
 interface MountainDisplayProps {
@@ -25,6 +25,11 @@ export default function MountainDisplay({
   const [imageUrl, setImageUrl] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<string>('');
 
+  // Add state for user authentication and completion tracking
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [completionStats, setCompletionStats] = useState<CompletionStats | null>(null);
+  const [showCompletionButton, setShowCompletionButton] = useState<boolean>(false);
+
   // Add state for actual database counts
   const [actualCount, setActualCount] = useState<number>(0);
   const [expectedCount, setExpectedCount] = useState<number>(0);
@@ -37,6 +42,29 @@ export default function MountainDisplay({
 
     return () => clearInterval(timer);
   }, []);
+
+  // Initialize user authentication and completion stats
+  useEffect(() => {
+    const initializeUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+        setShowCompletionButton(!!user);
+        
+        if (user) {
+          const stats = await getUserCompletionStats(mountainType);
+          setCompletionStats(stats);
+        }
+      } catch (error) {
+        console.error('Error initializing user:', error);
+        setCurrentUser(null);
+        setShowCompletionButton(false);
+        setCompletionStats(null);
+      }
+    };
+
+    initializeUser();
+  }, [mountainType]);
 
   // Initialize mountain count
   useEffect(() => {
