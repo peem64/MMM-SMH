@@ -394,6 +394,146 @@ export async function verifyMountainDatabase(type: 'munros' | 'corbetts'): Promi
   }
 }
 
+// Completion tracking functions
+export async function toggleMountainCompletion(
+  mountainId: string | number,
+  mountainType: 'munros' | 'corbetts',
+  notes: string = ''
+): Promise<{ action: string; completed: boolean; completion_date: string | null } | null> {
+  try {
+    const { data, error } = await supabase.rpc('toggle_mountain_completion', {
+      mountain_uuid: mountainId,
+      mountain_type_param: mountainType,
+      completion_notes: notes
+    });
+
+    if (error) {
+      console.error('Error toggling mountain completion:', error);
+      return null;
+    }
+
+    return data?.[0] || null;
+  } catch (error) {
+    console.error('Network error toggling completion:', error);
+    return null;
+  }
+}
+
+export async function getUserCompletionStats(
+  mountainType: 'munros' | 'corbetts' = 'munros'
+): Promise<CompletionStats | null> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      console.log('No authenticated user for completion stats');
+      return null;
+    }
+
+    const { data, error } = await supabase.rpc('get_user_completion_stats', {
+      user_uuid: user.id,
+      mountain_type_param: mountainType
+    });
+
+    if (error) {
+      console.error('Error getting completion stats:', error);
+      return null;
+    }
+
+    return data?.[0] || null;
+  } catch (error) {
+    console.error('Network error getting completion stats:', error);
+    return null;
+  }
+}
+
+export async function getMountainCompletion(
+  mountainId: string | number,
+  mountainType: 'munros' | 'corbetts'
+): Promise<MountainCompletion | null> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return null;
+    }
+
+    const { data, error } = await supabase
+      .from('mountain_completions')
+      .select('*')
+      .eq('mountain_id', mountainId)
+      .eq('mountain_type', mountainType)
+      .eq('user_id', user.id)
+      .single();
+
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error getting mountain completion:', error);
+      return null;
+    }
+
+    return data || null;
+  } catch (error) {
+    console.error('Network error getting mountain completion:', error);
+    return null;
+  }
+}
+
+export async function getUserCompletions(
+  mountainType: 'munros' | 'corbetts' = 'munros'
+): Promise<MountainCompletion[]> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return [];
+    }
+
+    const { data, error } = await supabase
+      .from('mountain_completions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('mountain_type', mountainType)
+      .order('completed_at', { ascending: false });
+
+    if (error) {
+      console.error('Error getting user completions:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Network error getting user completions:', error);
+    return [];
+  }
+}
+
+// Authentication helpers
+export async function signInAnonymously() {
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously();
+    
+    if (error) {
+      console.error('Error signing in anonymously:', error);
+      return null;
+    }
+    
+    return data.user;
+  } catch (error) {
+    console.error('Network error signing in:', error);
+    return null;
+  }
+}
+
+export async function getCurrentUser() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+  } catch (error) {
+    console.error('Error getting current user:', error);
+    return null;
+  }
+}
+
 // Helper function to verify database connectivity and data
 export async function verifyDatabase(): Promise<{ success: boolean; count: number; sampleMunros: string[] }> {
   try {

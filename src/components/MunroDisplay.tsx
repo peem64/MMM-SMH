@@ -472,6 +472,11 @@ export default function MountainDisplay({
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
                 {actualCount === expectedCount ? "✅ Complete dataset" : `⚠️ Missing ${expectedCount - actualCount} ${mountainType}`}
               </div>
+              <div>User: {currentUser ? '✅ Authenticated' : '❌ Not authenticated'}</div>
+              <div>Completion tracking: {showCompletionButton ? '✅ Enabled' : '❌ Disabled'}</div>
+              {completionStats && (
+                <div>Progress: {completionStats.completed_mountains}/{completionStats.total_mountains} ({completionStats.completion_percentage}%)</div>
+              )}
               <div className="text-yellow-400">← → keys to cycle</div>
             </div>
           </div>
