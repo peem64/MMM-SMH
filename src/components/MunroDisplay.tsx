@@ -227,10 +227,10 @@ export default function MountainDisplay({
     if (mountainCount === 0) return 0;
     
     const now = new Date();
-    const hoursSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 60));
-    const calculatedIndex = hoursSinceEpoch % mountainCount;
+    const halfHoursSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 30));
+    const calculatedIndex = halfHoursSinceEpoch % mountainCount;
     
-    console.log(`MMM-SMH: Time calculation - UTC: ${now.toISOString()}, Hours since epoch: ${hoursSinceEpoch}, Index: ${calculatedIndex}`);
+    console.log(`MMM-SMH: Time calculation - UTC: ${now.toISOString()}, Half-hours since epoch: ${halfHoursSinceEpoch}, Index: ${calculatedIndex}`);
     
     return calculatedIndex;
   };
@@ -249,18 +249,18 @@ export default function MountainDisplay({
   useEffect(() => {
     if (mountainCount === 0) return;
 
-    const checkForHourChange = () => {
+    const checkForHalfHourChange = () => {
       const newIndex = getCurrentMountainIndex();
       
       if (newIndex !== currentIndex) {
-        console.log(`MMM-SMH: Hour changed! Switching from ${mountainType} ${currentIndex} to ${newIndex}`);
+        console.log(`MMM-SMH: Half-hour changed! Switching from ${mountainType} ${currentIndex} to ${newIndex}`);
         setCurrentIndex(newIndex);
         loadMountain(newIndex);
       }
     };
 
-    // Check every minute for hour changes
-    const interval = setInterval(checkForHourChange, 60000);
+    // Check every minute for half-hour changes
+    const interval = setInterval(checkForHalfHourChange, 60000);
 
     return () => clearInterval(interval);
   }, [mountainCount, currentIndex, mountainType]);
@@ -327,13 +327,19 @@ export default function MountainDisplay({
   // Calculate time until next mountain change
   const getTimeUntilNextChange = () => {
     const now = new Date();
-    const nextHour = new Date(now);
-    nextHour.setHours(nextHour.getHours() + 1);
-    nextHour.setMinutes(0);
-    nextHour.setSeconds(0);
-    nextHour.setMilliseconds(0);
+    const nextHalfHour = new Date(now);
+    const currentMinutes = nextHalfHour.getMinutes();
     
-    const diffMinutes = Math.floor((nextHour.getTime() - now.getTime()) / (1000 * 60));
+    if (currentMinutes < 30) {
+      nextHalfHour.setMinutes(30);
+    } else {
+      nextHalfHour.setHours(nextHalfHour.getHours() + 1);
+      nextHalfHour.setMinutes(0);
+    }
+    nextHalfHour.setSeconds(0);
+    nextHalfHour.setMilliseconds(0);
+    
+    const diffMinutes = Math.floor((nextHalfHour.getTime() - now.getTime()) / (1000 * 60));
     return diffMinutes;
   };
 
@@ -658,7 +664,7 @@ export default function MountainDisplay({
         {process.env.NODE_ENV === 'development' && (
           <div className="bg-gray-900 bg-opacity-90 rounded-lg p-2 border border-gray-500 shadow-lg">
             <div className="text-xs text-gray-400 space-y-1">
-              <div>Debug: Index {currentIndex}, UTC Hour: {new Date().getUTCHours()}</div>
+              <div>Debug: Index {currentIndex}, UTC Time: {new Date().getUTCHours()}:{String(new Date().getUTCMinutes()).padStart(2, '0')}</div>
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
               <div>Image file: {currentMountain?.image_filename}</div>
