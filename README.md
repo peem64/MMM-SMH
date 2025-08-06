@@ -385,7 +385,7 @@ For issues specific to this module:
 
 - **v1.0.0** - Initial release
   - Complete Munros dataset (282 peaks)
-  - Complete Corbetts dataset (219 peaks)
+  - Complete Corbetts dataset (222 peaks)
   - Unified component architecture
   - Local image support with fallback system
   - Hourly rotation based on UTC time
