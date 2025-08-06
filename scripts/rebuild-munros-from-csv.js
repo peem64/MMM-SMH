@@ -123,7 +123,7 @@ INSERT INTO munros (
     const heightM = munro.Altitude;
     const heightFt = Math.round(heightM * 3.28084);
     const region = munro.Region;
-    const area = munro.Region; // Using Region for Area as it's not in the new file
+    const area = ''; // Leave area empty to prevent duplication with region
     const gridRef = ''; // No grid ref in this file, so default to empty
     
     // Generate description and image filename

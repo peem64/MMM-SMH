@@ -428,10 +428,10 @@ export default function MountainDisplay({
 
   // Get location string based on mountain type
   const getLocationString = (mountain: MountainType) => {
-    if (mountain.area) {
+    if (mountain.area && mountain.area !== mountain.region && mountain.area.trim() !== '') {
       return `${mountain.area}, ${mountain.region}`;
     }
-    if (mountain.location) {
+    if (mountain.location && mountain.location !== mountain.region && mountain.location.trim() !== '') {
       return `${mountain.location}, ${mountain.region}`;
     }
     return mountain.region;
