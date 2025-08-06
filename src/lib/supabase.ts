@@ -449,8 +449,19 @@ export async function toggleMountainCompletion(
   notes: string = ''
 ): Promise<{ action: string; completed: boolean; completion_date: string | null } | null> {
   try {
+    console.log('Toggling completion for:', { mountainId, mountainType, notes });
+    
+    // Ensure we have a valid user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      console.error('No authenticated user for completion toggle');
+      return null;
+    }
+    
+    console.log('User authenticated:', user.id);
+    
     const { data, error } = await supabase.rpc('toggle_mountain_completion', {
-      mountain_uuid: mountainId,
+      mountain_uuid: String(mountainId),
       mountain_type_param: mountainType,
       completion_notes: notes
     });
@@ -460,6 +471,7 @@ export async function toggleMountainCompletion(
       return null;
     }
 
+    console.log('Toggle completion result:', data);
     return data?.[0] || null;
   } catch (error) {
     console.error('Network error toggling completion:', error);
@@ -478,6 +490,8 @@ export async function getUserCompletionStats(
       return null;
     }
 
+    console.log('Getting completion stats for user:', user.id, 'type:', mountainType);
+    
     const { data, error } = await supabase.rpc('get_user_completion_stats', {
       user_uuid: user.id,
       mountain_type_param: mountainType
@@ -488,6 +502,7 @@ export async function getUserCompletionStats(
       return null;
     }
 
+    console.log('Completion stats result:', data);
     return data?.[0] || null;
   } catch (error) {
     console.error('Network error getting completion stats:', error);
