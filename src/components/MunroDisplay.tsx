@@ -550,7 +550,7 @@ export default function MountainDisplay({
         </div>
 
         {/* Popular Routes */}
-        {currentMountain.popular_routes && currentMountain.popular_routes.length > 0 && (
+        {currentMountain.popular_routes && Array.isArray(currentMountain.popular_routes) && currentMountain.popular_routes.length > 0 && (
           <div className="bg-gray-800 bg-opacity-80 rounded-lg p-2 border border-gray-600 shadow-lg">
             <div className="flex items-center space-x-2 mb-2">
               <Route className="w-3 h-3 text-orange-400" />
@@ -567,7 +567,7 @@ export default function MountainDisplay({
         )}
 
         {/* Best Seasons */}
-        {currentMountain.best_seasons && currentMountain.best_seasons.length > 0 && (
+        {currentMountain.best_seasons && Array.isArray(currentMountain.best_seasons) && currentMountain.best_seasons.length > 0 && (
           <div className="bg-gray-800 bg-opacity-80 rounded-lg p-2 border border-gray-600 shadow-lg">
             <div className="flex items-center space-x-2 mb-2">
               <Clock className="w-3 h-3 text-green-400" />

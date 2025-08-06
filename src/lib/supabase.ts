@@ -152,6 +152,30 @@ export interface Mountain {
 
 // Convert Munro to Mountain format
 function munroToMountain(munro: Munro): Mountain {
+  // Ensure popular_routes is an array
+  let popularRoutes = [];
+  if (Array.isArray(munro.popular_routes)) {
+    popularRoutes = munro.popular_routes;
+  } else if (typeof munro.popular_routes === 'string') {
+    try {
+      popularRoutes = JSON.parse(munro.popular_routes);
+    } catch {
+      popularRoutes = munro.popular_routes ? [munro.popular_routes] : [];
+    }
+  }
+
+  // Ensure best_seasons is an array
+  let bestSeasons = [];
+  if (Array.isArray(munro.best_seasons)) {
+    bestSeasons = munro.best_seasons;
+  } else if (typeof munro.best_seasons === 'string') {
+    try {
+      bestSeasons = JSON.parse(munro.best_seasons);
+    } catch {
+      bestSeasons = munro.best_seasons ? [munro.best_seasons] : [];
+    }
+  }
+
   return {
     id: munro.id,
     name: munro.name,
@@ -162,8 +186,8 @@ function munroToMountain(munro: Munro): Mountain {
     description: munro.description,
     difficulty_rating: munro.difficulty_rating,
     estimated_time: munro.estimated_time_hours,
-    popular_routes: munro.popular_routes,
-    best_seasons: munro.best_seasons,
+    popular_routes: popularRoutes,
+    best_seasons: bestSeasons,
     image_filename: munro.image_filename,
     classification: munro.classification
   };
@@ -171,6 +195,30 @@ function munroToMountain(munro: Munro): Mountain {
 
 // Convert Corbett to Mountain format
 function corbettToMountain(corbett: Corbett): Mountain {
+  // Ensure popular_routes is an array
+  let popularRoutes = [];
+  if (Array.isArray(corbett.popular_routes)) {
+    popularRoutes = corbett.popular_routes;
+  } else if (typeof corbett.popular_routes === 'string') {
+    try {
+      popularRoutes = JSON.parse(corbett.popular_routes);
+    } catch {
+      popularRoutes = corbett.popular_routes ? [corbett.popular_routes] : [];
+    }
+  }
+
+  // Ensure best_seasons is an array
+  let bestSeasons = [];
+  if (Array.isArray(corbett.best_seasons)) {
+    bestSeasons = corbett.best_seasons;
+  } else if (typeof corbett.best_seasons === 'string') {
+    try {
+      bestSeasons = JSON.parse(corbett.best_seasons);
+    } catch {
+      bestSeasons = corbett.best_seasons ? [corbett.best_seasons] : [];
+    }
+  }
+
   return {
     id: corbett.id,
     name: corbett.name,
@@ -181,8 +229,8 @@ function corbettToMountain(corbett: Corbett): Mountain {
     description: corbett.description,
     difficulty_rating: corbett.difficulty_rating,
     estimated_time: corbett.estimated_time,
-    popular_routes: corbett.popular_routes,
-    best_seasons: corbett.best_seasons,
+    popular_routes: popularRoutes,
+    best_seasons: bestSeasons,
     image_filename: corbett.image_filename,
     classification: corbett.classification
   };
