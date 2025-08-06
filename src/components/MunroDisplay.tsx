@@ -348,6 +348,10 @@ export default function MountainDisplay({
     if (typeof time === 'number') {
       return `${time}h`;
     }
+    // If it's a string, check if it contains "hours" and replace with "h"
+    if (typeof time === 'string') {
+      return time.replace(/\s*hours?/gi, 'h').replace(/\s*hrs?/gi, 'h');
+    }
     return time;
   };
 
