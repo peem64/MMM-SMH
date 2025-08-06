@@ -5,7 +5,9 @@ A beautiful MagicMirror module that displays detailed information about Scottish
 ## 🏔️ Features
 
 - **Dual Mountain Support**: Display either Scottish Munros or Corbetts using the same component
-- **Hourly Rotation**: Automatically cycles through all mountains every hour based on UTC time
+- **Half-Hourly Rotation**: Automatically cycles through all mountains every 30 minutes based on UTC time
+- **Completion Tracking**: Mark mountains as completed and track your progress
+- **User Authentication**: Sign up/sign in to save your completion progress
 - **Comprehensive Data**: Each mountain includes:
   - Height, prominence, and location details
   - Difficulty rating (1-5 scale) with star display
@@ -16,7 +18,7 @@ A beautiful MagicMirror module that displays detailed information about Scottish
   - High-quality mountain images
 
 - **Smart Image System**: Local image support with intelligent fallback paths
-- **Real-time Clock**: Shows current UTC time and countdown to next rotation
+- **Progress Display**: Shows completion count and countdown to next rotation
 - **Responsive Design**: Optimized for MagicMirror displays with high contrast
 - **Smooth Transitions**: Elegant fade effects between mountains
 - **Development Tools**: Arrow key navigation for testing
@@ -47,6 +49,7 @@ npm install
    - In Supabase dashboard, go to SQL Editor
    - Run the migration files in order from `supabase/migrations/`
    - This creates both `munros` and `corbetts` tables with complete datasets
+   - Also creates completion tracking tables for user progress
 
 ### 3. Build the Module
 
@@ -124,11 +127,12 @@ MMM-SMH/
 
 ### Data Flow
 
-1. **Time-Based Selection**: Module calculates current mountain based on UTC hour
+1. **Time-Based Selection**: Module calculates current mountain based on UTC time (every 30 minutes)
 2. **Database Query**: Fetches mountain data from Supabase (munros or corbetts table)
 3. **Image Loading**: Attempts to load local images with intelligent fallback
-4. **Display Update**: Shows mountain with smooth transitions every hour
-5. **Auto-Rotation**: Automatically advances to next mountain each hour
+4. **Display Update**: Shows mountain with smooth transitions every 30 minutes
+5. **Auto-Rotation**: Automatically advances to next mountain every 30 minutes
+6. **Completion Tracking**: Allows users to mark mountains as completed and tracks progress
 
 ### Database Schema
 
@@ -142,6 +146,10 @@ MMM-SMH/
 - Includes detailed climbing information
 - Regional coverage across Scotland
 
+#### Completion Tracking Tables
+- **Users Table**: Stores user authentication data
+- **Mountain Completions Table**: Tracks which mountains each user has completed
+- **RLS Policies**: Ensures users can only see/modify their own completion data
 ## 🔧 Configuration Options
 
 | Option | Type | Default | Description |
@@ -156,6 +164,30 @@ MMM-SMH/
 | `maxWidth` | String | "300px" | Maximum width of module |
 | `maxHeight` | String | "auto" | Maximum height of module |
 
+## 🎯 Completion Tracking Features
+
+### User Authentication
+- **Sign Up/Sign In**: Create an account to track your progress
+- **Email/Password**: Simple authentication system
+- **View-Only Mode**: Skip authentication to browse without tracking
+
+### Progress Tracking
+- **Completion Counter**: Shows "15/282" in the header for completed mountains
+- **Visual Indicators**: Green checkmarks and "✓ Completed" text on completed peaks
+- **Completion Button**: "Mark as Completed" button for each mountain
+- **Persistent Storage**: Your progress is saved in the database
+
+### How It Works
+1. **Sign up** with email and password (or skip for view-only)
+2. **Browse mountains** as they rotate every 30 minutes
+3. **Click "Mark as Completed"** when you've climbed a mountain
+4. **Track your progress** with the completion counter
+5. **See visual indicators** on mountains you've completed
+
+### Multiple Users
+- Each user has their own completion tracking
+- Progress is private to each account
+- Multiple family members can have separate accounts
 ## 🎯 Multiple Instances
 
 You can run both Munros and Corbetts simultaneously:
@@ -284,13 +316,27 @@ interface Mountain {
    - ✅ Verify RLS policies allow public read access
    - ✅ Check project is active and not paused
 
+5. **Completion tracking not working**
+   - ✅ Ensure completion tracking migration has been run
+   - ✅ Check user is signed in (authentication form should disappear)
+   - ✅ Verify RLS policies allow user data access
+   - ✅ Check browser console for authentication errors
+
+6. **Authentication issues**
+   - ✅ Verify email confirmation is disabled in Supabase Auth settings
+   - ✅ Check that email/password auth is enabled in Supabase
+   - ✅ Ensure strong password requirements are met
+   - ✅ Try signing up with a new email if sign-in fails
 ### Debug Mode
 
 In development, the module shows debug information:
-- Current index and UTC hour
+- Current index and UTC time (hours:minutes)
 - Time until next change
 - Image loading status
 - Mountain type being displayed
+- User authentication status
+- Completion status for current mountain
+- Progress statistics
 - Arrow key controls for manual navigation
 
 ### Logs
@@ -304,21 +350,21 @@ pm2 logs MagicMirror
 
 ### Time-Based Algorithm
 ```javascript
-const hoursSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60));
-const mountainIndex = hoursSinceEpoch % totalMountains;
+const halfHoursSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 30));
+const mountainIndex = halfHoursSinceEpoch % totalMountains;
 ```
 
 ### Synchronization
 - All instances worldwide show the same mountain at the same time
 - Based on UTC time to avoid timezone issues
-- Changes exactly on the hour (e.g., 14:00:00 UTC)
+- Changes every 30 minutes (e.g., 14:00:00 UTC, 14:30:00 UTC)
 - Countdown shows minutes until next change
 
 ### Examples
-- Hour 0: Mountain index 0 (first in alphabetical order)
-- Hour 1: Mountain index 1 (second mountain)
-- Hour 282: Mountain index 0 (cycles back to first Munro)
-- Hour 283: Mountain index 1 (second Munro again)
+- 00:00: Mountain index 0 (first in alphabetical order)
+- 00:30: Mountain index 1 (second mountain)
+- 01:00: Mountain index 2 (third mountain)
+- After all 282 Munros: Cycles back to index 0
 
 ## 📊 Performance
 
@@ -333,7 +379,8 @@ const mountainIndex = hoursSinceEpoch % totalMountains;
 
 - **RLS Enabled**: Row Level Security on all tables
 - **Public Read**: Anonymous read access for mountain data
-- **No Writes**: Module only reads data, never modifies
+- **User Data Protection**: Users can only access their own completion data
+- **Secure Authentication**: Email/password authentication via Supabase Auth
 - **Environment Variables**: Credentials stored securely
 - **HTTPS**: All Supabase connections encrypted
 
@@ -342,11 +389,14 @@ const mountainIndex = hoursSinceEpoch % totalMountains;
 ### Production Checklist
 - [ ] Supabase project configured
 - [ ] Database migrations completed
+- [ ] Completion tracking migration run
+- [ ] Email/password authentication enabled in Supabase
 - [ ] Module built (`npm run build`)
 - [ ] Config file updated with credentials
 - [ ] Images added (optional)
 - [ ] MagicMirror restarted
-- [ ] Module appears and rotates correctly
+- [ ] Module appears and rotates every 30 minutes
+- [ ] Completion tracking works for authenticated users
 
 ### Performance Optimization
 - Images are lazy-loaded and cached
@@ -388,7 +438,9 @@ For issues specific to this module:
   - Complete Corbetts dataset (222 peaks)
   - Unified component architecture
   - Local image support with fallback system
-  - Hourly rotation based on UTC time
+  - Half-hourly rotation based on UTC time
+  - User authentication and completion tracking
+  - Progress visualization and statistics
   - Optimized for MagicMirror display
   - Development and production modes
   - Comprehensive documentation
