@@ -449,32 +449,55 @@ export async function toggleMountainCompletion(
   notes: string = ''
 ): Promise<{ action: string; completed: boolean; completion_date: string | null } | null> {
   try {
-    console.log('Toggling completion for:', { mountainId, mountainType, notes });
+    console.log('🔄 Starting completion toggle for:', { mountainId, mountainType, notes });
     
     // Ensure we have a valid user
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      console.error('No authenticated user for completion toggle');
+      console.error('❌ No authenticated user for completion toggle');
       return null;
     }
     
-    console.log('User authenticated:', user.id);
+    console.log('✅ User authenticated:', user.id);
+    
+    // Convert mountain ID to string to ensure compatibility
+    const mountainIdStr = String(mountainId);
+    console.log('🔍 Converting mountain ID:', mountainId, '->', mountainIdStr);
     
     const { data, error } = await supabase.rpc('toggle_mountain_completion', {
-      mountain_uuid: String(mountainId),
+      mountain_uuid: mountainIdStr,
       mountain_type_param: mountainType,
       completion_notes: notes
     });
 
     if (error) {
-      console.error('Error toggling mountain completion:', error);
+      console.error('❌ RPC Error toggling completion:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       return null;
     }
 
-    console.log('Toggle completion result:', data);
-    return data?.[0] || null;
+    console.log('✅ Toggle completion result:', data);
+    
+    if (!data || data.length === 0) {
+      console.error('❌ No data returned from toggle function');
+      return null;
+    }
+    
+    const result = data[0];
+    console.log('✅ Parsed result:', result);
+    
+    return {
+      action: result.action,
+      completed: result.completed,
+      completion_date: result.completion_date
+    };
   } catch (error) {
-    console.error('Network error toggling completion:', error);
+    console.error('💥 Network error toggling completion:', error);
     return null;
   }
 }
@@ -486,11 +509,11 @@ export async function getUserCompletionStats(
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      console.log('No authenticated user for completion stats');
+      console.log('ℹ️ No authenticated user for completion stats');
       return null;
     }
 
-    console.log('Getting completion stats for user:', user.id, 'type:', mountainType);
+    console.log('📊 Getting completion stats for user:', user.id, 'type:', mountainType);
     
     const { data, error } = await supabase.rpc('get_user_completion_stats', {
       user_uuid: user.id,
@@ -498,14 +521,20 @@ export async function getUserCompletionStats(
     });
 
     if (error) {
-      console.error('Error getting completion stats:', error);
+      console.error('❌ Error getting completion stats:', error);
       return null;
     }
 
-    console.log('Completion stats result:', data);
-    return data?.[0] || null;
+    console.log('✅ Completion stats result:', data);
+    
+    if (!data || data.length === 0) {
+      console.log('ℹ️ No completion stats data returned');
+      return null;
+    }
+    
+    return data[0];
   } catch (error) {
-    console.error('Network error getting completion stats:', error);
+    console.error('💥 Network error getting completion stats:', error);
     return null;
   }
 }
