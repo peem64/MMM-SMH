@@ -128,10 +128,31 @@ INSERT INTO munros (
     
     // Generate description and image filename
     const description = `${name} is a ${heightM}m Munro located in ${region}. This peak offers excellent views and is a popular destination for hillwalkers.`;
+    
+    // Better filename generation that handles Gaelic characters properly
     const imageFilename = name.toLowerCase()
-      .replace(/[^a-z0-9\s]/g, '')
-      .replace(/\s+/g, '_')
+      // Handle common Gaelic characters
+      .replace(/à/g, 'a')
+      .replace(/á/g, 'a')
+      .replace(/è/g, 'e')
+      .replace(/é/g, 'e')
+      .replace(/ì/g, 'i')
+      .replace(/í/g, 'i')
+      .replace(/ò/g, 'o')
+      .replace(/ó/g, 'o')
+      .replace(/ù/g, 'u')
+      .replace(/ú/g, 'u')
+      // Handle special apostrophes and quotes
+      .replace(/'/g, '')
+      .replace(/'/g, '')
+      .replace(/'/g, '')
+      // Remove parentheses and their contents
+      .replace(/\([^)]*\)/g, '')
+      // Replace spaces and remaining special characters with underscores
+      .replace(/[^a-z0-9]/g, '_')
+      // Clean up multiple underscores
       .replace(/_+/g, '_')
+      // Remove leading/trailing underscores
       .replace(/^_|_$/g, '') + '.jpg';
     
     // Estimate difficulty and time based on height

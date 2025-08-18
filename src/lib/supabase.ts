@@ -152,6 +152,34 @@ export interface Mountain {
 
 // Convert Munro to Mountain format
 function munroToMountain(munro: Munro): Mountain {
+  // Generate consistent image filename from name
+  const generateImageFilename = (name: string): string => {
+    return name.toLowerCase()
+      // Handle common Gaelic characters
+      .replace(/à/g, 'a')
+      .replace(/á/g, 'a')
+      .replace(/è/g, 'e')
+      .replace(/é/g, 'e')
+      .replace(/ì/g, 'i')
+      .replace(/í/g, 'i')
+      .replace(/ò/g, 'o')
+      .replace(/ó/g, 'o')
+      .replace(/ù/g, 'u')
+      .replace(/ú/g, 'u')
+      // Handle special apostrophes and quotes
+      .replace(/'/g, '')
+      .replace(/'/g, '')
+      .replace(/'/g, '')
+      // Remove parentheses and their contents
+      .replace(/\([^)]*\)/g, '')
+      // Replace spaces and remaining special characters with underscores
+      .replace(/[^a-z0-9]/g, '_')
+      // Clean up multiple underscores
+      .replace(/_+/g, '_')
+      // Remove leading/trailing underscores
+      .replace(/^_|_$/g, '') + '.jpg';
+  };
+
   // Ensure popular_routes is an array
   let popularRoutes = [];
   if (Array.isArray(munro.popular_routes)) {
@@ -188,13 +216,41 @@ function munroToMountain(munro: Munro): Mountain {
     estimated_time: munro.estimated_time_hours,
     popular_routes: popularRoutes,
     best_seasons: bestSeasons,
-    image_filename: munro.image_filename,
+    image_filename: munro.image_filename || generateImageFilename(munro.name),
     classification: munro.classification
   };
 }
 
 // Convert Corbett to Mountain format
 function corbettToMountain(corbett: Corbett): Mountain {
+  // Generate consistent image filename from name
+  const generateImageFilename = (name: string): string => {
+    return name.toLowerCase()
+      // Handle common Gaelic characters
+      .replace(/à/g, 'a')
+      .replace(/á/g, 'a')
+      .replace(/è/g, 'e')
+      .replace(/é/g, 'e')
+      .replace(/ì/g, 'i')
+      .replace(/í/g, 'i')
+      .replace(/ò/g, 'o')
+      .replace(/ó/g, 'o')
+      .replace(/ù/g, 'u')
+      .replace(/ú/g, 'u')
+      // Handle special apostrophes and quotes
+      .replace(/'/g, '')
+      .replace(/'/g, '')
+      .replace(/'/g, '')
+      // Remove parentheses and their contents
+      .replace(/\([^)]*\)/g, '')
+      // Replace spaces and remaining special characters with underscores
+      .replace(/[^a-z0-9]/g, '_')
+      // Clean up multiple underscores
+      .replace(/_+/g, '_')
+      // Remove leading/trailing underscores
+      .replace(/^_|_$/g, '') + '.jpg';
+  };
+
   // Ensure popular_routes is an array
   let popularRoutes = [];
   if (Array.isArray(corbett.popular_routes)) {
@@ -231,7 +287,7 @@ function corbettToMountain(corbett: Corbett): Mountain {
     estimated_time: corbett.estimated_time,
     popular_routes: popularRoutes,
     best_seasons: bestSeasons,
-    image_filename: corbett.image_filename,
+    image_filename: corbett.image_filename || generateImageFilename(corbett.name),
     classification: corbett.classification
   };
 }
