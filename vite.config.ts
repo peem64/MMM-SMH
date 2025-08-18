@@ -29,6 +29,8 @@ export default defineConfig({
     target: 'es2015',
     minify: 'terser'
   },
-  // Copy public assets to dist - this ensures images are copied
-  publicDir: 'public'
+  // Ensure public assets are copied to dist
+  publicDir: 'public',
+  // Configure asset handling
+  assetsInclude: ['**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.gif', '**/*.svg']
 });

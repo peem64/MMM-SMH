@@ -144,48 +144,18 @@ export default function MountainDisplay({
     };
     
     const handleError = () => {
-      // Try alternative paths
-      const filename = currentMountain.image_filename;
-      const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
-      const altPaths = [
-        `modules/MMM-SMH/dist/images/${basePath}/${filename}`,
-        `modules/MMM-SMH/public/images/${basePath}/${filename}`,
-        `modules/MMM-SMH/images/${basePath}/${filename}`,
-        `/modules/MMM-SMH/dist/images/${basePath}/${filename}`,
-        `/modules/MMM-SMH/public/images/${basePath}/${filename}`,
-        `/modules/MMM-SMH/images/${basePath}/${filename}`,
-        `images/${basePath}/${filename}`,
-        `./images/${basePath}/${filename}`,
-        `/images/${basePath}/${filename}`,
-        // Development fallbacks
-        `/public/images/${basePath}/${filename}`,
-        `public/images/${basePath}/${filename}`
-      ];
-      
-      const currentSrc = img.src;
-      const currentPathIndex = altPaths.findIndex(path => currentSrc.endsWith(path));
-      
-      if (currentPathIndex < altPaths.length - 1) {
-        // Try next path
-        const nextPath = altPaths[currentPathIndex + 1];
-        console.log(`MMM-SMH: Image failed (${currentSrc}), trying: ${nextPath}`);
-        img.src = nextPath;
-      } else {
-        // All paths failed
-        console.log(`MMM-SMH: All image paths failed for ${mountainType}: ${filename}`);
-        console.log(`MMM-SMH: Tried paths:`, altPaths);
-        setImageStatus('error');
-        setImageUrl('');
-      }
+      console.log(`MMM-SMH: Image failed to load: ${img.src}`);
+      setImageStatus('error');
+      setImageUrl('');
     };
     
     img.addEventListener('load', handleLoad);
     img.addEventListener('error', handleError);
     
-    // Start loading with the first path
+    // Start loading with the correct path
     const initialPath = getImagePath(currentMountain.image_filename);
     console.log(`MMM-SMH: Loading ${mountainType} image: ${initialPath}`);
-    img.src = getImagePath(currentMountain.image_filename);
+    img.src = initialPath;
     
     return () => {
       img.removeEventListener('load', handleLoad);
@@ -301,27 +271,19 @@ export default function MountainDisplay({
   const getImagePath = (filename: string) => {
     const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
     
-    // For development mode, use the public folder directly
+    console.log(`MMM-SMH: Getting image path for ${filename} in ${mountainType}`);
+    
+    // Check if we're in development mode
     if (import.meta.env.DEV) {
-      return `/images/${basePath}/${filename}`;
+      const devPath = `/images/${basePath}/${filename}`;
+      console.log(`MMM-SMH: Development mode - using path: ${devPath}`);
+      return devPath;
     }
     
-    // For production/MagicMirror, try multiple possible paths
-    const basePaths = [
-      `modules/MMM-SMH/dist/images/${basePath}/${filename}`,
-      `modules/MMM-SMH/public/images/${basePath}/${filename}`,
-      `modules/MMM-SMH/images/${basePath}/${filename}`,
-      `/modules/MMM-SMH/dist/images/${basePath}/${filename}`,
-      `/modules/MMM-SMH/public/images/${basePath}/${filename}`,
-      `/modules/MMM-SMH/images/${basePath}/${filename}`,
-      // Also try relative paths from dist
-      `images/${basePath}/${filename}`,
-      `./images/${basePath}/${filename}`,
-      `/images/${basePath}/${filename}`
-    ];
-    
-    // Return the first path (we'll handle fallbacks in the error handler)
-    return basePaths[0];
+    // For production/MagicMirror, use the built assets path
+    const prodPath = `modules/MMM-SMH/dist/images/${basePath}/${filename}`;
+    console.log(`MMM-SMH: Production mode - using path: ${prodPath}`);
+    return prodPath;
   };
 
   // Calculate time until next mountain change
@@ -515,14 +477,24 @@ export default function MountainDisplay({
                 src={imageUrl}
                 alt={currentMountain.name}
                 className="w-full h-30 object-cover"
+                onError={() => {
+                  console.log(`MMM-SMH: Image render error for: ${imageUrl}`);
+                  setImageStatus('error');
+                }}
               />
             ) : imageStatus === 'loading' ? (
               <div className="w-full h-30 bg-gray-700 flex items-center justify-center">
-                <Mountain className="w-8 h-8 text-gray-400 animate-pulse" />
+                <div className="text-center">
+                  <Mountain className="w-8 h-8 text-gray-400 animate-pulse mx-auto mb-1" />
+                  <div className="text-xs text-gray-500">Loading image...</div>
+                </div>
               </div>
             ) : (
               <div className="w-full h-30 bg-gray-700 flex items-center justify-center">
-                <Mountain className="w-8 h-8 text-gray-400" />
+                <div className="text-center">
+                  <Mountain className="w-8 h-8 text-gray-400 mx-auto mb-1" />
+                  <div className="text-xs text-gray-500">No image available</div>
+                </div>
               </div>
             )}
             
