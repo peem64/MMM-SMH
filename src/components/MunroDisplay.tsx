@@ -281,7 +281,7 @@ export default function MountainDisplay({
     }
     
     // For production/MagicMirror, use the built assets path
-    const prodPath = `modules/MMM-SMH/dist/images/${basePath}/${filename}`;
+    const prodPath = `modules/MMM-SMH/dist/assets/images/${basePath}/${filename}`;
     console.log(`MMM-SMH: Production mode - using path: ${prodPath}`);
     return prodPath;
   };
