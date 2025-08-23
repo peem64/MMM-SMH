@@ -505,7 +505,7 @@ export async function toggleMountainCompletion(
   notes: string = ''
 ): Promise<{ action: string; completed: boolean; completion_date: string | null } | null> {
   try {
-    console.log('🔄 Starting completion toggle for:', { mountainId, mountainType, notes });
+    console.log('🔄 Starting completion toggle for:', { mountainId, mountainType, notes, idType: typeof mountainId });
     
     // Ensure we have a valid user
     const { data: { user } } = await supabase.auth.getUser();
@@ -516,42 +516,80 @@ export async function toggleMountainCompletion(
     
     console.log('✅ User authenticated:', user.id);
     
-    // Convert mountain ID to string to ensure compatibility
-    const mountainIdStr = String(mountainId);
-    console.log('🔍 Converting mountain ID:', mountainId, '->', mountainIdStr);
+    // Handle different ID types for different mountain types
+    let mountainIdParam;
+    if (mountainType === 'munros') {
+      // Munros use UUID strings
+      mountainIdParam = String(mountainId);
+    } else {
+      // Corbetts use integers
+      mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
+    }
     
-    const { data, error } = await supabase.rpc('toggle_mountain_completion', {
-      mountain_uuid: mountainIdStr,
-      mountain_type_param: mountainType,
-      completion_notes: notes
-    });
+    console.log('🔍 Processing mountain ID:', mountainId, '->', mountainIdParam, 'for', mountainType);
+    
+    // Use direct table operations instead of RPC to handle different ID types
+    // First, check if completion already exists
+    const { data: existingCompletion, error: checkError } = await supabase
+      .from('mountain_completions')
+      .select('*')
+      .eq('mountain_id', mountainIdParam)
+      .eq('mountain_type', mountainType)
+      .eq('user_id', user.id)
+      .single();
 
-    if (error) {
-      console.error('❌ RPC Error toggling completion:', error);
-      console.error('❌ Error details:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
-      });
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('❌ Error checking existing completion:', checkError);
       return null;
     }
 
-    console.log('✅ Toggle completion result:', data);
-    
-    if (!data || data.length === 0) {
-      console.error('❌ No data returned from toggle function');
-      return null;
+    let result;
+    if (existingCompletion) {
+      // Remove completion
+      const { error: deleteError } = await supabase
+        .from('mountain_completions')
+        .delete()
+        .eq('id', existingCompletion.id);
+
+      if (deleteError) {
+        console.error('❌ Error removing completion:', deleteError);
+        return null;
+      }
+
+      result = {
+        action: 'removed',
+        completed: false,
+        completion_date: null
+      };
+    } else {
+      // Add completion
+      const { data: newCompletion, error: insertError } = await supabase
+        .from('mountain_completions')
+        .insert({
+          mountain_id: mountainIdParam,
+          mountain_type: mountainType,
+          user_id: user.id,
+          notes: notes,
+          completed_at: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('❌ Error adding completion:', insertError);
+        return null;
+      }
+
+      result = {
+        action: 'added',
+        completed: true,
+        completion_date: newCompletion.completed_at
+      };
     }
-    
-    const result = data[0];
+
     console.log('✅ Parsed result:', result);
     
-    return {
-      action: result.action,
-      completed: result.completed,
-      completion_date: result.completion_date
-    };
+    return result;
   } catch (error) {
     console.error('💥 Network error toggling completion:', error);
     return null;
@@ -606,10 +644,20 @@ export async function getMountainCompletion(
       return null;
     }
 
+    // Handle different ID types for different mountain types
+    let mountainIdParam;
+    if (mountainType === 'munros') {
+      // Munros use UUID strings
+      mountainIdParam = String(mountainId);
+    } else {
+      // Corbetts use integers
+      mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
+    }
+
     const { data, error } = await supabase
       .from('mountain_completions')
       .select('*')
-      .eq('mountain_id', mountainId)
+      .eq('mountain_id', mountainIdParam)
       .eq('mountain_type', mountainType)
       .eq('user_id', user.id)
       .single();
