@@ -321,14 +321,22 @@ export default function MountainDisplay({
   const handleToggleCompletion = async () => {
     if (!currentMountain || !currentUser || isTogglingCompletion) return;
 
-    console.log('🎯 Starting completion toggle for:', currentMountain.name, 'ID:', currentMountain.id);
+    console.log('🎯 Starting completion toggle for:', {
+      name: currentMountain.name, 
+      id: currentMountain.id,
+      idType: typeof currentMountain.id,
+      mountainType: mountainType,
+      user: currentUser?.id
+    });
     
     setIsTogglingCompletion(true);
     try {
-      console.log('🔄 Calling toggleMountainCompletion with:', {
+      console.log('🔄 Calling toggleMountainCompletion with params:', {
         id: currentMountain.id,
+        idType: typeof currentMountain.id,
         type: mountainType,
-        name: currentMountain.name
+        name: currentMountain.name,
+        notes: `Completed ${currentMountain.name} on ${new Date().toLocaleDateString()}`
       });
       
       const result = await toggleMountainCompletion(
@@ -351,10 +359,10 @@ export default function MountainDisplay({
           setCompletionStats(stats);
         }
       } else {
-        console.error('❌ No result from toggle completion');
+        console.error('❌ No result from toggle completion - function returned null');
       }
     } catch (error) {
-      console.error('💥 Error toggling completion:', error);
+      console.error('💥 Error in handleToggleCompletion:', error);
     } finally {
       setIsTogglingCompletion(false);
     }

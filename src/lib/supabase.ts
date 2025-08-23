@@ -505,7 +505,13 @@ export async function toggleMountainCompletion(
   notes: string = ''
 ): Promise<{ action: string; completed: boolean; completion_date: string | null } | null> {
   try {
-    console.log('🔄 Starting completion toggle for:', { mountainId, mountainType, notes, idType: typeof mountainId });
+    console.log('🔄 Starting completion toggle for:', { 
+      mountainId, 
+      mountainType, 
+      notes, 
+      idType: typeof mountainId,
+      rawId: mountainId 
+    });
     
     // Ensure we have a valid user
     const { data: { user } } = await supabase.auth.getUser();
@@ -524,12 +530,19 @@ export async function toggleMountainCompletion(
     } else {
       // Corbetts use integers
       mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
+      console.log('🔢 Corbett ID conversion:', mountainId, '->', mountainIdParam, 'isNaN:', isNaN(mountainIdParam));
     }
     
     console.log('🔍 Processing mountain ID:', mountainId, '->', mountainIdParam, 'for', mountainType);
     
     // Use direct table operations instead of RPC to handle different ID types
     // First, check if completion already exists
+    console.log('🔍 Checking for existing completion with params:', {
+      mountain_id: mountainIdParam,
+      mountain_type: mountainType,
+      user_id: user.id
+    });
+    
     const { data: existingCompletion, error: checkError } = await supabase
       .from('mountain_completions')
       .select('*')
@@ -538,6 +551,8 @@ export async function toggleMountainCompletion(
       .eq('user_id', user.id)
       .single();
 
+    console.log('🔍 Check result:', { existingCompletion, checkError });
+
     if (checkError && checkError.code !== 'PGRST116') {
       console.error('❌ Error checking existing completion:', checkError);
       return null;
@@ -545,6 +560,7 @@ export async function toggleMountainCompletion(
 
     let result;
     if (existingCompletion) {
+      console.log('🗑️ Removing existing completion:', existingCompletion.id);
       // Remove completion
       const { error: deleteError } = await supabase
         .from('mountain_completions')
@@ -556,12 +572,20 @@ export async function toggleMountainCompletion(
         return null;
       }
 
+      console.log('✅ Successfully removed completion');
       result = {
         action: 'removed',
         completed: false,
         completion_date: null
       };
     } else {
+      console.log('➕ Adding new completion with data:', {
+        mountain_id: mountainIdParam,
+        mountain_type: mountainType,
+        user_id: user.id,
+        notes: notes
+      });
+      
       // Add completion
       const { data: newCompletion, error: insertError } = await supabase
         .from('mountain_completions')
@@ -577,9 +601,16 @@ export async function toggleMountainCompletion(
 
       if (insertError) {
         console.error('❌ Error adding completion:', insertError);
+        console.error('❌ Insert error details:', {
+          code: insertError.code,
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint
+        });
         return null;
       }
 
+      console.log('✅ Successfully added completion:', newCompletion);
       result = {
         action: 'added',
         completed: true,
@@ -587,11 +618,16 @@ export async function toggleMountainCompletion(
       };
     }
 
-    console.log('✅ Parsed result:', result);
+    console.log('✅ Final result:', result);
     
     return result;
   } catch (error) {
     console.error('💥 Network error toggling completion:', error);
+    console.error('💥 Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack
+    });
     return null;
   }
 }
