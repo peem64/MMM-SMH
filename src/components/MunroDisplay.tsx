@@ -130,39 +130,37 @@ export default function MountainDisplay({
   useEffect(() => {
     if (!currentMountain?.image_filename) {
       setImageStatus('error');
-      setImageUrl('');
+      setImageUrl('munro.png'); // Just store filename
       return;
     }
 
     setImageStatus('loading');
     
-    // Use clean relative paths without leading slash to avoid URL prefixing
-    const imagePath = `images/${mountainType}/${currentMountain.image_filename}`;
-    const fallbackPath = `images/${mountainType}/munro.png`;
+    // Store only the filename to avoid URL resolution
+    const filename = currentMountain.image_filename;
+    const fallbackFilename = 'munro.png';
     
-    console.log(`MMM-SMH: Loading image with relative path: ${imagePath}`);
+    console.log(`MMM-SMH: Loading image: ${filename}`);
     
     // Try main image first
     const img = new Image();
     
     img.onload = () => {
-      console.log(`MMM-SMH: SUCCESS! Image loaded: ${imagePath}`);
+      console.log(`MMM-SMH: SUCCESS! Image loaded: ${filename}`);
       setImageStatus('loaded');
-      // Store just the filename part to avoid URL prefixing in render
-      setImageUrl(imagePath);
+      setImageUrl(filename); // Store just filename
     };
     
     img.onerror = () => {
-      console.log(`MMM-SMH: Main image failed, trying fallback: ${fallbackPath}`);
+      console.log(`MMM-SMH: Main image failed, trying fallback: ${fallbackFilename}`);
       
       // Try fallback image
       const fallbackImg = new Image();
       
       fallbackImg.onload = () => {
-        console.log(`MMM-SMH: Fallback image loaded: ${fallbackPath}`);
+        console.log(`MMM-SMH: Fallback image loaded: ${fallbackFilename}`);
         setImageStatus('loaded');
-        // Store just the filename part to avoid URL prefixing in render
-        setImageUrl(fallbackPath);
+        setImageUrl(fallbackFilename); // Store just filename
       };
       
       fallbackImg.onerror = () => {
@@ -171,10 +169,10 @@ export default function MountainDisplay({
         setImageUrl('');
       };
       
-      fallbackImg.src = fallbackPath;
+      fallbackImg.src = `images/${mountainType}/${fallbackFilename}`;
     };
     
-    img.src = imagePath;
+    img.src = `images/${mountainType}/${filename}`;
   }, [currentMountain, mountainType]);
 
   // Load mountain data
@@ -471,11 +469,11 @@ export default function MountainDisplay({
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
-                src={imageUrl.startsWith('http') ? imageUrl : `./${imageUrl}`}
+                src={`images/${mountainType}/${imageUrl}`}
                 alt={currentMountain.name}
                 className="w-full h-30 object-cover"
                 onError={() => {
-                  console.log(`MMM-SMH: Image render error for: ${imageUrl}`);
+                  console.log(`MMM-SMH: Image render error for: images/${mountainType}/${imageUrl}`);
                   setImageStatus('error');
                 }}
               />
@@ -656,7 +654,7 @@ export default function MountainDisplay({
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
               <div>Image file: {currentMountain?.image_filename}</div>
-              <div>Image URL: {imageUrl || 'none'}</div>
+              <div>Final path: {imageUrl ? `images/${mountainType}/${imageUrl}` : 'none'}</div>
               <div>Type: {mountainType}</div>
               <div>Count: {actualCount}/{expectedCount} {mountainType}</div>
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
