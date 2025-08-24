@@ -289,15 +289,16 @@ export default function MountainDisplay({
     const hostname = window.location.hostname;
     const port = window.location.port;
     
-    // Check if we're in development mode
-    const isDevelopment = hostname === 'localhost' || 
-                         hostname === '127.0.0.1' ||
-                         port === '5173' ||
-                         port === '8080' ||
-                         port === '3000' ||
-                         currentUrl.includes('localhost') ||
-                         currentUrl.includes('127.0.0.1') ||
-                         (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV);
+    // Check if we're in actual Vite development mode (not just localhost)
+    const isViteDev = (typeof import.meta !== 'undefined' && 
+                       import.meta.env && 
+                       import.meta.env.DEV === true);
+    
+    // Check if we're running on Vite dev server (port 5173 is default)
+    const isViteDevServer = port === '5173';
+    
+    // True development mode is when Vite is actually serving in dev mode
+    const isDevelopment = isViteDev || isViteDevServer;
     
     console.log(`MMM-SMH: Image path debug:`, {
       filename,
@@ -307,6 +308,8 @@ export default function MountainDisplay({
       port: window.location.port,
       protocol: window.location.protocol,
       pathname: window.location.pathname,
+      isViteDev,
+      isViteDevServer,
       isDevelopment,
       importMetaEnv: typeof import.meta !== 'undefined' ? import.meta.env : 'not available'
     });
@@ -316,8 +319,15 @@ export default function MountainDisplay({
       imagePath = `/images/${basePath}/${filename}`;
       console.log(`MMM-SMH: Development mode - using path: ${imagePath}`);
     } else {
-      // For production/MagicMirror, use the built assets path
-      imagePath = `modules/MMM-SMH/dist/assets/images/${basePath}/${filename}`;
+      // Check if we're running as a built app on localhost (like your case)
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        // Try the built assets path first
+        imagePath = `/images/${basePath}/${filename}`;
+        console.log(`MMM-SMH: Built app on localhost - using path: ${imagePath}`);
+      } else {
+        // For production/MagicMirror, use the built assets path
+        imagePath = `modules/MMM-SMH/dist/assets/images/${basePath}/${filename}`;
+      }
       console.log(`MMM-SMH: Production mode - using path: ${imagePath}`);
     }
     
