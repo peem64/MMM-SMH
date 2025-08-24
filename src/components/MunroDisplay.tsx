@@ -278,7 +278,8 @@ export default function MountainDisplay({
                          import.meta.env.MODE === 'development' || 
                          window.location.hostname === 'localhost' ||
                          window.location.hostname === '127.0.0.1' ||
-                         window.location.port === '5173';
+                         window.location.port === '5173' ||
+                         window.location.port === '8080';
     
     if (isDevelopment) {
       const devPath = `/images/${basePath}/${filename}`;
