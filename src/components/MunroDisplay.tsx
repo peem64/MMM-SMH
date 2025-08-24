@@ -273,10 +273,16 @@ export default function MountainDisplay({
     
     console.log(`MMM-SMH: Getting image path for ${filename} in ${mountainType}`);
     
-    // Check if we're in development mode
-    if (import.meta.env.DEV) {
+    // Check if we're in development mode (multiple ways to detect)
+    const isDevelopment = import.meta.env.DEV || 
+                         import.meta.env.MODE === 'development' || 
+                         window.location.hostname === 'localhost' ||
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.port === '5173';
+    
+    if (isDevelopment) {
       const devPath = `/images/${basePath}/${filename}`;
-      console.log(`MMM-SMH: Development mode - using path: ${devPath}`);
+      console.log(`MMM-SMH: Development mode detected - using path: ${devPath}`);
       return devPath;
     }
     
