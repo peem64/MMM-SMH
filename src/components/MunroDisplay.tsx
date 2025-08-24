@@ -144,9 +144,20 @@ export default function MountainDisplay({
     };
     
     const handleError = () => {
-      console.log(`MMM-SMH: Image failed to load: ${img.src}`);
-      setImageStatus('error');
-      setImageUrl('');
+      console.log(`MMM-SMH: Image failed to load: ${img.src} - showing fallback`);
+      // Try fallback to generic munro.png if it exists
+      const fallbackImg = new Image();
+      fallbackImg.onload = () => {
+        setImageStatus('loaded');
+        setImageUrl(fallbackImg.src);
+        console.log(`MMM-SMH: Using fallback image: ${fallbackImg.src}`);
+      };
+      fallbackImg.onerror = () => {
+        console.log(`MMM-SMH: Fallback image also failed, showing placeholder`);
+        setImageStatus('error');
+        setImageUrl('');
+      };
+      fallbackImg.src = `/images/munros/munro.png`;
     };
     
     img.addEventListener('load', handleLoad);
