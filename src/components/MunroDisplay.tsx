@@ -295,10 +295,47 @@ export default function MountainDisplay({
     }
     nextHalfHour.setSeconds(0);
     nextHalfHour.setMilliseconds(0);
-    // Just assume the image exists and let the img tag handle the error
-    console.log(`MMM-SMH: Setting image filename: ${filename}`);
-    setImageStatus('loaded');
-    setImageFilename(filename);
+    
+    const diffMs = nextHalfHour.getTime() - now.getTime();
+    const diffMinutes = Math.ceil(diffMs / (1000 * 60));
+    
+    return diffMinutes;
+  };
+
+  // Format estimated time
+  const formatEstimatedTime = (timeStr: string) => {
+    if (!timeStr) return 'N/A';
+    
+    // Handle various time formats
+    if (timeStr.includes('-')) {
+      return timeStr; // Already formatted like "4-6h"
+    }
+    
+    // Convert single numbers to hours
+    const num = parseFloat(timeStr);
+    if (!isNaN(num)) {
+      if (num < 1) {
+        return `${Math.round(num * 60)}min`;
+      } else {
+        return `${num}h`;
+      }
+    }
+    
+    return timeStr;
+  };
+
+  // Handle completion toggle
+  const handleToggleCompletion = async () => {
+    if (!currentMountain || !currentUser || isTogglingCompletion) return;
+    
+    setIsTogglingCompletion(true);
+    try {
+      console.log('🎯 Toggling completion for:', currentMountain.name);
+      
+      // Just assume the image exists and let the img tag handle the error
+      console.log(`MMM-SMH: Setting image filename: ${filename}`);
+      setImageStatus('loaded');
+      setImageFilename(filename);
       
       const result = await toggleMountainCompletion(
         currentMountain.id,
