@@ -136,38 +136,50 @@ export default function MountainDisplay({
 
     setImageStatus('loading');
     
-    const tryLoadImage = (imagePath: string, isMainImage: boolean = true) => {
-      console.log(`MMM-SMH: Trying to load ${isMainImage ? 'main' : 'fallback'} image: ${imagePath}`);
+    // Test multiple possible paths
+    const possiblePaths = [
+      `/images/${mountainType}/${currentMountain.image_filename}`,
+      `./images/${mountainType}/${currentMountain.image_filename}`,
+      `/dist/images/${mountainType}/${currentMountain.image_filename}`,
+      `./dist/images/${mountainType}/${currentMountain.image_filename}`,
+      `/images/${mountainType}/munro.png`,
+      `./images/${mountainType}/munro.png`
+    ];
+    
+    console.log(`MMM-SMH: Testing image paths for ${currentMountain.image_filename}:`);
+    possiblePaths.forEach(path => console.log(`  - ${path}`));
+    
+    let pathIndex = 0;
+    
+    const tryNextPath = () => {
+      if (pathIndex >= possiblePaths.length) {
+        console.log('MMM-SMH: All paths failed, showing placeholder');
+        setImageStatus('error');
+        setImageUrl('');
+        return;
+      }
+      
+      const currentPath = possiblePaths[pathIndex];
+      console.log(`MMM-SMH: Trying path ${pathIndex + 1}/${possiblePaths.length}: ${currentPath}`);
       
       const img = new Image();
       
       img.onload = () => {
-        console.log(`MMM-SMH: Successfully loaded ${isMainImage ? 'main' : 'fallback'} image: ${imagePath}`);
+        console.log(`MMM-SMH: SUCCESS! Image loaded from: ${currentPath}`);
         setImageStatus('loaded');
-        setImageUrl(imagePath);
+        setImageUrl(currentPath);
       };
       
       img.onerror = () => {
-        console.log(`MMM-SMH: Failed to load ${isMainImage ? 'main' : 'fallback'} image: ${imagePath}`);
-        
-        if (isMainImage) {
-          // Try fallback image
-          const fallbackPath = `/images/${mountainType}/munro.png`;
-          tryLoadImage(fallbackPath, false);
-        } else {
-          // Both main and fallback failed, show placeholder
-          console.log(`MMM-SMH: All images failed, showing placeholder`);
-          setImageStatus('error');
-          setImageUrl('');
-        }
+        console.log(`MMM-SMH: Failed to load: ${currentPath}`);
+        pathIndex++;
+        tryNextPath();
       };
       
-      img.src = imagePath;
+      img.src = currentPath;
     };
     
-    // Start with the main image
-    const mainImagePath = getImagePath(currentMountain.image_filename);
-    tryLoadImage(mainImagePath, true);
+    tryNextPath();
     
   }, [currentMountain?.image_filename, mountainType]);
 
