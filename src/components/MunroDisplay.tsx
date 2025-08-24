@@ -167,13 +167,13 @@ export default function MountainDisplay({
         setImageFilename('');
       };
       
-      // Use relative path without leading slash
-      fallbackImg.src = `images/${mountainType}/${fallbackFilename}`;
+      // Use the correct path via getImagePath function
+      fallbackImg.src = getImagePath(fallbackFilename);
     };
     
-    // Use relative path without leading slash
-    img.src = `images/${mountainType}/${filename}`;
-  }, [currentMountain, mountainType]);
+    // Use the correct path via getImagePath function
+    img.src = getImagePath(filename);
+  }, [currentMountain]);
 
   // Load mountain data
   const loadMountain = async (index: number) => {
@@ -670,8 +670,6 @@ export default function MountainDisplay({
               <div>Image status: {imageStatus}</div>
               <div>Image file: {currentMountain?.image_filename}</div>
               <div>Final path: {imageFilename ? `images/${mountainType}/${imageFilename}` : 'none'}</div>
-              <div>Module base path: {moduleBasePath || 'none'}</div>
-              <div>Computed path: {imageFilename ? getImagePath(imageFilename) : 'none'}</div>
               <div>Type: {mountainType}</div>
               <div>Count: {actualCount}/{expectedCount} {mountainType}</div>
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
