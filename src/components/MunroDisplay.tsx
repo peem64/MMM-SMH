@@ -135,43 +135,40 @@ export default function MountainDisplay({
     }
 
     setImageStatus('loading');
-    const img = new Image();
     
-    const handleLoad = () => {
-      setImageStatus('loaded');
-      setImageUrl(img.src);
-      console.log(`MMM-SMH: Successfully loaded image: ${img.src}`);
-    };
-    
-    const handleError = () => {
-      console.log(`MMM-SMH: Image failed to load: ${img.src} - showing fallback`);
-      // Try fallback to generic munro.png if it exists
-      const fallbackImg = new Image();
-      fallbackImg.onload = () => {
+    const tryLoadImage = (imagePath: string, isMainImage: boolean = true) => {
+      console.log(`MMM-SMH: Trying to load ${isMainImage ? 'main' : 'fallback'} image: ${imagePath}`);
+      
+      const img = new Image();
+      
+      img.onload = () => {
+        console.log(`MMM-SMH: Successfully loaded ${isMainImage ? 'main' : 'fallback'} image: ${imagePath}`);
         setImageStatus('loaded');
-        setImageUrl(fallbackImg.src);
-        console.log(`MMM-SMH: Using fallback image: ${fallbackImg.src}`);
+        setImageUrl(imagePath);
       };
-      fallbackImg.onerror = () => {
-        console.log(`MMM-SMH: Fallback image also failed, showing placeholder`);
-        setImageStatus('error');
-        setImageUrl('');
+      
+      img.onerror = () => {
+        console.log(`MMM-SMH: Failed to load ${isMainImage ? 'main' : 'fallback'} image: ${imagePath}`);
+        
+        if (isMainImage) {
+          // Try fallback image
+          const fallbackPath = `/images/${mountainType}/munro.png`;
+          tryLoadImage(fallbackPath, false);
+        } else {
+          // Both main and fallback failed, show placeholder
+          console.log(`MMM-SMH: All images failed, showing placeholder`);
+          setImageStatus('error');
+          setImageUrl('');
+        }
       };
-      fallbackImg.src = `/images/munros/munro.png`;
+      
+      img.src = imagePath;
     };
     
-    img.addEventListener('load', handleLoad);
-    img.addEventListener('error', handleError);
+    // Start with the main image
+    const mainImagePath = getImagePath(currentMountain.image_filename);
+    tryLoadImage(mainImagePath, true);
     
-    // Start loading with the correct path
-    const initialPath = getImagePath(currentMountain.image_filename);
-    console.log(`MMM-SMH: Loading ${mountainType} image: ${initialPath}`);
-    img.src = initialPath;
-    
-    return () => {
-      img.removeEventListener('load', handleLoad);
-      img.removeEventListener('error', handleError);
-    };
   }, [currentMountain?.image_filename, mountainType]);
 
   // Load mountain by index
@@ -282,57 +279,9 @@ export default function MountainDisplay({
   const getImagePath = (filename: string) => {
     const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
     
-    console.log(`MMM-SMH: Getting image path for ${filename} in ${mountainType}`);
-    
-    // More comprehensive development mode detection
-    const currentUrl = window.location.href;
-    const hostname = window.location.hostname;
-    const port = window.location.port;
-    
-    // Check if we're in actual Vite development mode (not just localhost)
-    const isViteDev = (typeof import.meta !== 'undefined' && 
-                       import.meta.env && 
-                       import.meta.env.DEV === true);
-    
-    // Check if we're running on Vite dev server (port 5173 is default)
-    const isViteDevServer = port === '5173';
-    
-    // True development mode is when Vite is actually serving in dev mode
-    const isDevelopment = isViteDev || isViteDevServer;
-    
-    console.log(`MMM-SMH: Image path debug:`, {
-      filename,
-      mountainType,
-      currentUrl,
-      hostname: window.location.hostname,
-      port: window.location.port,
-      protocol: window.location.protocol,
-      pathname: window.location.pathname,
-      isViteDev,
-      isViteDevServer,
-      isDevelopment,
-      importMetaEnv: typeof import.meta !== 'undefined' ? import.meta.env : 'not available'
-    });
-    
-    let imagePath;
-    if (isDevelopment) {
-      imagePath = `/images/${basePath}/${filename}`;
-      console.log(`MMM-SMH: Development mode - using path: ${imagePath}`);
-    } else {
-      // Check if we're running as a built app on localhost (like your case)
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        // Try the built assets path first
-        imagePath = `/images/${basePath}/${filename}`;
-        console.log(`MMM-SMH: Built app on localhost - using path: ${imagePath}`);
-      } else {
-        // For production/MagicMirror, use the built assets path
-        imagePath = `modules/MMM-SMH/dist/assets/images/${basePath}/${filename}`;
-      }
-      console.log(`MMM-SMH: Production mode - using path: ${imagePath}`);
-    }
-    
-    // Test if the image actually exists by making a quick HEAD request
-    console.log(`MMM-SMH: Final image path: ${imagePath}`);
+    // Simple path logic - just use the standard web path
+    const imagePath = `/images/${basePath}/${filename}`;
+    console.log(`MMM-SMH: Using image path: ${imagePath}`);
     return imagePath;
   };
 
