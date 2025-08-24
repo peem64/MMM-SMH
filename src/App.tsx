@@ -21,7 +21,6 @@ function App({
         title={title} 
         iconColor={iconColor} 
         moduleBasePath={moduleBasePath}
-        moduleBasePath={moduleBasePath}
       />
     </div>
   );
