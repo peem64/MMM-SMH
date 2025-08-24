@@ -279,13 +279,15 @@ export default function MountainDisplay({
     
     // Use moduleBasePath if available (MagicMirror environment)
     if (moduleBasePath) {
-      const imagePath = `${moduleBasePath}public/images/${basePath}/${filename}`;
+      // Ensure moduleBasePath starts with / for absolute path
+      const cleanBasePath = moduleBasePath.startsWith('/') ? moduleBasePath : `/${moduleBasePath}`;
+      const imagePath = `${cleanBasePath}public/images/${basePath}/${filename}`;
       console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
       return imagePath;
     }
     
-    // Development environment - use relative path
-    const imagePath = `images/${basePath}/${filename}`;
+    // Development environment - use absolute path from root
+    const imagePath = `/images/${basePath}/${filename}`;
     console.log(`MMM-SMH: Using development image path: ${imagePath}`);
     return imagePath;
   };
