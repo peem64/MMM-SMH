@@ -136,11 +136,11 @@ export default function MountainDisplay({
 
     setImageStatus('loading');
     
-    // Simple, clean path construction
-    const imagePath = `/images/${mountainType}/${currentMountain.image_filename}`;
-    const fallbackPath = `/images/${mountainType}/munro.png`;
+    // Use simple relative paths without any URL construction
+    const imagePath = `images/${mountainType}/${currentMountain.image_filename}`;
+    const fallbackPath = `images/${mountainType}/munro.png`;
     
-    console.log(`MMM-SMH: Loading image: ${imagePath}`);
+    console.log(`MMM-SMH: Loading image with relative path: ${imagePath}`);
     
     // Try main image first
     const img = new Image();
@@ -173,46 +173,6 @@ export default function MountainDisplay({
     };
     
     img.src = imagePath;
-    
-  }, [currentMountain?.image_filename, mountainType]);
-
-  // Load mountain by index
-  const loadMountain = async (index: number) => {
-    if (mountainCount === 0) return;
-    
-    try {
-      console.log(`MMM-SMH: Loading ${mountainType} at index ${index} of ${mountainCount}`);
-      setIsTransitioning(true);
-      setImageStatus('loading');
-      setImageUrl('');
-      
-      const mountain = await getMountainByIndex(index, mountainType);
-      
-      if (mountain) {
-        console.log(`MMM-SMH: Loaded ${mountainType}: ${mountain.name} (${index + 1}/${mountainCount})`);
-        setTimeout(() => {
-          setCurrentMountain(mountain);
-          setIsTransitioning(false);
-        }, 300);
-      } else {
-        console.error(`MMM-SMH: No ${mountainType} found at index ${index}`);
-        setDebugInfo(`No ${mountainType} at index ${index}`);
-      }
-    } catch (error) {
-      console.error(`MMM-SMH: Error loading ${mountainType}:`, error);
-      setDebugInfo(`Error loading index ${index}`);
-      setIsTransitioning(false);
-    }
-  };
-
-  // Calculate current mountain index based on UTC hour
-  const getCurrentMountainIndex = () => {
-    if (mountainCount === 0) return 0;
-    
-    const now = new Date();
-    const halfHoursSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 30));
-    const calculatedIndex = halfHoursSinceEpoch % mountainCount;
-    
     console.log(`MMM-SMH: Time calculation - UTC: ${now.toISOString()}, Half-hours since epoch: ${halfHoursSinceEpoch}, Index: ${calculatedIndex}`);
     
     return calculatedIndex;
