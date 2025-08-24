@@ -670,6 +670,8 @@ export default function MountainDisplay({
               <div>Image status: {imageStatus}</div>
               <div>Image file: {currentMountain?.image_filename}</div>
               <div>Final path: {imageFilename ? `images/${mountainType}/${imageFilename}` : 'none'}</div>
+              <div>Module base path: {moduleBasePath || 'none'}</div>
+              <div>Computed path: {imageFilename ? getImagePath(imageFilename) : 'none'}</div>
               <div>Type: {mountainType}</div>
               <div>Count: {actualCount}/{expectedCount} {mountainType}</div>
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>

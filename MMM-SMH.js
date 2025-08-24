@@ -633,8 +633,15 @@ Module.register("MMM-SMH", {
                         var moduleConfig = {
                             mountainType: self.config.mountainType || 'munros',
                             title: self.config.title || 'Scottish Munros',
-                            iconColor: self.config.iconColor || 'text-blue-400'
+                            iconColor: self.config.iconColor || 'text-blue-400',
+                            moduleBasePath: ''
                         };
+                        
+                        // Add module base path for correct image loading
+                        if (typeof self !== 'undefined' && self.file) {
+                          moduleConfig.moduleBasePath = self.file('');
+                        }
+                        
                         window.MMMSMHApp.init(containerId, self.shadowRoot, moduleConfig);
                         Log.info("MMM-SMH: React app initialized successfully");
                         return;

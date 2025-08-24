@@ -5,12 +5,14 @@ interface AppProps {
   mountainType?: 'munros' | 'corbetts';
   title?: string;
   iconColor?: string;
+  moduleBasePath?: string;
 }
 
 function App({ 
   mountainType = 'munros', 
   title = 'Scottish Munros', 
-  iconColor = 'text-blue-400' 
+  iconColor = 'text-blue-400',
+  moduleBasePath = ''
 }: AppProps) {
   return (
     <div className="mmm-smh-app">
@@ -18,6 +20,7 @@ function App({
         mountainType={mountainType} 
         title={title} 
         iconColor={iconColor} 
+        moduleBasePath={moduleBasePath}
       />
     </div>
   );
