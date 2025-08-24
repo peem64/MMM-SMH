@@ -303,16 +303,19 @@ export default function MountainDisplay({
   };
 
   // Format estimated time
-  const formatEstimatedTime = (timeStr: string) => {
+  const formatEstimatedTime = (timeStr: string | number) => {
     if (!timeStr) return 'N/A';
     
+    // Convert to string to handle both string and number inputs
+    const timeString = String(timeStr);
+    
     // Handle various time formats
-    if (timeStr.includes('-')) {
-      return timeStr; // Already formatted like "4-6h"
+    if (timeString.includes('-')) {
+      return timeString; // Already formatted like "4-6h"
     }
     
     // Convert single numbers to hours
-    const num = parseFloat(timeStr);
+    const num = parseFloat(timeString);
     if (!isNaN(num)) {
       if (num < 1) {
         return `${Math.round(num * 60)}min`;
@@ -321,7 +324,7 @@ export default function MountainDisplay({
       }
     }
     
-    return timeStr;
+    return timeString;
   };
 
   // Handle completion toggle
