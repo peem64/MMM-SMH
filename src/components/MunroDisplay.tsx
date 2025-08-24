@@ -136,7 +136,7 @@ export default function MountainDisplay({
 
     setImageStatus('loading');
     
-    // Use simple relative paths without any URL construction
+    // Use clean relative paths without leading slash to avoid URL prefixing
     const imagePath = `images/${mountainType}/${currentMountain.image_filename}`;
     const fallbackPath = `images/${mountainType}/munro.png`;
     
@@ -148,6 +148,7 @@ export default function MountainDisplay({
     img.onload = () => {
       console.log(`MMM-SMH: SUCCESS! Image loaded: ${imagePath}`);
       setImageStatus('loaded');
+      // Store just the filename part to avoid URL prefixing in render
       setImageUrl(imagePath);
     };
     
@@ -160,6 +161,7 @@ export default function MountainDisplay({
       fallbackImg.onload = () => {
         console.log(`MMM-SMH: Fallback image loaded: ${fallbackPath}`);
         setImageStatus('loaded');
+        // Store just the filename part to avoid URL prefixing in render
         setImageUrl(fallbackPath);
       };
       
@@ -469,7 +471,7 @@ export default function MountainDisplay({
           <div className="relative">
             {imageStatus === 'loaded' && imageUrl ? (
               <img 
-                src={imageUrl}
+                src={imageUrl.startsWith('http') ? imageUrl : `./${imageUrl}`}
                 alt={currentMountain.name}
                 className="w-full h-30 object-cover"
                 onError={() => {
