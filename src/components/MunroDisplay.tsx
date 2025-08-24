@@ -295,36 +295,10 @@ export default function MountainDisplay({
     }
     nextHalfHour.setSeconds(0);
     nextHalfHour.setMilliseconds(0);
-    
-    const diffMinutes = Math.floor((nextHalfHour.getTime() - now.getTime()) / (1000 * 60));
-    return diffMinutes;
-  };
-
-  // Format estimated time based on mountain type
-  const formatEstimatedTime = (time: number | string) => {
-    if (typeof time === 'number') {
-      return `${time}h`;
-    }
-    // If it's a string, check if it contains "hours" and replace with "h"
-    if (typeof time === 'string') {
-      return time.replace(/\s*hours?/gi, 'h').replace(/\s*hrs?/gi, 'h');
-    }
-    return time;
-  };
-
-  // Handle completion toggle
-  const handleToggleCompletion = async () => {
-    if (!currentMountain || !currentUser || isTogglingCompletion) return;
-
-    console.log('🎯 Starting completion toggle for:', currentMountain.name, 'ID:', currentMountain.id);
-    
-    setIsTogglingCompletion(true);
-    try {
-      console.log('🔄 Calling toggleMountainCompletion with:', {
-        id: currentMountain.id,
-        type: mountainType,
-        name: currentMountain.name
-      });
+    // Just assume the image exists and let the img tag handle the error
+    console.log(`MMM-SMH: Setting image filename: ${filename}`);
+    setImageStatus('loaded');
+    setImageFilename(filename);
       
       const result = await toggleMountainCompletion(
         currentMountain.id,
@@ -474,7 +448,13 @@ export default function MountainDisplay({
                 className="w-full h-30 object-cover"
                 onError={() => {
                   console.log(`MMM-SMH: Image render error for: images/${mountainType}/${imageFilename}`);
-                  setImageStatus('error');
+                  // Try fallback
+                  if (imageFilename !== 'munro.png') {
+                    console.log('MMM-SMH: Trying fallback image');
+                    setImageFilename('munro.png');
+                  } else {
+                    setImageStatus('error');
+                  }
                 }}
               />
             ) : imageStatus === 'loading' ? (
