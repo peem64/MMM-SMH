@@ -173,6 +173,37 @@ export default function MountainDisplay({
     };
     
     img.src = imagePath;
+  }, [currentMountain, mountainType]);
+
+  // Load mountain data
+  const loadMountain = async (index: number) => {
+    if (mountainCount === 0) return;
+    
+    setIsTransitioning(true);
+    try {
+      const mountain = await getMountainByIndex(index, mountainType);
+      if (mountain) {
+        console.log(`MMM-SMH: Loaded ${mountainType} ${index}: ${mountain.name} (${mountain.height}m)`);
+        setCurrentMountain(mountain);
+      } else {
+        console.error(`MMM-SMH: Failed to load ${mountainType} at index ${index}`);
+      }
+    } catch (error) {
+      console.error(`MMM-SMH: Error loading ${mountainType}:`, error);
+    } finally {
+      setTimeout(() => setIsTransitioning(false), 300);
+    }
+  };
+
+  // Calculate current mountain index based on time
+  const getCurrentMountainIndex = () => {
+    if (mountainCount === 0) return 0;
+    
+    const now = new Date();
+    const epochStart = new Date('1970-01-01T00:00:00Z');
+    const halfHoursSinceEpoch = Math.floor((now.getTime() - epochStart.getTime()) / (30 * 60 * 1000));
+    const calculatedIndex = halfHoursSinceEpoch % mountainCount;
+    
     console.log(`MMM-SMH: Time calculation - UTC: ${now.toISOString()}, Half-hours since epoch: ${halfHoursSinceEpoch}, Index: ${calculatedIndex}`);
     
     return calculatedIndex;
