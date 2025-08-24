@@ -275,9 +275,16 @@ export default function MountainDisplay({
   const getImagePath = (filename: string) => {
     const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
     
-    // Simple path logic - just use the standard web path
-    const imagePath = `/images/${basePath}/${filename}`;
-    console.log(`MMM-SMH: Using image path: ${imagePath}`);
+    // Use moduleBasePath if available (MagicMirror environment)
+    if (moduleBasePath) {
+      const imagePath = `${moduleBasePath}public/images/${basePath}/${filename}`;
+      console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
+      return imagePath;
+    }
+    
+    // Development environment - use relative path
+    const imagePath = `images/${basePath}/${filename}`;
+    console.log(`MMM-SMH: Using development image path: ${imagePath}`);
     return imagePath;
   };
 
@@ -680,6 +687,8 @@ export default function MountainDisplay({
               {completionStats && (
                 <div>Progress: {completionStats.completed_mountains}/{completionStats.total_mountains} ({completionStats.completion_percentage}%)</div>
               )}
+              <div>Module base path: {moduleBasePath || 'none (dev mode)'}</div>
+              <div>Computed image path: {currentMountain ? getImagePath(currentMountain.image_filename) : 'none'}</div>
               <div className="text-yellow-400">← → keys to cycle</div>
             </div>
           </div>
