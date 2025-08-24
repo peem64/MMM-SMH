@@ -332,11 +332,6 @@ export default function MountainDisplay({
     try {
       console.log('🎯 Toggling completion for:', currentMountain.name);
       
-      // Just assume the image exists and let the img tag handle the error
-      console.log(`MMM-SMH: Setting image filename: ${filename}`);
-      setImageStatus('loaded');
-      setImageFilename(filename);
-      
       const result = await toggleMountainCompletion(
         currentMountain.id,
         mountainType,
