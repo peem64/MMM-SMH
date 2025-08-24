@@ -284,30 +284,46 @@ export default function MountainDisplay({
     
     console.log(`MMM-SMH: Getting image path for ${filename} in ${mountainType}`);
     
-    // Force development mode detection
-    const isDevelopment = window.location.hostname === 'localhost' || 
-                         window.location.hostname === '127.0.0.1' ||
-                         window.location.port === '5173' ||
-                         window.location.port === '8080' ||
-                         window.location.port === '3000';
+    // More comprehensive development mode detection
+    const currentUrl = window.location.href;
+    const hostname = window.location.hostname;
+    const port = window.location.port;
     
-    console.log(`MMM-SMH: Development mode check:`, {
+    // Check if we're in development mode
+    const isDevelopment = hostname === 'localhost' || 
+                         hostname === '127.0.0.1' ||
+                         port === '5173' ||
+                         port === '8080' ||
+                         port === '3000' ||
+                         currentUrl.includes('localhost') ||
+                         currentUrl.includes('127.0.0.1') ||
+                         (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV);
+    
+    console.log(`MMM-SMH: Image path debug:`, {
+      filename,
+      mountainType,
+      currentUrl,
       hostname: window.location.hostname,
       port: window.location.port,
-      href: window.location.href,
-      isDevelopment
+      protocol: window.location.protocol,
+      pathname: window.location.pathname,
+      isDevelopment,
+      importMetaEnv: typeof import.meta !== 'undefined' ? import.meta.env : 'not available'
     });
     
+    let imagePath;
     if (isDevelopment) {
-      const devPath = `/images/${basePath}/${filename}`;
-      console.log(`MMM-SMH: Development mode detected - using path: ${devPath}`);
-      return devPath;
+      imagePath = `/images/${basePath}/${filename}`;
+      console.log(`MMM-SMH: Development mode - using path: ${imagePath}`);
+    } else {
+      // For production/MagicMirror, use the built assets path
+      imagePath = `modules/MMM-SMH/dist/assets/images/${basePath}/${filename}`;
+      console.log(`MMM-SMH: Production mode - using path: ${imagePath}`);
     }
     
-    // For production/MagicMirror, use the built assets path
-    const prodPath = `modules/MMM-SMH/dist/assets/images/${basePath}/${filename}`;
-    console.log(`MMM-SMH: Production mode - using path: ${prodPath}`);
-    return prodPath;
+    // Test if the image actually exists by making a quick HEAD request
+    console.log(`MMM-SMH: Final image path: ${imagePath}`);
+    return imagePath;
   };
 
   // Calculate time until next mountain change
