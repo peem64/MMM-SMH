@@ -33,7 +33,7 @@ export default function MountainDisplay({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [imageStatus, setImageStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const [imageFilename, setImageFilename] = useState<string>('');
   const [debugInfo, setDebugInfo] = useState<string>('');
 
   // User authentication and completion tracking
@@ -130,48 +130,48 @@ export default function MountainDisplay({
   useEffect(() => {
     if (!currentMountain?.image_filename) {
       setImageStatus('error');
-      setImageUrl('munro.png'); // Just store filename
+      setImageFilename('munro.png');
       return;
     }
 
     setImageStatus('loading');
     
-    // Store only the filename to avoid URL resolution
     const filename = currentMountain.image_filename;
     const fallbackFilename = 'munro.png';
     
     console.log(`MMM-SMH: Loading image: ${filename}`);
     
-    // Try main image first
+    // Test if main image exists without storing URL
     const img = new Image();
     
     img.onload = () => {
       console.log(`MMM-SMH: SUCCESS! Image loaded: ${filename}`);
       setImageStatus('loaded');
-      setImageUrl(filename); // Store just filename
+      setImageFilename(filename);
     };
     
     img.onerror = () => {
       console.log(`MMM-SMH: Main image failed, trying fallback: ${fallbackFilename}`);
       
-      // Try fallback image
       const fallbackImg = new Image();
       
       fallbackImg.onload = () => {
         console.log(`MMM-SMH: Fallback image loaded: ${fallbackFilename}`);
         setImageStatus('loaded');
-        setImageUrl(fallbackFilename); // Store just filename
+        setImageFilename(fallbackFilename);
       };
       
       fallbackImg.onerror = () => {
         console.log('MMM-SMH: Both main and fallback images failed, showing placeholder');
         setImageStatus('error');
-        setImageUrl('');
+        setImageFilename('');
       };
       
+      // Use relative path without leading slash
       fallbackImg.src = `images/${mountainType}/${fallbackFilename}`;
     };
     
+    // Use relative path without leading slash
     img.src = `images/${mountainType}/${filename}`;
   }, [currentMountain, mountainType]);
 
@@ -467,13 +467,13 @@ export default function MountainDisplay({
         {/* Mountain image */}
         <div className="bg-gray-800 bg-opacity-80 rounded-lg overflow-hidden border border-gray-600 shadow-lg">
           <div className="relative">
-            {imageStatus === 'loaded' && imageUrl ? (
+            {imageStatus === 'loaded' && imageFilename ? (
               <img 
-                src={`images/${mountainType}/${imageUrl}`}
+                src={`images/${mountainType}/${imageFilename}`}
                 alt={currentMountain.name}
                 className="w-full h-30 object-cover"
                 onError={() => {
-                  console.log(`MMM-SMH: Image render error for: images/${mountainType}/${imageUrl}`);
+                  console.log(`MMM-SMH: Image render error for: images/${mountainType}/${imageFilename}`);
                   setImageStatus('error');
                 }}
               />
@@ -654,7 +654,7 @@ export default function MountainDisplay({
               <div>Next change: {minutesUntilNext} minutes</div>
               <div>Image status: {imageStatus}</div>
               <div>Image file: {currentMountain?.image_filename}</div>
-              <div>Final path: {imageUrl ? `images/${mountainType}/${imageUrl}` : 'none'}</div>
+              <div>Final path: {imageFilename ? `images/${mountainType}/${imageFilename}` : 'none'}</div>
               <div>Type: {mountainType}</div>
               <div>Count: {actualCount}/{expectedCount} {mountainType}</div>
               <div className={actualCount === expectedCount ? "text-green-400" : "text-yellow-400"}>
