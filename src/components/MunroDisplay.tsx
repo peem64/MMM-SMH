@@ -19,13 +19,15 @@ interface MountainDisplayProps {
   mountainType?: 'munros' | 'corbetts';
   title?: string;
   iconColor?: string;
+  moduleBasePath?: string;
 }
 
 export default function MountainDisplay({ 
   className = '', 
   mountainType = 'munros',
   title = 'Scottish Munros',
-  iconColor = 'text-blue-400'
+  iconColor = 'text-blue-400',
+  moduleBasePath = ''
 }: MountainDisplayProps) {
   const [currentMountain, setCurrentMountain] = useState<MountainType | null>(null);
   const [mountainCount, setMountainCount] = useState<number>(0);
