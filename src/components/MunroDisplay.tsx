@@ -142,6 +142,7 @@ export default function MountainDisplay({
     const fallbackFilename = 'munro.png';
     
     console.log(`MMM-SMH: Loading image: ${filename}`);
+    console.log(`MMM-SMH: Module base path: "${moduleBasePath}"`);
     
     // Test if main image exists without storing URL
     const img = new Image();
@@ -153,7 +154,7 @@ export default function MountainDisplay({
     };
     
     img.onerror = () => {
-      console.log(`MMM-SMH: Main image failed, trying fallback: ${fallbackFilename}`);
+      console.log(`MMM-SMH: Main image failed (${getImagePath(filename)}), trying fallback: ${fallbackFilename}`);
       
       const fallbackImg = new Image();
       
@@ -164,7 +165,7 @@ export default function MountainDisplay({
       };
       
       fallbackImg.onerror = () => {
-        console.log('MMM-SMH: Both main and fallback images failed, showing placeholder');
+        console.log(`MMM-SMH: Both main and fallback images failed (${getImagePath(fallbackFilename)}), showing placeholder`);
         setImageStatus('error');
         setImageFilename('');
       };
@@ -279,8 +280,14 @@ export default function MountainDisplay({
     
     // Use moduleBasePath if available (MagicMirror environment)
     if (moduleBasePath) {
-      // Ensure moduleBasePath starts with / for absolute path
-      const cleanBasePath = moduleBasePath.startsWith('/') ? moduleBasePath : `/${moduleBasePath}`;
+      // Clean up moduleBasePath and construct absolute path
+      let cleanBasePath = moduleBasePath;
+      if (!cleanBasePath.startsWith('/')) {
+        cleanBasePath = `/${cleanBasePath}`;
+      }
+      if (!cleanBasePath.endsWith('/')) {
+        cleanBasePath = `${cleanBasePath}/`;
+      }
       const imagePath = `${cleanBasePath}public/images/${basePath}/${filename}`;
       console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
       return imagePath;
@@ -489,11 +496,11 @@ export default function MountainDisplay({
           <div className="relative">
             {imageStatus === 'loaded' && imageFilename ? (
               <img 
-                src={`images/${mountainType}/${imageFilename}`}
+                src={getImagePath(imageFilename)}
                 alt={currentMountain.name}
                 className="w-full h-30 object-cover"
                 onError={() => {
-                  console.log(`MMM-SMH: Image render error for: images/${mountainType}/${imageFilename}`);
+                  console.log(`MMM-SMH: Image render error for: ${getImagePath(imageFilename)}`);
                   // Try fallback
                   if (imageFilename !== 'munro.png') {
                     console.log('MMM-SMH: Trying fallback image');
