@@ -278,25 +278,35 @@ export default function MountainDisplay({
   const getImagePath = (filename: string) => {
     const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
     
-    // Use moduleBasePath if available (MagicMirror environment)
-    if (moduleBasePath) {
-      // Clean up moduleBasePath and construct absolute path
-      let cleanBasePath = moduleBasePath;
-      if (!cleanBasePath.startsWith('/')) {
-        cleanBasePath = `/${cleanBasePath}`;
-      }
-      if (!cleanBasePath.endsWith('/')) {
-        cleanBasePath = `${cleanBasePath}/`;
-      }
-      const imagePath = `${cleanBasePath}public/images/${basePath}/${filename}`;
-      console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
-      return imagePath;
-    }
+    // Detect environment: if we're in development (localhost:5173), use dev paths
+    const isDevelopment = window.location.hostname === 'localhost' && window.location.port === '5173';
     
-    // Development environment - use absolute path from root
-    const imagePath = `/images/${basePath}/${filename}`;
-    console.log(`MMM-SMH: Using development image path: ${imagePath}`);
-    return imagePath;
+    if (isDevelopment) {
+      // Development environment - use absolute path from Vite dev server root
+      const imagePath = `/images/${basePath}/${filename}`;
+      console.log(`MMM-SMH: Using development image path: ${imagePath}`);
+      return imagePath;
+    } else {
+      // MagicMirror environment - use moduleBasePath
+      if (moduleBasePath) {
+        // Clean up moduleBasePath and construct absolute path
+        let cleanBasePath = moduleBasePath;
+        if (!cleanBasePath.startsWith('/')) {
+          cleanBasePath = `/${cleanBasePath}`;
+        }
+        if (!cleanBasePath.endsWith('/')) {
+          cleanBasePath = `${cleanBasePath}/`;
+        }
+        const imagePath = `${cleanBasePath}public/images/${basePath}/${filename}`;
+        console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
+        return imagePath;
+      } else {
+        // Fallback for MagicMirror without moduleBasePath
+        const imagePath = `/modules/MMM-SMH/public/images/${basePath}/${filename}`;
+        console.log(`MMM-SMH: Using fallback MagicMirror image path: ${imagePath}`);
+        return imagePath;
+      }
+    }
   };
 
   // Calculate time until next mountain change
