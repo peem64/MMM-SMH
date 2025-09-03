@@ -192,7 +192,10 @@ export default function MountainDisplay({
         console.error(`MMM-SMH: Failed to load ${mountainType} at index ${index}`);
       }
     } catch (error) {
-      console.error(`MMM-SMH: Error loading ${mountainType}:`, error);
+      console.error(`❌ MMM-SMH: Error loading ${mountainType}:`, error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        console.error('❌ SUPABASE CONNECTION FAILED - Check your .env file and restart dev server');
+      }
     } finally {
       setTimeout(() => setIsTransitioning(false), 300);
     }

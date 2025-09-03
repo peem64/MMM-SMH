@@ -30,6 +30,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase configuration:', {
     supabaseUrl: supabaseUrl ? 'Present' : 'Missing',
     supabaseAnonKey: supabaseAnonKey ? 'Present' : 'Missing',
+    envFile: 'Please check your .env file and restart the dev server',
     windowVars: typeof window !== 'undefined' ? {
       VITE_SUPABASE_URL: !!(window as any).VITE_SUPABASE_URL,
       VITE_SUPABASE_ANON_KEY: !!(window as any).VITE_SUPABASE_ANON_KEY
@@ -333,6 +334,12 @@ export async function getRandomMunro(): Promise<Munro | null> {
 
 export async function getMunroByIndex(index: number): Promise<Munro | null> {
   try {
+    // Check if Supabase is properly configured
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('❌ Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file');
+      return null;
+    }
+
     console.log(`Fetching Munro at index ${index}`);
     
     // Use consistent ordering to ensure same Munro for same index
@@ -344,7 +351,9 @@ export async function getMunroByIndex(index: number): Promise<Munro | null> {
       .range(index, index);
 
     if (error) {
-      console.error('Error fetching munro by index:', error);
+      console.error('❌ Error fetching munro by index:', error);
+      console.error('❌ This usually means Supabase credentials are missing or incorrect');
+      console.error('❌ Please check your .env file and restart the dev server');
       return null;
     }
 
@@ -356,7 +365,14 @@ export async function getMunroByIndex(index: number): Promise<Munro | null> {
     console.log(`Successfully fetched Munro: ${data[0].name} at index ${index}`);
     return data[0];
   } catch (error) {
-    console.error('Network error fetching munro by index:', error);
+    console.error('❌ Network error fetching munro by index:', error);
+    if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+      console.error('❌ SUPABASE CONNECTION FAILED');
+      console.error('❌ Please ensure your .env file contains valid Supabase credentials:');
+      console.error('❌ VITE_SUPABASE_URL=https://your-project-id.supabase.co');
+      console.error('❌ VITE_SUPABASE_ANON_KEY=your-anon-key-here');
+      console.error('❌ Then restart your dev server with: npm run dev');
+    }
     return null;
   }
 }
