@@ -141,38 +141,39 @@ export default function MountainDisplay({
     const filename = currentMountain.image_filename;
     const fallbackFilename = 'munro.png';
     
-    console.log(`MMM-SMH: Loading image: ${filename}`);
+    console.log(`MMM-SMH: Loading ${mountainType} image: ${filename}`);
+    console.log(`MMM-SMH: Mountain type: ${mountainType}`);
     console.log(`MMM-SMH: Module base path: "${moduleBasePath}"`);
+    console.log(`MMM-SMH: Fallback filename: ${fallbackFilename}`);
     
     // Test if main image exists without storing URL
     const img = new Image();
     
     img.onload = () => {
-      console.log(`MMM-SMH: SUCCESS! Image loaded: ${filename}`);
+      console.log(`MMM-SMH: SUCCESS! ${mountainType} image loaded: ${filename}`);
       setImageStatus('loaded');
       setImageFilename(filename);
     };
     
     img.onerror = () => {
-      const fallbackForType = mountainType === 'munros' ? 'munro.png' : 'corb.png';
-      console.log(`MMM-SMH: Main image failed (${getImagePath(filename)}), trying fallback: ${fallbackForType}`);
+      console.log(`MMM-SMH: Main ${mountainType} image failed (${getImagePath(filename)}), trying fallback: ${fallbackFilename}`);
       
       const fallbackImg = new Image();
       
       fallbackImg.onload = () => {
-        console.log(`MMM-SMH: Fallback image loaded: ${fallbackForType}`);
+        console.log(`MMM-SMH: Fallback ${mountainType} image loaded: ${fallbackFilename}`);
         setImageStatus('loaded');
-        setImageFilename(fallbackForType);
+        setImageFilename(fallbackFilename);
       };
       
       fallbackImg.onerror = () => {
-        console.log(`MMM-SMH: Both main and fallback images failed (${getImagePath(fallbackForType)}), showing placeholder`);
+        console.log(`MMM-SMH: Both main and fallback ${mountainType} images failed (${getImagePath(fallbackFilename)}), showing placeholder`);
         setImageStatus('error');
         setImageFilename('');
       };
       
       // Use the correct path via getImagePath function
-      fallbackImg.src = getImagePath(fallbackForType);
+      fallbackImg.src = getImagePath(fallbackFilename);
     };
     
     // Use the correct path via getImagePath function
@@ -285,10 +286,12 @@ export default function MountainDisplay({
     // Detect environment: if we're in development (localhost:5173), use dev paths
     const isDevelopment = window.location.hostname === 'localhost' && window.location.port === '5173';
     
+    console.log(`MMM-SMH: getImagePath called with filename: ${filename}, mountainType: ${mountainType}, imageFolder: ${imageFolder}`);
+    
     if (isDevelopment) {
       // Development environment - use absolute path from Vite dev server root
       const imagePath = `/images/${imageFolder}/${filename}`;
-      console.log(`MMM-SMH: Using development image path: ${imagePath}`);
+      console.log(`MMM-SMH: Using development ${mountainType} image path: ${imagePath}`);
       return imagePath;
     } else {
       // MagicMirror environment - use moduleBasePath
@@ -302,12 +305,12 @@ export default function MountainDisplay({
           cleanBasePath = `${cleanBasePath}/`;
         }
         const imagePath = `${cleanBasePath}public/images/${imageFolder}/${filename}`;
-        console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
+        console.log(`MMM-SMH: Using MagicMirror ${mountainType} image path: ${imagePath}`);
         return imagePath;
       } else {
         // Fallback for MagicMirror without moduleBasePath
         const imagePath = `/modules/MMM-SMH/public/images/${imageFolder}/${filename}`;
-        console.log(`MMM-SMH: Using fallback MagicMirror image path: ${imagePath}`);
+        console.log(`MMM-SMH: Using fallback MagicMirror ${mountainType} image path: ${imagePath}`);
         return imagePath;
       }
     }
