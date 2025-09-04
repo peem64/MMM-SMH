@@ -177,7 +177,8 @@ export default function MountainDisplay({
     
     // Use the correct path via getImagePath function
     img.src = getImagePath(filename);
-  }, [currentMountain, mountainType]);
+  }, [currentMountain, mountainType, moduleBasePath]);
+
   // Load mountain data
   const loadMountain = async (index: number) => {
     if (mountainCount === 0) return;
