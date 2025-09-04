@@ -656,7 +656,7 @@ export default function MountainDisplay({
         )}
 
         {/* Debug info (development only) */}
-        {true && (
+        {false && (
           <div className="bg-gray-900 bg-opacity-90 rounded-lg p-2 border border-gray-500 shadow-lg">
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Time: {new Date().getUTCHours()}:{String(new Date().getUTCMinutes()).padStart(2, '0')}</div>
