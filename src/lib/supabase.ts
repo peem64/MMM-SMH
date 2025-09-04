@@ -532,15 +532,8 @@ export async function toggleMountainCompletion(
     
     console.log('✅ User authenticated:', user.id);
     
-    // Handle different ID types for different mountain types
-    let mountainIdParam;
-    if (mountainType === 'munros') {
-      // Munros use UUID strings
-      mountainIdParam = String(mountainId);
-    } else {
-      // Corbetts use integers
-      mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
-    }
+    // Convert ID to string for database query - Supabase handles the conversion
+    const mountainIdParam = String(mountainId);
     
     console.log('🔍 Processing mountain ID:', mountainId, '->', mountainIdParam, 'for', mountainType);
     
@@ -660,15 +653,8 @@ export async function getMountainCompletion(
       return null;
     }
 
-    // Handle different ID types for different mountain types
-    let mountainIdParam;
-    if (mountainType === 'munros') {
-      // Munros use UUID strings
-      mountainIdParam = String(mountainId);
-    } else {
-      // Corbetts use integers
-      mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
-    }
+    // Convert ID to string for database query - Supabase handles the conversion
+    const mountainIdParam = String(mountainId);
 
     const { data, error } = await supabase
       .from('mountain_completions')
