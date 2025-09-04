@@ -283,38 +283,10 @@ export default function MountainDisplay({
   const getImagePath = (filename: string) => {
     const imageFolder = mountainType === 'munros' ? 'munros' : 'corbetts';
     
-    // Detect environment: if we're on localhost, use dev paths
-    const isDevelopment = window.location.hostname === 'localhost';
-    
-    console.log(`MMM-SMH: getImagePath called with filename: ${filename}, mountainType: ${mountainType}, imageFolder: ${imageFolder}`);
-    console.log(`MMM-SMH: Current location: ${window.location.hostname}:${window.location.port}, isDevelopment: ${isDevelopment}`);
-    
-    if (isDevelopment) {
-      // Development environment - use absolute path from Vite dev server root
-      const imagePath = `/images/${imageFolder}/${filename}`;
-      console.log(`MMM-SMH: Using development ${mountainType} image path: ${imagePath}`);
-      return imagePath;
-    } else {
-      // MagicMirror environment - use moduleBasePath
-      if (moduleBasePath) {
-        // Clean up moduleBasePath and construct absolute path
-        let cleanBasePath = moduleBasePath;
-        if (!cleanBasePath.startsWith('/')) {
-          cleanBasePath = `/${cleanBasePath}`;
-        }
-        if (!cleanBasePath.endsWith('/')) {
-          cleanBasePath = `${cleanBasePath}/`;
-        }
-        const imagePath = `${cleanBasePath}public/images/${imageFolder}/${filename}`;
-        console.log(`MMM-SMH: Using MagicMirror ${mountainType} image path: ${imagePath}`);
-        return imagePath;
-      } else {
-        // Fallback for MagicMirror without moduleBasePath
-        const imagePath = `/modules/MMM-SMH/public/images/${imageFolder}/${filename}`;
-        console.log(`MMM-SMH: Using fallback MagicMirror ${mountainType} image path: ${imagePath}`);
-        return imagePath;
-      }
-    }
+    // Simple direct path to images directory
+    const imagePath = `/images/${imageFolder}/${filename}`;
+    console.log(`MMM-SMH: Using direct ${mountainType} image path: ${imagePath}`);
+    return imagePath;
   };
 
   // Calculate time until next mountain change
