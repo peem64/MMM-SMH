@@ -141,42 +141,40 @@ export default function MountainDisplay({
     const filename = currentMountain.image_filename;
     const fallbackFilename = mountainType === 'corbetts' ? 'corb.png' : 'munro.png';
     
-    console.log(`MMM-SMH: Loading ${mountainType} image: ${filename}`);
-    console.log(`MMM-SMH: Mountain type: ${mountainType}`);
-    console.log(`MMM-SMH: Module base path: "${moduleBasePath}"`);
-    console.log(`MMM-SMH: Fallback filename: ${fallbackFilename}`);
+    console.log(`MMM-SMH: Loading ${mountainType} image: ${filename}, fallback: ${fallbackFilename}`);
     
     // Test if main image exists without storing URL
     const img = new Image();
     
     img.onload = () => {
-      console.log(`MMM-SMH: SUCCESS! ${mountainType} image loaded: ${filename}`);
+      console.log(`MMM-SMH: ✅ Main ${mountainType} image loaded: ${filename}`);
       setImageStatus('loaded');
       setImageFilename(filename);
     };
     
     img.onerror = () => {
-      console.log(`MMM-SMH: Main ${mountainType} image failed (${getImagePath(filename)}), trying fallback: ${fallbackFilename}`);
+      console.log(`MMM-SMH: ❌ Main ${mountainType} image failed: ${getImagePath(filename)}`);
+      console.log(`MMM-SMH: 🔄 Trying fallback: ${getImagePath(fallbackFilename)}`);
       
       const fallbackImg = new Image();
       
       fallbackImg.onload = () => {
-        console.log(`MMM-SMH: Fallback ${mountainType} image loaded: ${fallbackFilename}`);
+        console.log(`MMM-SMH: ✅ Fallback ${mountainType} image loaded: ${fallbackFilename}`);
         setImageStatus('loaded');
         setImageFilename(fallbackFilename);
       };
       
       fallbackImg.onerror = () => {
-        console.log(`MMM-SMH: Both main and fallback ${mountainType} images failed (${getImagePath(fallbackFilename)}), showing placeholder`);
+        console.log(`MMM-SMH: ❌ Both main and fallback ${mountainType} images failed`);
+        console.log(`MMM-SMH: 📁 Expected fallback at: ${getImagePath(fallbackFilename)}`);
+        console.log(`MMM-SMH: 🔍 Check if file exists in MagicMirror/modules/MMM-SMH/dist/images/${mountainType}/`);
         setImageStatus('error');
         setImageFilename('');
       };
       
-      // Use the correct path via getImagePath function
       fallbackImg.src = getImagePath(fallbackFilename);
     };
     
-    // Use the correct path via getImagePath function
     img.src = getImagePath(filename);
   }, [currentMountain, mountainType, moduleBasePath]);
 
