@@ -249,9 +249,6 @@ export default function MountainDisplay({
 
   // REMOVE IN PRODUCTION: Manual cycling for testing
   useEffect(() => {
-    // Only enable manual controls in development mode
-    if (process.env.NODE_ENV !== 'development') return;
-
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.key === 'ArrowRight' && mountainCount > 0) {
         const nextIndex = (currentIndex + 1) % mountainCount;
@@ -659,7 +656,7 @@ export default function MountainDisplay({
         )}
 
         {/* Debug info (development only) */}
-        {process.env.NODE_ENV === 'development' && (
+        {true && (
           <div className="bg-gray-900 bg-opacity-90 rounded-lg p-2 border border-gray-500 shadow-lg">
             <div className="text-xs text-gray-400 space-y-1">
               <div>Debug: Index {currentIndex}, UTC Time: {new Date().getUTCHours()}:{String(new Date().getUTCMinutes()).padStart(2, '0')}</div>
