@@ -154,30 +154,30 @@ export default function MountainDisplay({
     };
     
     img.onerror = () => {
-      console.log(`MMM-SMH: Main image failed (${getImagePath(filename)}), trying fallback: ${fallbackFilename}`);
+      const fallbackForType = mountainType === 'munros' ? 'munro.png' : 'corb.png';
+      console.log(`MMM-SMH: Main image failed (${getImagePath(filename)}), trying fallback: ${fallbackForType}`);
       
       const fallbackImg = new Image();
       
       fallbackImg.onload = () => {
-        console.log(`MMM-SMH: Fallback image loaded: ${fallbackFilename}`);
+        console.log(`MMM-SMH: Fallback image loaded: ${fallbackForType}`);
         setImageStatus('loaded');
-        setImageFilename(fallbackFilename);
+        setImageFilename(fallbackForType);
       };
       
       fallbackImg.onerror = () => {
-        console.log(`MMM-SMH: Both main and fallback images failed (${getImagePath(fallbackFilename)}), showing placeholder`);
+        console.log(`MMM-SMH: Both main and fallback images failed (${getImagePath(fallbackForType)}), showing placeholder`);
         setImageStatus('error');
         setImageFilename('');
       };
       
       // Use the correct path via getImagePath function
-      fallbackImg.src = getImagePath(fallbackFilename);
+      fallbackImg.src = getImagePath(fallbackForType);
     };
     
     // Use the correct path via getImagePath function
     img.src = getImagePath(filename);
-  }, [currentMountain]);
-
+  }, [currentMountain, mountainType]);
   // Load mountain data
   const loadMountain = async (index: number) => {
     if (mountainCount === 0) return;
@@ -279,14 +279,14 @@ export default function MountainDisplay({
 
   // Get the correct image path for MagicMirror and development
   const getImagePath = (filename: string) => {
-    const basePath = mountainType === 'munros' ? 'munros' : 'corbetts';
+    const imageFolder = mountainType === 'munros' ? 'munros' : 'corbetts';
     
     // Detect environment: if we're in development (localhost:5173), use dev paths
     const isDevelopment = window.location.hostname === 'localhost' && window.location.port === '5173';
     
     if (isDevelopment) {
       // Development environment - use absolute path from Vite dev server root
-      const imagePath = `/images/${basePath}/${filename}`;
+      const imagePath = `/images/${imageFolder}/${filename}`;
       console.log(`MMM-SMH: Using development image path: ${imagePath}`);
       return imagePath;
     } else {
@@ -300,12 +300,12 @@ export default function MountainDisplay({
         if (!cleanBasePath.endsWith('/')) {
           cleanBasePath = `${cleanBasePath}/`;
         }
-        const imagePath = `${cleanBasePath}public/images/${basePath}/${filename}`;
+        const imagePath = `${cleanBasePath}public/images/${imageFolder}/${filename}`;
         console.log(`MMM-SMH: Using MagicMirror image path: ${imagePath}`);
         return imagePath;
       } else {
         // Fallback for MagicMirror without moduleBasePath
-        const imagePath = `/modules/MMM-SMH/public/images/${basePath}/${filename}`;
+        const imagePath = `/modules/MMM-SMH/public/images/${imageFolder}/${filename}`;
         console.log(`MMM-SMH: Using fallback MagicMirror image path: ${imagePath}`);
         return imagePath;
       }
