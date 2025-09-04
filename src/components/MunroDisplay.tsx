@@ -268,7 +268,8 @@ export default function MountainDisplay({
   // Helper function to get image path
   const getImagePath = (filename: string) => {
     const imageFolder = mountainType;
-    const imagePath = `/images/${imageFolder}/${filename}`;
+    // Use relative path for MagicMirror - it will resolve relative to the module directory
+    const imagePath = `./images/${imageFolder}/${filename}`;
     console.log(`MMM-SMH: Using ${mountainType} image path: ${imagePath}`);
     return imagePath;
   };
