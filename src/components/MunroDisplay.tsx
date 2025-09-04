@@ -265,27 +265,8 @@ export default function MountainDisplay({
         loadMountain(prevIndex);
       }
     };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentIndex, mountainCount]);
-
-  const getDifficultyStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        className={`w-3 h-3 ${i < rating ? 'text-yellow-400 fill-current' : 'text-gray-600'}`} 
-      />
-    ));
-  };
-
-  // Get the correct image path for MagicMirror and development
-  const getImagePath = (filename: string) => {
-    const imageFolder = mountainType === 'munros' ? 'munros' : 'corbetts';
-    
-    // Simple direct path to images directory
     const imagePath = `/images/${imageFolder}/${filename}`;
-    console.log(`MMM-SMH: Using direct ${mountainType} image path: ${imagePath}`);
+    console.log(`MMM-SMH: Using ${mountainType} image path: ${imagePath}`);
     return imagePath;
   };
 
