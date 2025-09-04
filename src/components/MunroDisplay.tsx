@@ -268,9 +268,9 @@ export default function MountainDisplay({
   // Helper function to get image path
   const getImagePath = (filename: string) => {
     const imageFolder = mountainType;
-    // Use moduleBasePath if provided (from MagicMirror's this.file() method)
+    // Use moduleBasePath if provided (from MagicMirror's this.file() method), include dist/
     const imagePath = moduleBasePath ? 
-      `${moduleBasePath}images/${imageFolder}/${filename}` : 
+      `${moduleBasePath}dist/images/${imageFolder}/${filename}` : 
       `./images/${imageFolder}/${filename}`;
     console.log(`MMM-SMH: Using ${mountainType} image path: ${imagePath}`);
     return imagePath;
