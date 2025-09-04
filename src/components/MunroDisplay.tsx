@@ -283,10 +283,11 @@ export default function MountainDisplay({
   const getImagePath = (filename: string) => {
     const imageFolder = mountainType === 'munros' ? 'munros' : 'corbetts';
     
-    // Detect environment: if we're in development (localhost:5173), use dev paths
-    const isDevelopment = window.location.hostname === 'localhost' && window.location.port === '5173';
+    // Detect environment: if we're on localhost, use dev paths
+    const isDevelopment = window.location.hostname === 'localhost';
     
     console.log(`MMM-SMH: getImagePath called with filename: ${filename}, mountainType: ${mountainType}, imageFolder: ${imageFolder}`);
+    console.log(`MMM-SMH: Current location: ${window.location.hostname}:${window.location.port}, isDevelopment: ${isDevelopment}`);
     
     if (isDevelopment) {
       // Development environment - use absolute path from Vite dev server root
