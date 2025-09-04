@@ -132,14 +132,14 @@ export default function MountainDisplay({
   useEffect(() => {
     if (!currentMountain?.image_filename) {
       setImageStatus('error');
-      setImageFilename('munro.png');
+      setImageFilename(mountainType === 'corbetts' ? 'corb.png' : 'munro.png');
       return;
     }
 
     setImageStatus('loading');
     
     const filename = currentMountain.image_filename;
-    const fallbackFilename = 'munro.png';
+    const fallbackFilename = mountainType === 'corbetts' ? 'corb.png' : 'munro.png';
     
     console.log(`MMM-SMH: Loading ${mountainType} image: ${filename}`);
     console.log(`MMM-SMH: Mountain type: ${mountainType}`);
