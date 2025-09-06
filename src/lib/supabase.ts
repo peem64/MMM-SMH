@@ -583,8 +583,24 @@ export async function toggleMountainCompletion(
         code: checkError.code,
         message: checkError.message,
         details: checkError.details,
-        hint: checkError.hint
+        hint: checkError.hint,
+        statusCode: checkError.statusCode,
+        statusText: checkError.statusText
       });
+      
+      // Try a simpler query to test database access
+      console.log('🧪 Testing basic database access...');
+      const { data: testData, error: testError } = await supabase
+        .from('mountain_completions')
+        .select('count')
+        .eq('user_id', user.id);
+        
+      if (testError) {
+        console.error('❌ Basic database access failed:', testError);
+      } else {
+        console.log('✅ Basic database access works, found completions:', testData?.length || 0);
+      }
+      
       return null;
     }
 
@@ -764,6 +780,17 @@ export async function getMountainCompletion(
           message: error.message,
           details: error.details,
           hint: error.hint
+          statusCode: error.statusCode,
+          statusText: error.statusText
+        });
+        
+        // Log the exact query that failed
+        console.error('❌ Failed query parameters:', {
+          table: 'mountain_completions',
+          mountain_id: mountainIdParam,
+          mountain_type: mountainType,
+          user_id: user.id,
+          mountainIdType: typeof mountainIdParam
         });
       }
       return null;
