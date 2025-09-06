@@ -328,7 +328,13 @@ export default function MountainDisplay({
     
     setIsTogglingCompletion(true);
     try {
-      console.log('🎯 Toggling completion for:', currentMountain.name);
+      console.log('🎯 Toggling completion for:', {
+        name: currentMountain.name,
+        id: currentMountain.id,
+        idType: typeof currentMountain.id,
+        mountainType: mountainType,
+        userId: currentUser?.id
+      });
       
       const result = await toggleMountainCompletion(
         currentMountain.id,

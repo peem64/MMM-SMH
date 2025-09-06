@@ -547,14 +547,28 @@ export async function toggleMountainCompletion(
         console.error('❌ Invalid Corbett ID:', mountainId);
         return null;
       }
+      console.log('🏔️ Corbett ID conversion:', mountainId, '->', mountainIdParam, 'type:', typeof mountainIdParam);
     } else {
       // Munros use UUID strings
       mountainIdParam = String(mountainId);
+      console.log('🏔️ Munro ID conversion:', mountainId, '->', mountainIdParam, 'type:', typeof mountainIdParam);
     }
     
-    console.log('🔍 Processing mountain ID:', mountainId, '->', mountainIdParam, 'for', mountainType, 'type:', typeof mountainIdParam);
+    console.log('🔍 Final processing params:', {
+      originalId: mountainId,
+      processedId: mountainIdParam,
+      mountainType,
+      userId: user.id,
+      paramType: typeof mountainIdParam
+    });
     
     // Check if completion already exists
+    console.log('🔍 Checking for existing completion with query:', {
+      mountain_id: mountainIdParam,
+      mountain_type: mountainType,
+      user_id: user.id
+    });
+    
     const { data: existingCompletion, error: checkError } = await supabase
       .from('mountain_completions')
       .select('*')
@@ -565,6 +579,12 @@ export async function toggleMountainCompletion(
 
     if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows found
       console.error('❌ Error checking existing completion:', checkError);
+      console.error('❌ Check error details:', {
+        code: checkError.code,
+        message: checkError.message,
+        details: checkError.details,
+        hint: checkError.hint
+      });
       return null;
     }
 
@@ -581,6 +601,12 @@ export async function toggleMountainCompletion(
 
       if (deleteError) {
         console.error('❌ Error removing completion:', deleteError);
+        console.error('❌ Delete error details:', {
+          code: deleteError.code,
+          message: deleteError.message,
+          details: deleteError.details,
+          hint: deleteError.hint
+        });
         return null;
       }
 
@@ -592,16 +618,19 @@ export async function toggleMountainCompletion(
       };
     } else {
       // Add completion
-      console.log('➕ Adding new completion for:', { mountainIdParam, mountainType, userId: user.id });
+      const insertData = {
+        mountain_id: mountainIdParam,
+        mountain_type: mountainType,
+        user_id: user.id,
+        notes: notes,
+        completed_at: new Date().toISOString()
+      };
+      
+      console.log('➕ Adding new completion with data:', insertData);
+      
       const { data: newCompletion, error: insertError } = await supabase
         .from('mountain_completions')
-        .insert({
-          mountain_id: mountainIdParam,
-          mountain_type: mountainType,
-          user_id: user.id,
-          notes: notes,
-          completed_at: new Date().toISOString()
-        })
+        .insert(insertData)
         .select()
         .single();
 
@@ -613,6 +642,7 @@ export async function toggleMountainCompletion(
           details: insertError.details,
           hint: insertError.hint
         });
+        console.error('❌ Insert data that failed:', insertData);
         return null;
       }
 
