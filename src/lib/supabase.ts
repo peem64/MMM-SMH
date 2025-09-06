@@ -779,7 +779,7 @@ export async function getMountainCompletion(
           code: error.code,
           message: error.message,
           details: error.details,
-          hint: error.hint
+          hint: error.hint,
           statusCode: error.statusCode,
           statusText: error.statusText
         });
