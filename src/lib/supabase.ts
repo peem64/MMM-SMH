@@ -676,24 +676,40 @@ export async function getUserCompletionStats(
 
     console.log('📊 Getting completion stats for user:', user.id, 'type:', mountainType);
     
-    const { data, error } = await supabase.rpc('get_user_completion_stats', {
-      user_uuid: user.id,
-      mountain_type_param: mountainType
-    });
+    // Get completion stats manually since RPC function might not exist
+    const { data: completions, error: completionsError } = await supabase
+      .from('mountain_completions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('mountain_type', mountainType);
 
-    if (error) {
-      console.error('❌ Error getting completion stats:', error);
+    if (completionsError) {
+      console.error('❌ Error getting completions for stats:', completionsError);
       return null;
     }
 
-    console.log('✅ Completion stats result:', data);
+    // Get total mountain count
+    const totalMountains = await getMountainCount(mountainType);
+    const completedMountains = completions?.length || 0;
+    const completionPercentage = totalMountains > 0 ? Math.round((completedMountains / totalMountains) * 100) : 0;
+
+    // Get recent completions (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentCompletions = completions?.filter(c => 
+      new Date(c.completed_at) > thirtyDaysAgo
+    ).length || 0;
+
+    const stats = {
+      total_mountains: totalMountains,
+      completed_mountains: completedMountains,
+      completion_percentage: completionPercentage,
+      recent_completions: recentCompletions
+    };
+
+    console.log('✅ Completion stats calculated:', stats);
     
-    if (!data || data.length === 0) {
-      console.log('ℹ️ No completion stats data returned');
-      return null;
-    }
-    
-    return data[0];
+    return stats;
   } catch (error) {
     console.error('💥 Network error getting completion stats:', error);
     return null;
@@ -708,6 +724,7 @@ export async function getMountainCompletion(
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
+      console.log('ℹ️ No user for completion check');
       return null;
     }
 
@@ -735,15 +752,27 @@ export async function getMountainCompletion(
       .eq('user_id', user.id)
       .single();
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error getting mountain completion:', error);
+    if (error) {
+      if (error.code === 'PGRST116') {
+        // No rows found - this is expected when not completed
+        console.log('ℹ️ No completion found (not completed)');
+        return null;
+      } else {
+        console.error('❌ Error getting mountain completion:', error);
+        console.error('❌ Full error details:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+      }
       return null;
     }
 
     console.log('🔍 Completion check result:', { found: !!data, data });
     return data || null;
   } catch (error) {
-    console.error('Network error getting mountain completion:', error);
+    console.error('💥 Network error getting mountain completion:', error);
     return null;
   }
 }
