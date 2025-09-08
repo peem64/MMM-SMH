@@ -538,21 +538,9 @@ export async function toggleMountainCompletion(
     
     console.log('✅ User authenticated:', user.id);
     
-    // Handle ID conversion based on mountain type
-    let mountainIdParam;
-    if (mountainType === 'corbetts') {
-      // Corbetts use integer IDs, ensure we have a number
-      mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
-      if (isNaN(mountainIdParam)) {
-        console.error('❌ Invalid Corbett ID:', mountainId);
-        return null;
-      }
-      console.log('🏔️ Corbett ID conversion:', mountainId, '->', mountainIdParam, 'type:', typeof mountainIdParam);
-    } else {
-      // Munros use UUID strings
-      mountainIdParam = String(mountainId);
-      console.log('🏔️ Munro ID conversion:', mountainId, '->', mountainIdParam, 'type:', typeof mountainIdParam);
-    }
+    // Convert all IDs to strings since we changed mountain_id to text type
+    const mountainIdParam = String(mountainId);
+    console.log('🏔️ ID conversion:', mountainId, '->', mountainIdParam, 'type:', typeof mountainIdParam);
     
     console.log('🔍 Final processing params:', {
       originalId: mountainId,
@@ -562,12 +550,47 @@ export async function toggleMountainCompletion(
       paramType: typeof mountainIdParam
     });
     
+    // Test basic database connectivity first
+    console.log('🧪 Testing basic database access...');
+    const { data: testData, error: testError } = await supabase
+      .from('mountain_completions')
+      .select('count')
+      .limit(1);
+      
+    if (testError) {
+      console.error('❌ Basic database access failed:', testError);
+      console.error('❌ Full test error:', {
+        code: testError.code,
+        message: testError.message,
+        details: testError.details,
+        hint: testError.hint
+      });
+      return null;
+    } else {
+      console.log('✅ Basic database access works');
+    }
+    
     // Check if completion already exists
     console.log('🔍 Checking for existing completion with query:', {
       mountain_id: mountainIdParam,
       mountain_type: mountainType,
       user_id: user.id
     });
+    
+    // Try a simpler query first to isolate the issue
+    console.log('🧪 Testing simple query...');
+    const { data: simpleTest, error: simpleError } = await supabase
+      .from('mountain_completions')
+      .select('id')
+      .eq('user_id', user.id)
+      .limit(1);
+      
+    if (simpleError) {
+      console.error('❌ Simple query failed:', simpleError);
+      return null;
+    } else {
+      console.log('✅ Simple query works, found completions:', simpleTest?.length || 0);
+    }
     
     const { data: existingCompletion, error: checkError } = await supabase
       .from('mountain_completions')
@@ -588,18 +611,9 @@ export async function toggleMountainCompletion(
         statusText: checkError.statusText
       });
       
-      // Try a simpler query to test database access
-      console.log('🧪 Testing basic database access...');
-      const { data: testData, error: testError } = await supabase
-        .from('mountain_completions')
-        .select('count')
-        .eq('user_id', user.id);
-        
-      if (testError) {
-        console.error('❌ Basic database access failed:', testError);
-      } else {
-        console.log('✅ Basic database access works, found completions:', testData?.length || 0);
-      }
+      // Log the exact URL that's being called
+      console.error('❌ Failed query URL would be something like:');
+      console.error(`   ${supabaseUrl}/rest/v1/mountain_completions?select=*&mountain_id=eq.${mountainIdParam}&mountain_type=eq.${mountainType}&user_id=eq.${user.id}`);
       
       return null;
     }
@@ -643,6 +657,13 @@ export async function toggleMountainCompletion(
       };
       
       console.log('➕ Adding new completion with data:', insertData);
+      console.log('➕ Data types:', {
+        mountain_id: typeof insertData.mountain_id,
+        mountain_type: typeof insertData.mountain_type,
+        user_id: typeof insertData.user_id,
+        notes: typeof insertData.notes,
+        completed_at: typeof insertData.completed_at
+      });
       
       const { data: newCompletion, error: insertError } = await supabase
         .from('mountain_completions')
@@ -657,8 +678,20 @@ export async function toggleMountainCompletion(
           message: insertError.message,
           details: insertError.details,
           hint: insertError.hint
+          statusCode: insertError.statusCode,
+          statusText: insertError.statusText
         });
         console.error('❌ Insert data that failed:', insertData);
+        
+        // Try to understand what's wrong with the insert
+        if (insertError.code === '23503') {
+          console.error('❌ Foreign key constraint violation - check if user exists in auth.users');
+        } else if (insertError.code === '23505') {
+          console.error('❌ Unique constraint violation - completion might already exist');
+        } else if (insertError.code === '42703') {
+          console.error('❌ Column does not exist - check table schema');
+        }
+        
         return null;
       }
 
@@ -675,6 +708,7 @@ export async function toggleMountainCompletion(
     return result;
   } catch (error) {
     console.error('💥 Network error toggling completion:', error);
+    console.error('💥 Full error object:', error);
     return null;
   }
 }
@@ -744,19 +778,8 @@ export async function getMountainCompletion(
       return null;
     }
 
-    // Handle ID conversion based on mountain type
-    let mountainIdParam;
-    if (mountainType === 'corbetts') {
-      // Corbetts use integer IDs
-      mountainIdParam = typeof mountainId === 'string' ? parseInt(mountainId, 10) : mountainId;
-      if (isNaN(mountainIdParam)) {
-        console.error('❌ Invalid Corbett ID for completion check:', mountainId);
-        return null;
-      }
-    } else {
-      // Munros use UUID strings
-      mountainIdParam = String(mountainId);
-    }
+    // Convert all IDs to strings since we changed mountain_id to text type
+    const mountainIdParam = String(mountainId);
 
     console.log('🔍 Checking completion for:', { mountainId, mountainIdParam, mountainType, userId: user.id });
 
