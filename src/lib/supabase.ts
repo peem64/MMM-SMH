@@ -72,7 +72,7 @@ export const supabase = createSupabaseClient();
 
 export interface MountainCompletion {
   id: string;
-  mountain_id: string;
+  mountain_id: string; // Now supports both UUIDs and integer strings
   mountain_type: 'munros' | 'corbetts';
   user_id: string;
   completed_at: string;
