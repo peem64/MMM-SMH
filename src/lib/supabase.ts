@@ -677,7 +677,7 @@ export async function toggleMountainCompletion(
           code: insertError.code,
           message: insertError.message,
           details: insertError.details,
-          hint: insertError.hint
+          hint: insertError.hint,
           statusCode: insertError.statusCode,
           statusText: insertError.statusText
         });
