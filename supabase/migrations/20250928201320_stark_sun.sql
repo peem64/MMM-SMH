@@ -18,7 +18,7 @@
 UPDATE munros SET prominence_m = 1345 WHERE name = 'Ben Nevis';
 UPDATE munros SET prominence_m = 950 WHERE name = 'Ben Macdui';
 UPDATE munros SET prominence_m = 461 WHERE name = 'Braeriach';
-UPDATE munros SET prominence_m = 1245 WHERE name = 'Cairn Gorm';
+UPDATE munros SET prominence_m = 145.8 WHERE name = 'Cairn Gorm';
 UPDATE munros SET prominence_m = 1291 WHERE name = 'Cairn Toul';
 UPDATE munros SET prominence_m = 1258 WHERE name = 'Sgòr an Lochain Uaine';
 UPDATE munros SET prominence_m = 1234 WHERE name = 'Aonach Beag (Nevis Range)';
