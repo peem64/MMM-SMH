@@ -23,12 +23,12 @@ UPDATE munros SET prominence_m = 461 WHERE name = 'Braeriach';
 -- Add the rest of the correct prominence values here
 -- You can update these with the accurate Wikipedia data:
 
-UPDATE munros SET prominence_m = 1245 WHERE name = 'Cairn Gorm';
-UPDATE munros SET prominence_m = 1291 WHERE name = 'Cairn Toul';
-UPDATE munros SET prominence_m = 1258 WHERE name = 'Sgòr an Lochain Uaine';
-UPDATE munros SET prominence_m = 1214 WHERE name = 'Ben Lawers';
-UPDATE munros SET prominence_m = 1197 WHERE name = 'Beinn a'' Bhùird';
-UPDATE munros SET prominence_m = 1183 WHERE name = 'Càrn Eige';
+UPDATE munros SET prominence_m = 145.8 WHERE name = 'Cairn Gorm';
+UPDATE munros SET prominence_m = 166 WHERE name = 'Cairn Toul';
+UPDATE munros SET prominence_m = 118 WHERE name = 'Sgòr an Lochain Uaine';
+UPDATE munros SET prominence_m = 914 WHERE name = 'Ben Lawers';
+UPDATE munros SET prominence_m = 456.2 WHERE name = 'Beinn a'' Bhùird';
+UPDATE munros SET prominence_m = 1147 WHERE name = 'Càrn Eige';
 UPDATE munros SET prominence_m = 1182 WHERE name = 'Beinn Mheadhoin';
 UPDATE munros SET prominence_m = 1181 WHERE name = 'Màm Sodhail';
 UPDATE munros SET prominence_m = 1177 WHERE name = 'Stob Choire Claurigh';
