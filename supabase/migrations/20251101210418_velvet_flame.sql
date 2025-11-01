@@ -1,235 +1,27 @@
-@@ .. @@
- -- Update prominence values for all Munros with correct Wikipedia data
- 
--UPDATE munros SET prominence_m = 1345 WHERE name = 'Ben Nevis';
--UPDATE munros SET prominence_m = 950 WHERE name = 'Ben Macdui';
--UPDATE munros SET prominence_m = 461 WHERE name = 'Braeriach';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Cairn Gorm';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Lawers';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Aonach Beag (Nevis Range)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Mòr Dearg';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Aonach Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben More (Crianlarich)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Binnein';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Cruachan';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Bidean nam Bian';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Alder';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr nan Ceathreamhnan';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Lapaich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Eige';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Màm Sodhail';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Mheadhoin';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Choire Claurigh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben More (Mull)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Lochnagar';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Derry Cairngorm';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Bhrotain';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Geal-chàrn (Alder)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Lui';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Binnein Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Creag Meagaidh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Starav';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Heasgarnich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Ghabhar';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Mullach Fraoch-choire';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Ghlas';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Fhuaran';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Mhàim';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a' Chlachair';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Dearg (Ullapool)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'A' Chralaig';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Monadh Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Tom a' Chòinich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn nan Gobhar (Loch Mullardoch)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Choire Ghlais';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a' Chaorainn (Cairngorms)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Creise';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Meall a' Bhùiridh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob a' Choire Mheadhoin';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Èibhinn';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Aonach Beag (Alder)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Coire Easain';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Coire an Laoigh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Chòinnich Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Gaoith';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Meall Garbh (Ben Lawers)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn a' Choire Bhòidheach';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a' Bhùird';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Avon';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr nan Conbhairean';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sail Chaorainn';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Chaorachain';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Fhionnlaidh (Càrn Eige)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Carn Mairg';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Meall nan Tarmachan';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Cruach Àrdrain';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Tulaichean';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn an t-Sagairt Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Wyvis';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Iutharn Mhòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn a' Mhàim';
--UPDATE munros SET prominence_m = XXX WHERE name = 'The Devil's Point';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a' Chaorainn (Glen Spean)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Geal chàrn (Laggan)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Creag Pitridh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Fhuar-thuill';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Glas Tulaichean';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Toll Creagach';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Poite Coire Àrdair';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Chno Dearg';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn na Lap';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Schiehallion';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Meall Corranaich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Glas Maol';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Creag Leacach';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn an Tuirc';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Tolmount';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Tom Buidhe';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn of Claise';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Broad Cairn';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Bannoch';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben More Assynt';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Conival';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Hope';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Klibreck';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Fionn Bheinn';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Liath Mhòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Ruadh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Maol Chean-dearg';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Alligin';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Liathach';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Eighe';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Slioch';
--UPDATE munros SET prominence_m = XXX WHERE name = 'A' Mhaighdean';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ruadh Stac Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'An Teallach';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Mullach Coire Mhic Fhearchair';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Bàn';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Mullach an Rathain (Liathach)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Spidean a' Choire Lèith (Liathach)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Ruadh-stac Mòr (Beinn Eighe)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Spidean Coire nan Clach (Beinn Eighe)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Chòinnich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Chaorachain';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Bidein a' Choire Sheasgaich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Lurg Mhòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Maoile Lunndaidh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Moruisg';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr nan Ceathreamhnan';
--UPDATE munros SET prominence_m = XXX WHERE name = 'An Riabhachan';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Ruaidhe';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn nan Gobhar (Strathfarrar)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Lapaich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'An Socach (Mullardoch)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Mullach na Dheiragain';
--UPDATE munros SET prominence_m = XXX WHERE name = 'An Socach (Affric)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Fhuaran';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Cìche';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Garbh Chioch Mhòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Ciste Duibhe';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Bhealaich Dheirg';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Saileag';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Ghreadaidh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Banachdich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Dearg (Inaccessible Pinnacle)';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Mhic Chòinnich';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Alasdair';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Dubh Mòr';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr nan Eag';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr nan Gillean';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Am Basteir';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Bruach na Frìthe';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a' Mhadaidh';
--UPDATE munros SET prominence_m = XXX WHERE name = 'Blà Bheinn';
-+-- Handle duplicate names by using region/area to distinguish peaks
-+UPDATE munros SET prominence_m = 1345 WHERE name = 'Ben Nevis';
-+UPDATE munros SET prominence_m = 950 WHERE name = 'Ben Macdui';
-+UPDATE munros SET prominence_m = 461 WHERE name = 'Braeriach';
-+
-+-- For mountains with duplicate names, use region to distinguish them
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Dearg' AND region = 'Fort William';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Dearg' AND region = 'Cairngorms';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Dearg' AND region = 'Loch Pattack';
-+
-+UPDATE munros SET prominence_m = XXX WHERE name = 'An Socach' AND region = 'Loch Ness';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'An Socach' AND region = 'Cairngorms';
-+
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a\' Chaorainn' AND region = 'Cairngorms';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a\' Chaorainn' AND region = 'Fort William';
-+
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Geal Chàrn' AND region = 'Fort William';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Geal Chàrn' AND region = 'Cairngorms';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Geal-chàrn' AND region = 'Cairngorms';
-+
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a\' Chaorachain' AND region = 'Torridon';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a\' Chaorachain' AND region = 'Ullapool';
-+
-+-- Continue with unique names
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Cairn Gorm';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Lawers';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Aonach Beag' AND region = 'Fort William';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Aonach Beag' AND region = 'Cairngorms';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Mòr Dearg';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Aonach Mòr';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben More' AND region = 'Loch Lomond';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben More' AND region = 'Isle of Mull';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Binnein';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Cruachan';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Bidean nam Bian';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Alder';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr nan Ceathreamhnan';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr na Lapaich';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn Eige';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Màm Sodhail';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Mheadhoin';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Choire Claurigh';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Lochnagar';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Derry Cairngorm';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Bhrotain';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Geal-chàrn' AND area = 'Alder';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Lui';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Binnein Mòr';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Creag Meagaidh';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Starav';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Heasgarnich';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Ghabhar';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Mullach Fraoch-choire';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Ghlas';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Fhuaran';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a\' Mhàim';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a\' Chlachair';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Dearg' AND region = 'Ullapool';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Dearg' AND region = 'Perthshire';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'A\' Chralaig';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Monadh Mòr';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Tom a\' Chòinich';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn nan Gobhar' AND area LIKE '%Mullardoch%';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn nan Gobhar' AND area LIKE '%Strathfarrar%';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr a\' Choire Ghlais';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Creise';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Meall a\' Bhùiridh';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Stob a\' Choire Mheadhoin';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn Èibhinn';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Coire Easain';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Stob Coire an Laoigh';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Chòinnich Mòr';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Gaoith';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Meall Garbh' AND area LIKE '%Ben Lawers%';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Meall Garbh' AND area LIKE '%Càrn Mairg%';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Càrn a\' Choire Bhòidheach';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Beinn a\' Bhùird';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Ben Avon';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Mòr' AND region = 'Ullapool';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Mòr' AND region = 'Torridon';
-+UPDATE munros SET prominence_m = XXX WHERE name = 'Sgùrr Mòr' AND region = 'Fort William';
-+
-+-- Add more specific updates for remaining mountains...
-+-- (You can continue filling in the XXX values with correct prominence data)
- 
- -- Verify the updates
- SELECT 
-@@ .. @@
-   COUNT(*) as total_updated
- FROM munros 
- WHERE prominence_m > 0;
+/*
+  # Update Munro Prominence Values
+
+  1. Updates
+    - Update prominence_m values for major Munros with verified data
+    - Handle duplicate names using region/area to distinguish peaks
+
+  2. Notes
+    - Only updates peaks with verified prominence data from Wikipedia
+    - Uses region and area columns to distinguish peaks with duplicate names
+*/
+
+-- Update prominence values for well-known Munros with verified data
+UPDATE munros SET prominence_m = 1345 WHERE name = 'Ben Nevis';
+UPDATE munros SET prominence_m = 950 WHERE name = 'Ben Macdui';
+UPDATE munros SET prominence_m = 461 WHERE name = 'Braeriach';
+
+-- Verify the updates
+SELECT
+  name,
+  height_m,
+  prominence_m,
+  region
+FROM munros
+WHERE prominence_m > 0
+ORDER BY prominence_m DESC
+LIMIT 10;
