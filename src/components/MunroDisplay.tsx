@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mountain, MapPin, Clock, TrendingUp, Route, Star, Check } from 'lucide-react';
+import { Mountain, MapPin, Clock, TrendingUp, Star, Check } from 'lucide-react';
 import { 
   Mountain as MountainType, 
   getMountainByIndex, 
@@ -550,23 +550,6 @@ export default function MountainDisplay({
             {currentMountain.description}
           </p>
         </div>
-
-        {/* Popular Routes */}
-        {currentMountain.popular_routes && Array.isArray(currentMountain.popular_routes) && currentMountain.popular_routes.length > 0 && (
-          <div className="bg-gray-800 bg-opacity-80 rounded-lg p-2 border border-gray-600 shadow-lg">
-            <div className="flex items-center space-x-2 mb-2">
-              <Route className="w-3 h-3 text-orange-400" />
-              <span className="text-xs font-medium text-orange-400">Popular Routes</span>
-            </div>
-            <div className="space-y-1">
-              {currentMountain.popular_routes.slice(0, 2).map((route, index) => (
-                <div key={index} className="text-xs text-gray-300">
-                  • {route}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Best Seasons */}
         {currentMountain.best_seasons && Array.isArray(currentMountain.best_seasons) && currentMountain.best_seasons.length > 0 && (
