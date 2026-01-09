@@ -132,15 +132,15 @@ export default function MountainDisplay({
   useEffect(() => {
     if (!currentMountain?.image_filename) {
       setImageStatus('error');
-      setImageFilename(mountainType === 'corbetts' ? 'corb.png' : 'munro.png');
+      setImageFilename('default.jpg');
       return;
     }
 
     setImageStatus('loading');
-    
+
     const filename = currentMountain.image_filename;
-    const fallbackFilename = mountainType === 'corbetts' ? 'corb.png' : 'munro.png';
-    
+    const fallbackFilename = 'default.jpg';
+
     console.log(`MMM-SMH: Loading ${mountainType} image: ${filename}, fallback: ${fallbackFilename}`);
     
     // Test if main image exists without storing URL
@@ -485,9 +485,9 @@ export default function MountainDisplay({
                 onError={() => {
                   console.log(`MMM-SMH: Image render error for: ${getImagePath(imageFilename)}`);
                   // Try fallback
-                  if (imageFilename !== 'munro.png') {
+                  if (imageFilename !== 'default.jpg') {
                     console.log('MMM-SMH: Trying fallback image');
-                    setImageFilename('munro.png');
+                    setImageFilename('default.jpg');
                   } else {
                     setImageStatus('error');
                   }
