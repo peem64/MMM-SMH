@@ -956,6 +956,64 @@ export async function signUpWithEmail(email: string, password: string): Promise<
   }
 }
 
+export async function resetPassword(email: string): Promise<{ success: boolean; error: string | null }> {
+  try {
+    console.log('🔐 Requesting password reset for:', email);
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin
+    });
+
+    if (error) {
+      console.error('❌ Error requesting password reset:', error);
+
+      let userMessage = 'Password reset failed. ';
+      if (error.message.includes('valid email')) {
+        userMessage += 'Please enter a valid email address.';
+      } else {
+        userMessage += error.message;
+      }
+
+      return { success: false, error: userMessage };
+    }
+
+    console.log('✅ Password reset email sent');
+    return { success: true, error: null };
+  } catch (error) {
+    console.error('💥 Network error requesting password reset:', error);
+    return { success: false, error: 'Network error. Please check your connection and try again.' };
+  }
+}
+
+export async function updatePassword(newPassword: string): Promise<{ success: boolean; error: string | null }> {
+  try {
+    console.log('🔐 Updating password');
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) {
+      console.error('❌ Error updating password:', error);
+
+      let userMessage = 'Password update failed. ';
+      if (error.message.includes('Password')) {
+        userMessage += 'Password must be at least 6 characters.';
+      } else {
+        userMessage += error.message;
+      }
+
+      return { success: false, error: userMessage };
+    }
+
+    console.log('✅ Password updated successfully');
+    return { success: true, error: null };
+  } catch (error) {
+    console.error('💥 Network error updating password:', error);
+    return { success: false, error: 'Network error. Please check your connection and try again.' };
+  }
+}
+
 export async function getCurrentUser() {
   try {
     const { data: { user } } = await supabase.auth.getUser();

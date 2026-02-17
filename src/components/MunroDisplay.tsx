@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Mountain, MapPin, Clock, TrendingUp, Star, Check } from 'lucide-react';
-import { 
-  Mountain as MountainType, 
-  getMountainByIndex, 
-  getMountainCount, 
-  getCurrentUser, 
-  getUserCompletionStats, 
+import {
+  Mountain as MountainType,
+  getMountainByIndex,
+  getMountainCount,
+  getCurrentUser,
+  getUserCompletionStats,
   CompletionStats,
   toggleMountainCompletion,
   getMountainCompletion,
   signInAnonymously
 } from '../lib/supabase';
-import { signInWithEmail, signUpWithEmail } from '../lib/supabase';
+import { signInWithEmail, signUpWithEmail, resetPassword } from '../lib/supabase';
 import '../lib/database-check'; // Auto-run database verification in dev
 
 interface MountainDisplayProps {
@@ -48,6 +48,9 @@ export default function MountainDisplay({
   const [authPassword, setAuthPassword] = useState<string>('');
   const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>('');
+  const [showResetPassword, setShowResetPassword] = useState<boolean>(false);
+  const [resetEmail, setResetEmail] = useState<string>('');
+  const [resetSuccess, setResetSuccess] = useState<string>('');
 
   // Database status
   const [actualCount, setActualCount] = useState<number>(0);
@@ -403,6 +406,35 @@ export default function MountainDisplay({
     }
   };
 
+  // Handle password reset
+  const handleResetPassword = async () => {
+    if (!resetEmail) return;
+
+    setIsAuthenticating(true);
+    setAuthError('');
+    setResetSuccess('');
+
+    try {
+      const result = await resetPassword(resetEmail);
+
+      if (result.error) {
+        setAuthError(result.error);
+      } else {
+        setResetSuccess('Password reset email sent! Check your inbox.');
+        setResetEmail('');
+        setTimeout(() => {
+          setShowResetPassword(false);
+          setResetSuccess('');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Password reset error:', error);
+      setAuthError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
   // Get location string based on mountain type
   const getLocationString = (mountain: MountainType) => {
     if (mountain.area && mountain.area !== mountain.region && mountain.area.trim() !== '') {
@@ -614,31 +646,82 @@ export default function MountainDisplay({
                   {authError}
                 </div>
               )}
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleAuth(false)}
-                  disabled={isAuthenticating || !authEmail || !authPassword}
-                  className="flex-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isAuthenticating ? 'Signing in...' : 'Sign In'}
-                </button>
-                <button
-                  onClick={() => handleAuth(true)}
-                  disabled={isAuthenticating || !authEmail || !authPassword}
-                  className="flex-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isAuthenticating ? 'Signing up...' : 'Sign Up'}
-                </button>
-              </div>
-              <button
-                onClick={() => {
-                  setShowAuthForm(false);
-                  setAuthError('');
-                }}
-                className="w-full px-2 py-1 bg-gray-600 text-gray-300 text-xs rounded hover:bg-gray-500"
-              >
-                Skip (view only)
-              </button>
+              {resetSuccess && (
+                <div className="text-xs text-green-400 bg-green-900 bg-opacity-30 border border-green-600 rounded p-2">
+                  {resetSuccess}
+                </div>
+              )}
+              {!showResetPassword ? (
+                <>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleAuth(false)}
+                      disabled={isAuthenticating || !authEmail || !authPassword}
+                      className="flex-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAuthenticating ? 'Signing in...' : 'Sign In'}
+                    </button>
+                    <button
+                      onClick={() => handleAuth(true)}
+                      disabled={isAuthenticating || !authEmail || !authPassword}
+                      className="flex-1 px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAuthenticating ? 'Signing up...' : 'Sign Up'}
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowResetPassword(true);
+                      setAuthError('');
+                      setResetEmail(authEmail);
+                    }}
+                    className="text-xs text-blue-400 hover:text-blue-300 underline"
+                  >
+                    Forgot password?
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowAuthForm(false);
+                      setAuthError('');
+                    }}
+                    className="w-full px-2 py-1 bg-gray-600 text-gray-300 text-xs rounded hover:bg-gray-500"
+                  >
+                    Skip (view only)
+                  </button>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={resetEmail}
+                    onChange={(e) => {
+                      setResetEmail(e.target.value);
+                      setAuthError('');
+                    }}
+                    className="w-full px-2 py-1 bg-gray-700 text-white text-xs rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
+                  />
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={handleResetPassword}
+                      disabled={isAuthenticating || !resetEmail}
+                      className="flex-1 px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAuthenticating ? 'Sending...' : 'Send Reset Email'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowResetPassword(false);
+                        setAuthError('');
+                        setResetSuccess('');
+                      }}
+                      className="flex-1 px-2 py-1 bg-gray-600 text-gray-300 text-xs rounded hover:bg-gray-500"
+                    >
+                      Back
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
