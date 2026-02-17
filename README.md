@@ -45,7 +45,16 @@ npm install
    - Go to [supabase.com](https://supabase.com) and create a new project
    - Note your project URL and anon key from Settings > API
 
-2. **Run Database Migrations**
+2. **Configure Authentication URLs**
+   - In Supabase dashboard, go to Authentication > URL Configuration
+   - Under "Redirect URLs", add these URLs (adjust for your local network):
+     - `http://localhost:8080/**`
+     - `http://localhost:5173/**` (for development)
+     - `http://192.168.*.*:**` (for local network access)
+     - Or use wildcards: `http://*/*` to allow any local URL
+   - This allows password reset emails to work on your MagicMirror
+
+3. **Run Database Migrations**
    - In Supabase dashboard, go to SQL Editor
    - Run the migration files in order from `supabase/migrations/`
    - This creates both `munros` and `corbetts` tables with complete datasets
@@ -327,6 +336,13 @@ interface Mountain {
    - ✅ Check that email/password auth is enabled in Supabase
    - ✅ Ensure strong password requirements are met
    - ✅ Try signing up with a new email if sign-in fails
+
+7. **Password reset redirecting to localhost**
+   - ✅ Go to Supabase dashboard: Authentication > URL Configuration
+   - ✅ Add your MagicMirror URL to "Redirect URLs" (e.g., `http://192.168.1.50:8080/**`)
+   - ✅ Or use wildcards: `http://*/*` to allow any local URL
+   - ✅ Save the changes and try password reset again
+
 ### Debug Mode
 
 In development, the module shows debug information:
