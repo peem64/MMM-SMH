@@ -859,41 +859,69 @@ export async function getUserCompletions(
 // Authentication helpers
 export async function signInWithEmail(email: string, password: string) {
   try {
+    console.log('🔐 Attempting sign in for:', email);
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     });
-    
+
     if (error) {
-      console.error('Error signing in with email:', error);
+      console.error('❌ Error signing in with email:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        status: error.status,
+        name: error.name
+      });
       return null;
     }
-    
+
+    console.log('✅ Sign in successful:', {
+      user: data.user?.email,
+      session: !!data.session
+    });
+
     return data.user;
   } catch (error) {
-    console.error('Network error signing in with email:', error);
+    console.error('💥 Network error signing in with email:', error);
     return null;
   }
 }
 
 export async function signUpWithEmail(email: string, password: string) {
   try {
+    console.log('🔐 Attempting sign up for:', email);
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: undefined // Disable email confirmation
+        emailRedirectTo: undefined,
+        data: {
+          email_confirmed: true
+        }
       }
     });
-    
+
     if (error) {
-      console.error('Error signing up with email:', error);
+      console.error('❌ Error signing up with email:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        status: error.status,
+        name: error.name
+      });
       return null;
     }
-    
+
+    console.log('✅ Sign up successful:', {
+      user: data.user?.email,
+      confirmed: data.user?.email_confirmed_at,
+      session: !!data.session
+    });
+
     return data.user;
   } catch (error) {
-    console.error('Network error signing up with email:', error);
+    console.error('💥 Network error signing up with email:', error);
     return null;
   }
 }

@@ -47,6 +47,7 @@ export default function MountainDisplay({
   const [authEmail, setAuthEmail] = useState<string>('');
   const [authPassword, setAuthPassword] = useState<string>('');
   const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
+  const [authError, setAuthError] = useState<string>('');
 
   // Database status
   const [actualCount, setActualCount] = useState<number>(0);
@@ -368,26 +369,38 @@ export default function MountainDisplay({
   // Handle authentication
   const handleAuth = async (isSignUp: boolean = false) => {
     if (!authEmail || !authPassword) return;
-    
+
     setIsAuthenticating(true);
+    setAuthError('');
+
     try {
       let user;
       if (isSignUp) {
         user = await signUpWithEmail(authEmail, authPassword);
+        if (user) {
+          console.log('Sign up successful, user:', user);
+        } else {
+          setAuthError('Sign up failed. Email may already be in use or password too weak.');
+        }
       } else {
         user = await signInWithEmail(authEmail, authPassword);
+        if (!user) {
+          setAuthError('Sign in failed. Check your email and password.');
+        }
       }
-      
+
       if (user) {
         setCurrentUser(user);
         setShowAuthForm(false);
-        
+        setAuthError('');
+
         // Load completion stats
         const stats = await getUserCompletionStats(mountainType);
         setCompletionStats(stats);
       }
     } catch (error) {
       console.error('Authentication error:', error);
+      setAuthError('An unexpected error occurred. Please try again.');
     } finally {
       setIsAuthenticating(false);
     }
@@ -583,16 +596,27 @@ export default function MountainDisplay({
                 type="email"
                 placeholder="Email"
                 value={authEmail}
-                onChange={(e) => setAuthEmail(e.target.value)}
+                onChange={(e) => {
+                  setAuthEmail(e.target.value);
+                  setAuthError('');
+                }}
                 className="w-full px-2 py-1 bg-gray-700 text-white text-xs rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
               />
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="Password (min 6 characters)"
                 value={authPassword}
-                onChange={(e) => setAuthPassword(e.target.value)}
+                onChange={(e) => {
+                  setAuthPassword(e.target.value);
+                  setAuthError('');
+                }}
                 className="w-full px-2 py-1 bg-gray-700 text-white text-xs rounded border border-gray-600 focus:border-blue-400 focus:outline-none"
               />
+              {authError && (
+                <div className="text-xs text-red-400 bg-red-900 bg-opacity-30 border border-red-600 rounded p-2">
+                  {authError}
+                </div>
+              )}
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleAuth(false)}
@@ -610,7 +634,10 @@ export default function MountainDisplay({
                 </button>
               </div>
               <button
-                onClick={() => setShowAuthForm(false)}
+                onClick={() => {
+                  setShowAuthForm(false);
+                  setAuthError('');
+                }}
                 className="w-full px-2 py-1 bg-gray-600 text-gray-300 text-xs rounded hover:bg-gray-500"
               >
                 Skip (view only)
