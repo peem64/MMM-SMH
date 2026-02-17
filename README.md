@@ -46,13 +46,15 @@ npm install
    - Note your project URL and anon key from Settings > API
 
 2. **Configure Authentication URLs**
-   - In Supabase dashboard, go to Authentication > URL Configuration
-   - Under "Redirect URLs", add these URLs (adjust for your local network):
+   - In Supabase dashboard, click **Authentication** in the left sidebar
+   - Scroll down to the **URL Configuration** section
+   - In the **Redirect URLs** text area, add these URLs (one per line):
      - `http://localhost:8080/**`
      - `http://localhost:5173/**` (for development)
-     - `http://192.168.*.*:**` (for local network access)
-     - Or use wildcards: `http://*/*` to allow any local URL
-   - This allows password reset emails to work on your MagicMirror
+     - `http://192.168.*.*:8080/**` (adjust IP for your local network)
+     - Or add `http://*/*` to allow any local URL
+   - Click **Save** at the bottom
+   - This allows password reset emails to redirect properly to your MagicMirror
 
 3. **Run Database Migrations**
    - In Supabase dashboard, go to SQL Editor
@@ -337,11 +339,13 @@ interface Mountain {
    - ✅ Ensure strong password requirements are met
    - ✅ Try signing up with a new email if sign-in fails
 
-7. **Password reset redirecting to localhost**
-   - ✅ Go to Supabase dashboard: Authentication > URL Configuration
-   - ✅ Add your MagicMirror URL to "Redirect URLs" (e.g., `http://192.168.1.50:8080/**`)
-   - ✅ Or use wildcards: `http://*/*` to allow any local URL
-   - ✅ Save the changes and try password reset again
+7. **Password reset redirecting to wrong URL**
+   - ✅ In Supabase dashboard, click **Authentication** in left sidebar
+   - ✅ Scroll down to **URL Configuration** section
+   - ✅ In the **Redirect URLs** text area, add your MagicMirror URL:
+     - Example: `http://192.168.1.50:8080/**`
+     - Or use `http://*/*` to allow any local URL
+   - ✅ Click **Save** and try password reset again
 
 ### Debug Mode
 
