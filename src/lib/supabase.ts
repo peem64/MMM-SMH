@@ -857,7 +857,7 @@ export async function getUserCompletions(
 }
 
 // Authentication helpers
-export async function signInWithEmail(email: string, password: string) {
+export async function signInWithEmail(email: string, password: string): Promise<{ user: any; error: string | null }> {
   try {
     console.log('🔐 Attempting sign in for:', email);
 
@@ -873,7 +873,21 @@ export async function signInWithEmail(email: string, password: string) {
         status: error.status,
         name: error.name
       });
-      return null;
+
+      let userMessage = 'Sign in failed. ';
+      if (error.message.includes('Invalid login credentials')) {
+        userMessage += 'Invalid email or password. Please try again.';
+      } else if (error.message.includes('Email not confirmed')) {
+        userMessage += 'Please confirm your email address first.';
+      } else {
+        userMessage += error.message;
+      }
+
+      return { user: null, error: userMessage };
+    }
+
+    if (!data.user) {
+      return { user: null, error: 'Sign in failed. Please try again.' };
     }
 
     console.log('✅ Sign in successful:', {
@@ -881,14 +895,14 @@ export async function signInWithEmail(email: string, password: string) {
       session: !!data.session
     });
 
-    return data.user;
+    return { user: data.user, error: null };
   } catch (error) {
     console.error('💥 Network error signing in with email:', error);
-    return null;
+    return { user: null, error: 'Network error. Please check your connection and try again.' };
   }
 }
 
-export async function signUpWithEmail(email: string, password: string) {
+export async function signUpWithEmail(email: string, password: string): Promise<{ user: any; error: string | null }> {
   try {
     console.log('🔐 Attempting sign up for:', email);
 
@@ -910,7 +924,23 @@ export async function signUpWithEmail(email: string, password: string) {
         status: error.status,
         name: error.name
       });
-      return null;
+
+      let userMessage = 'Sign up failed. ';
+      if (error.message.includes('already registered')) {
+        userMessage += 'This email is already registered. Try signing in instead.';
+      } else if (error.message.includes('Password')) {
+        userMessage += 'Password must be at least 6 characters.';
+      } else if (error.message.includes('valid email')) {
+        userMessage += 'Please enter a valid email address.';
+      } else {
+        userMessage += error.message;
+      }
+
+      return { user: null, error: userMessage };
+    }
+
+    if (!data.user) {
+      return { user: null, error: 'Sign up failed. Please try again.' };
     }
 
     console.log('✅ Sign up successful:', {
@@ -919,10 +949,10 @@ export async function signUpWithEmail(email: string, password: string) {
       session: !!data.session
     });
 
-    return data.user;
+    return { user: data.user, error: null };
   } catch (error) {
     console.error('💥 Network error signing up with email:', error);
-    return null;
+    return { user: null, error: 'Network error. Please check your connection and try again.' };
   }
 }
 

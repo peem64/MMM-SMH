@@ -374,27 +374,24 @@ export default function MountainDisplay({
     setAuthError('');
 
     try {
-      let user;
-      if (isSignUp) {
-        user = await signUpWithEmail(authEmail, authPassword);
-        if (user) {
-          console.log('Sign up successful, user:', user);
-        } else {
-          setAuthError('Sign up failed. Email may already be in use or password too weak.');
-        }
-      } else {
-        user = await signInWithEmail(authEmail, authPassword);
-        if (!user) {
-          setAuthError('Sign in failed. Check your email and password.');
-        }
+      const result = isSignUp
+        ? await signUpWithEmail(authEmail, authPassword)
+        : await signInWithEmail(authEmail, authPassword);
+
+      if (result.error) {
+        setAuthError(result.error);
+        setIsAuthenticating(false);
+        return;
       }
 
-      if (user) {
-        setCurrentUser(user);
+      if (result.user) {
+        console.log(isSignUp ? 'Sign up successful' : 'Sign in successful', result.user);
+        setCurrentUser(result.user);
         setShowAuthForm(false);
         setAuthError('');
+        setAuthEmail('');
+        setAuthPassword('');
 
-        // Load completion stats
         const stats = await getUserCompletionStats(mountainType);
         setCompletionStats(stats);
       }
