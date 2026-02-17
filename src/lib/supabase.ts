@@ -960,8 +960,11 @@ export async function resetPassword(email: string): Promise<{ success: boolean; 
   try {
     console.log('🔐 Requesting password reset for:', email);
 
+    const redirectUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    console.log('📧 Password reset redirect URL:', redirectUrl);
+
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin
+      redirectTo: redirectUrl
     });
 
     if (error) {
